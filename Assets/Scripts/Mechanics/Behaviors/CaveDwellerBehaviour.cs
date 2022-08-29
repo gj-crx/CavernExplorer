@@ -41,10 +41,9 @@ namespace Behaviours
                 var Target = GetNearestPlayerObject();
                 if (Target != null)
                 {
-                    _unit.GetWayTarget(Target.transform.position);
+                    _unit.GetWayTarget(Target);
                     _fighting.CurrentTarget = Target;
                 }
-                Debug.Log("iteration");
                 await Task.Delay(ActualDelay);
             }
         }

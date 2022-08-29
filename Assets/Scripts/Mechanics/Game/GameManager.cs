@@ -25,7 +25,7 @@ public static class GameManager
         MapGenerator = new MapGenerator1(GameSettings.Singleton.MapGeneratorSettings, map, GameSettings.Singleton.tileMap, GameSettings.Singleton.WallTiles);
         unitSpawner = new UnitSpawner();
         tileFormPlacer = new TileFormPlacer(GameSettings.Singleton.PatternTileMap, GameSettings.Singleton.tileMap);
-        Pathfinding = new AStarPathfinding(map, GameSettings.Singleton.PathfindingMaxSearchDistance);
+        Pathfinding = new NormalPathfinding(map);
 
         PlayerRelatedCharacters.Add(GameObject.Find("Character").GetComponent<Unit>());
     }

@@ -14,10 +14,10 @@ public class TestUnitController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Q)) Test();
     }
     public void Test()
     {
-        unit.GetWayTarget(testtarget.transform.position);
+        unit.GetWayTarget(Camera.main.ScreenToWorldPoint(Input.mousePosition));
     }
 }

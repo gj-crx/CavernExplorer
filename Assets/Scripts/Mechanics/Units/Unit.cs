@@ -11,13 +11,15 @@ public class Unit : MonoBehaviour
 
 
 
-    public List<Vector2Int> Way = new List<Vector2Int>();
-    public int CurrentDistance { private get; set; }
+    public Vector2Int[] Way = null;
+    public int CurrentDistance { private get; set; } = 1;
 
     public delegate void OnKill(Unit killed);
-
     public OnKill OnKilled;
     public IBehavior behavior;
+
+    private float _movingTime = 0;
+    private Unit _currentTarget;
 
 
     private void Start()
@@ -28,24 +30,38 @@ public class Unit : MonoBehaviour
 
     private void Update()
     {
-        if (Way.Count > 0)
+        if (Way != null && Way.Length > 0)
         {
-            WayMoving();
+          //  WayMoving();
         }
     }
+    private void FixedUpdate()
+    {
+        WayMoving(true);
+    }
 
-    public bool GetWayTarget(Vector3 target)
+    public bool GetWayTarget(Vector3 Target)
     {
         if (Stats.MoveSpeed == 0)
         {
             Debug.Log("Attempting to move unit with 0 movespeed");
         }
         CurrentDistance = 1;
-        bool Result = GameManager.Pathfinding.GetWayPath(this, target, 2);
-        if (GameManager.DebugMode)
+        Way = null;
+        bool Result = GameManager.Pathfinding.GetWayPath(this, Target, 2);
+        return Result;
+    }
+    public bool GetWayTarget(Unit TargetUnit)
+    {
+        if (Stats.MoveSpeed == 0)
         {
-       //     game.TestWay = game.pf.GetLastWay();
+            Debug.Log("Attempting to move unit with 0 movespeed");
         }
+        CurrentDistance = 1;
+        Way = null;
+        bool Result = GameManager.Pathfinding.GetWayPath(this, TargetUnit.transform.position, 2);
+        if (Result) _currentTarget = TargetUnit;
+        else _currentTarget = null;
         return Result;
     }
     public Vector3 GetPositionNextToUnit(Vector3 From)
@@ -61,6 +77,11 @@ public class Unit : MonoBehaviour
             if (direction.z > 0) return transform.position + new Vector3(0, 0, Stats.CollisionRadius + 1);
             else return transform.position + new Vector3(0, 0, Stats.CollisionRadius - 1);
         }
+    }
+    public void GetDamage(float Damage, Unit Attacker)
+    {
+        Stats.CurrentHP -= Damage;
+        if (Stats.CurrentHP <= 0) Death();
     }
     public void Death()
     {
@@ -93,47 +114,30 @@ public class Unit : MonoBehaviour
         }
 
     }
-    private async Task StartControllingUnitMovements(int ActualDelay, int RandomizedPreDelay = 0)
+    private void WayMoving(bool alternative)
     {
-        await Task.Delay(RandomizedPreDelay);
-        while (gameObject.activeInHierarchy)
+        if (Way != null && Way.Length > 0)
         {
-            if (Way.Count > 0)
+            _movingTime += Stats.MoveSpeed * Time.fixedDeltaTime;
+            transform.position = Vector3.Lerp(BasicFunctions.Vector2IntToVector3(Way[CurrentDistance - 1]), BasicFunctions.Vector2IntToVector3(Way[CurrentDistance]), _movingTime);
+            if (_movingTime > 1)
             {
-                WayMoving();
+                _movingTime = 0;
+                CurrentDistance++;
+                if (CurrentDistance >= Way.Length)
+                {
+                    Way = null;
+                    CurrentDistance = 1;
+                    if (behavior != null) behavior.HaveExternalOrder = false;
+                }
             }
-            await Task.Delay(ActualDelay);
         }
+        else if (_currentTarget != null) Chase();
     }
-    private void MoveUnit(Vector3 To)
+    private void Chase()
     {
-        Vector3 MovementVector = UnitLogic.VectorToDirection(To - transform.position);
-        transform.position += (MovementVector * Time.deltaTime * Stats.MoveSpeed);
-        //   Debug.Log(UnitName + position + " changed");
-    }
-    private void WayMoving()
-    {
-        if (Stats.MoveSpeed == 0)
-        {
-            return;
-        }
-        //   Debug.Log("waymoving applyed");
-        if (Vector3.Distance(transform.position, BasicFunctions.Vector2IntToVector3(Way[CurrentDistance])) < Stats.MoveSpeed * 0.1f)
-        {
-            //  Debug.Log(Way[CurrentDistance] + " next way point of the distance " + CurrentDistance);
-            transform.position = BasicFunctions.Vector2IntToVector3(Way[CurrentDistance]);
-            CurrentDistance++;
-        }
-        if (CurrentDistance >= Way.Count)
-        {
-            Way.Clear();
-            CurrentDistance = 1;
-            behavior.HaveExternalOrder = false;
-        }
-        else
-        {
-            MoveUnit(BasicFunctions.Vector2IntToVector3(Way[CurrentDistance]));
-        }
+        Vector3 Direction = _currentTarget.transform.position - transform.position;
+        transform.Translate(Direction.normalized * Stats.MoveSpeed * Time.fixedDeltaTime);
     }
     public enum UnitClass : byte
     {
