@@ -6,9 +6,13 @@ public class TestUnitController : MonoBehaviour
 {
     public Unit unit;
     public GameObject testtarget;
+    public bool AnimationTest;
     void Start()
     {
-        
+        if (AnimationTest)
+        {
+            GetComponent<UnityEngine.Animation>().Play("minatour run");
+        }
     }
 
     // Update is called once per frame

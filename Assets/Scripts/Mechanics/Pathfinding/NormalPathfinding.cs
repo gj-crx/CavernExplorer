@@ -53,7 +53,7 @@ public class NormalPathfinding : IPathfinding
         bool result = CalculateWay(from, target);
         if (result)
         {
-            MovingUnit.Way = Way;
+            MovingUnit.Way = BasicFunctions.ConvertToVector3Array(Way, 0.5f);
             MovingUnit.CurrentDistance = 1;
         }
         return result;

@@ -95,4 +95,14 @@ public static class BasicFunctions
 
         return v;
     }
+    public static Vector3[] ConvertToVector3Array(Vector2Int[] SourceArray, float AddictiveValue = 0)
+    {
+        Vector3[] NewArray = new Vector3[SourceArray.Length];
+        for (int i = 0; i < SourceArray.Length; i++)
+        {
+            NewArray[i] = Vector2IntToVector3(SourceArray[i]);
+            NewArray[i] += new Vector3(AddictiveValue, AddictiveValue);
+        }
+        return NewArray;
+    }
 }

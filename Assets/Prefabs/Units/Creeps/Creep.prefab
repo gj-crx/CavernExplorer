@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3991980323848222758}
   - component: {fileID: 5000566942055694704}
   - component: {fileID: -4444343729125353677}
+  - component: {fileID: -3682946531640692227}
   m_Layer: 0
   m_Name: Creep
   m_TagString: Creep
@@ -30,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 5000566942055694710}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -2, z: 0}
-  m_LocalScale: {x: 0.75, y: 0.5, z: 1}
+  m_LocalScale: {x: 4, y: 4, z: 3}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -75,8 +76,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -9095717837082945937, guid: bd3cb4af8406d4436a2ae8c2aafe1f8d, type: 3}
-  m_Color: {r: 0.5, g: 0.054245293, b: 0.054245293, a: 1}
+  m_Sprite: {fileID: 5545791981575950956, guid: 1fd179bd6b324f948be8f6b1f73181ce, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -99,8 +100,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 1, y: 2}
+  m_Offset: {x: 0.0032236278, y: 0.030811265}
+  m_Size: {x: 0.3270877, y: 0.4118556}
   m_Direction: 0
 --- !u!50 &3991980323848222758
 Rigidbody2D:
@@ -136,6 +137,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ID: -1
+  AIControlled: 1
   Stats:
     MaxHP: 100
     CurrentHP: 100
@@ -165,3 +167,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CurrentTarget: {fileID: 0}
   IsHitting: 0
+--- !u!95 &-3682946531640692227
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5000566942055694710}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0f726b23806e21e40a9d6f57b395ddc6, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

@@ -6,17 +6,19 @@ using System.Threading.Tasks;
 public class Unit : MonoBehaviour
 {
     public int ID = -1;
+    public bool AIControlled = true;
     public UnitStats Stats;
 
 
 
 
-    public Vector2Int[] Way = null;
+    public Vector3[] Way = null;
     public int CurrentDistance { private get; set; } = 1;
 
     public delegate void OnKill(Unit killed);
     public OnKill OnKilled;
     public IBehavior behavior;
+    private Animator _animator;
 
     private float _movingTime = 0;
     private Unit _currentTarget;
@@ -26,18 +28,16 @@ public class Unit : MonoBehaviour
     {
         GetBehavior();
         StartUnitActionsControlling();
+        try { _animator = GetComponent<Animator>(); } catch { }
     }
 
     private void Update()
     {
-        if (Way != null && Way.Length > 0)
-        {
-          //  WayMoving();
-        }
+
     }
     private void FixedUpdate()
     {
-        WayMoving(true);
+        if (AIControlled) WayMoving(true);
     }
 
     public bool GetWayTarget(Vector3 Target)
@@ -116,10 +116,17 @@ public class Unit : MonoBehaviour
     }
     private void WayMoving(bool alternative)
     {
+        _animator.SetBool("Stopped", true);
         if (Way != null && Way.Length > 0)
         {
             _movingTime += Stats.MoveSpeed * Time.fixedDeltaTime;
-            transform.position = Vector3.Lerp(BasicFunctions.Vector2IntToVector3(Way[CurrentDistance - 1]), BasicFunctions.Vector2IntToVector3(Way[CurrentDistance]), _movingTime);
+            transform.position = Vector3.Lerp(Way[CurrentDistance - 1], Way[CurrentDistance], _movingTime);
+            Vector3 delta = Way[CurrentDistance] - Way[CurrentDistance - 1];
+            _animator.SetFloat("XSpeed", delta.x);
+            _animator.SetFloat("YSpeed", delta.y);
+            _animator.SetBool("Stopped", false);
+            if (delta.x < 0) transform.eulerAngles = new Vector3(0, -180, 0);
+            else transform.eulerAngles = new Vector3(0, 0, 0);
             if (_movingTime > 1)
             {
                 _movingTime = 0;
@@ -137,7 +144,14 @@ public class Unit : MonoBehaviour
     private void Chase()
     {
         Vector3 Direction = _currentTarget.transform.position - transform.position;
+
+        transform.eulerAngles = new Vector3(0, 0, 0);
+        _animator.SetBool("Stopped", false);
+        _animator.SetFloat("XSpeed", Direction.x);
+        _animator.SetFloat("YSpeed", Direction.y);
+
         transform.Translate(Direction.normalized * Stats.MoveSpeed * Time.fixedDeltaTime);
+        if (Direction.x < 0) transform.eulerAngles = new Vector3(0, -180, 0);
     }
     public enum UnitClass : byte
     {

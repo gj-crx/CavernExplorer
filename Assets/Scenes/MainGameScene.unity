@@ -4382,6 +4382,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unit: {fileID: 422302190}
   testtarget: {fileID: 1544622318}
+  AnimationTest: 0
 --- !u!114 &422302190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4395,6 +4396,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ID: -1
+  AIControlled: 0
   Stats:
     MaxHP: 100
     CurrentHP: 100
