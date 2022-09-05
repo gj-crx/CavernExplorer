@@ -5,6 +5,8 @@ using Generation;
 
 public static class GameManager
 {
+    public static bool GameIsRunning = true;
+
     public static Map map;
     public static MapGenerator1 MapGenerator;
     public static UnitSpawner unitSpawner;
@@ -24,7 +26,7 @@ public static class GameManager
         map = new Map();
         MapGenerator = new MapGenerator1(GameSettings.Singleton.MapGeneratorSettings, map, GameSettings.Singleton.tileMap, GameSettings.Singleton.WallTiles);
         unitSpawner = new UnitSpawner();
-        tileFormPlacer = new TileFormPlacer(GameSettings.Singleton.PatternTileMap, GameSettings.Singleton.tileMap);
+        tileFormPlacer = new TileFormPlacer(GameSettings.Singleton.PatternTileMap, GameSettings.Singleton.tileMap, MapGenerator);
         Pathfinding = new NormalPathfinding(map);
 
         PlayerRelatedCharacters.Add(GameObject.Find("Character").GetComponent<Unit>());

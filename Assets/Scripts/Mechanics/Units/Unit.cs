@@ -22,6 +22,8 @@ public class Unit : MonoBehaviour
 
     private float _movingTime = 0;
     private Unit _currentTarget;
+  //  [HideInInspector]
+    public bool MovementHalted = false;
 
 
     private void Start()
@@ -37,7 +39,7 @@ public class Unit : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (AIControlled) WayMoving(true);
+        if (AIControlled && MovementHalted == false) WayMoving(true);
     }
 
     public bool GetWayTarget(Vector3 Target)
@@ -63,20 +65,6 @@ public class Unit : MonoBehaviour
         if (Result) _currentTarget = TargetUnit;
         else _currentTarget = null;
         return Result;
-    }
-    public Vector3 GetPositionNextToUnit(Vector3 From)
-    {
-        Vector3 direction = transform.position - From;
-        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.z))
-        {
-            if (direction.x > 0) return transform.position + new Vector3(Stats.CollisionRadius + 1, 0, 0);
-            else return transform.position + new Vector3(Stats.CollisionRadius - 1, 0, 0);
-        }
-        else
-        {
-            if (direction.z > 0) return transform.position + new Vector3(0, 0, Stats.CollisionRadius + 1);
-            else return transform.position + new Vector3(0, 0, Stats.CollisionRadius - 1);
-        }
     }
     public void GetDamage(float Damage, Unit Attacker)
     {
@@ -117,10 +105,11 @@ public class Unit : MonoBehaviour
     private void WayMoving(bool alternative)
     {
         _animator.SetBool("Stopped", true);
-        if (Way != null && Way.Length > 0)
+        if (Way != null && Way.Length > 1)
         {
             _movingTime += Stats.MoveSpeed * Time.fixedDeltaTime;
             transform.position = Vector3.Lerp(Way[CurrentDistance - 1], Way[CurrentDistance], _movingTime);
+            //settings up animations and visuals
             Vector3 delta = Way[CurrentDistance] - Way[CurrentDistance - 1];
             _animator.SetFloat("XSpeed", delta.x);
             _animator.SetFloat("YSpeed", delta.y);

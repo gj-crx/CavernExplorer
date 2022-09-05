@@ -12,43 +12,36 @@ namespace Behaviours
         public bool IsHitting = false;
 
         private Unit OwnerUnit;
-        private float timer_Hitting = 0;
+        private Animator _animator;
 
         void Awake()
         {
             OwnerUnit = GetComponent<Unit>();
+            try { _animator = GetComponent<Animator>(); } catch { }
         }
-        public void FightingControlling(int TimePassed)
+        private void Start()
         {
-            if (CurrentTarget != null)
-            {
-                Hit(CurrentTarget, TimePassed);
-            }
+            HitDistanceCheckCoroutine(325);
         }
 
-        private void Hit(Unit target, int TimePassed)
+        private void Hit(Unit target)
         {
-            if (Vector3.Distance(transform.position, target.transform.position) < OwnerUnit.Stats.AttackRange)
+            target.GetDamage(OwnerUnit.Stats.Damage, OwnerUnit);
+        }
+        private async Task HitDistanceCheckCoroutine(int CheckIntervalMiliseconds)
+        {
+            while (GameManager.GameIsRunning)
             {
-                if (timer_Hitting > OwnerUnit.Stats.AttackDelay)
+                if (CurrentTarget != null && Vector3.Distance(transform.position, CurrentTarget.transform.position) < OwnerUnit.Stats.AttackRange)
                 {
-                    timer_Hitting = 0;
-                    target.Stats.CurrentHP -= OwnerUnit.Stats.Damage;
-                    if (target.Stats.CurrentHP <= 0)
-                    {
-                        target.Death();
-                        CurrentTarget = null;
-                        OwnerUnit.OnKilled(target);
-                    }
+                    OwnerUnit.Way = null;
+                    Hit(CurrentTarget);
+                    if (_animator != null) _animator.SetBool("Attacked", true);
+                    OwnerUnit.MovementHalted = true;
+                    await Task.Delay((int)OwnerUnit.Stats.AttackDelay * 1000);
                 }
-                else
-                {
-                    timer_Hitting += TimePassed / 1000; 
-                }
-            }
-            else
-            {
-                timer_Hitting = 0;
+                Debug.Log("wait2");
+                await Task.Delay(CheckIntervalMiliseconds);
             }
         }
     }

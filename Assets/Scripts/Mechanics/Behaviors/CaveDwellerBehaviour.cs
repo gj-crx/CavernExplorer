@@ -28,7 +28,6 @@ namespace Behaviours
 
         public void Clear()
         {
-            Debug.Log("Cleared");
             Active = false;
             _unit = null;
         }

@@ -29,16 +29,23 @@ public class GameSettings : MonoBehaviour
     {
         Application.targetFrameRate = 60;
         GameManager.InitializeGame();
-        
+    }
+    private void Update()
+    {
+
     }
     public void DebugActionExecute()
     {
-        GameManager.MapGenerator.GenerateMethod2();
+        GameManager.MapGenerator.GenerateMap();
     }
 
     [System.Serializable]
     public struct UnitsSpawningSettings
     {
         public float CreepSpawnChance;
+    }
+    private void OnApplicationQuit()
+    {
+        GameManager.GameIsRunning = false;
     }
 }

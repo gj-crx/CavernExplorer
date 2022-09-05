@@ -105,4 +105,8 @@ public static class BasicFunctions
         }
         return NewArray;
     }
+    public static bool PassableTile(Vector2Int TilePosition, Map ReferenceMap)
+    {
+        return ReferenceMap.LandscapeMap[TilePosition.x, TilePosition.y].Land == LandType.Passable || ReferenceMap.LandscapeMap[TilePosition.x, TilePosition.y].Land == LandType.WaterLow;
+    }
 }

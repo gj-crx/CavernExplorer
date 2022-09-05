@@ -145,7 +145,7 @@ MonoBehaviour:
     Regeneration: 1
     MoveSpeed: 3
     AttackDelay: 1
-    AttackRange: 3
+    AttackRange: 2.1
     VisionRadius: 50
     TrainTimeNeeded: 0
     ResourcesCostToBuild: []

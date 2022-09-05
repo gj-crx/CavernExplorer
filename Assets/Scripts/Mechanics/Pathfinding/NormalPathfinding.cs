@@ -92,7 +92,7 @@ public class NormalPathfinding : IPathfinding
         {
             found = IterateToCheckList(Target);
         }
-        Debug.Log(found + " distance " + CurrentDistance + " out of " + MaxSearchDistance);
+       // Debug.Log(found + " distance " + CurrentDistance + " out of " + MaxSearchDistance);
         RestoreWay(Target, From);
         return found;
     }
