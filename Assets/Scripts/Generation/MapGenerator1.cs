@@ -32,16 +32,13 @@ namespace Generation
         public void GenerateMap()
         {
             Generated = true;
-            _map.SectorMap[0, 0] = new Sector(0, 0, GenSettings.SectorRadius, GenSettings.PointsPerSector, _map);
-            GeneratingNeigbhourSectors(_map.SectorMap[0, 0]);
-            //     Generate9NeibghourSectors(_map.SectorMap[1, 1]);
-            //     Generate9NeibghourSectors(_map.SectorMap[-1, -1]);
+            new Sector(0, 0, GenSettings.SectorRadius, GenSettings.PointsPerSector, _map);
             foreach (var Player in GameManager.PlayerRelatedCharacters)
             {
                 Player.transform.position = BasicFunctions.Vector2IntToVector3(_map.SectorMap[0, 0].RandomPoint);
             }
             
-            ContiniousGeneration();
+          //  ContiniousGeneration();
             GameSettings.Singleton.StartCoroutine(TilesPlacingCourotine(_tileMap, WallTiles[0]));
             GameSettings.Singleton.StartCoroutine(TilesRemovingCourotine(_tileMap, WallTiles[0]));
             GameSettings.Singleton.StartCoroutine(GameManager.tileFormPlacer.TilesCleaningCourotine(_map));
@@ -59,18 +56,16 @@ namespace Generation
                         Sector[] CurrentNeibSectors = Get4NeigbhourSectors(PlayerSector);
                         for (int i = 0; i < CurrentNeibSectors.Length; i++)
                         {
+                         //   Debug.Log("negovno " + CurrentNeibSectors[i].X);
                             if (CurrentNeibSectors[i] != null)
                             {
                                 GeneratingNeigbhourSectors(CurrentNeibSectors[i]);
-                                Debug.Log("negovno");
                             }
                             else
                             {
                                 var Cords = Sector.JointPointCords.NumberToCords(i);
-                                _map.SectorMap[PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y] = new Sector(PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y, GenSettings.SectorRadius,
-                                    GenSettings.PointsPerSector, _map, _tileMap, PlayerSector, i);
+                                new Sector(PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y, GenSettings.SectorRadius, GenSettings.PointsPerSector, _map, _tileMap, PlayerSector, i);
                                 GeneratingNeigbhourSectors(_map.SectorMap[PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y]);
-                                Debug.Log("govno");
                             }
                         }
                     }
@@ -87,8 +82,7 @@ namespace Generation
                 if (Neibs[i] == null)
                 {
                     var Cords = Sector.JointPointCords.NumberToCords(i);
-                    _map.SectorMap[ReferenceSector.X + Cords.x, ReferenceSector.Y + Cords.y] = 
-                        new Sector(ReferenceSector.X + Cords.x, ReferenceSector.Y + Cords.y, GenSettings.SectorRadius, GenSettings.PointsPerSector, _map, _tileMap, ReferenceSector, i);
+                    new Sector(ReferenceSector.X + Cords.x, ReferenceSector.Y + Cords.y, GenSettings.SectorRadius, GenSettings.PointsPerSector, _map, _tileMap, ReferenceSector, i);
                     GeneratedSectorsCount++;
                 }
             }
@@ -171,22 +165,26 @@ namespace Generation
             {
                 this.X = X;
                 this.Y = Y;
-                Center = new Vector2Int(X * Radius * 2, Y * Radius * 2);
+                Center = new Vector2Int(X  * (Radius * 2), Y  * (Radius * 2));
                 this.Radius = Radius;
-                SectorPoints = new Vector2Int[SectorPointsCount];
+                SectorPoints = new Vector2Int[SectorPointsCount + 4];
                 //creating joint points
                 JointPoints[0] = GetRandomJointPoint(JointPointCords.Top);
                 JointPoints[1] = GetRandomJointPoint(JointPointCords.Right);
                 JointPoints[2] = GetRandomJointPoint(JointPointCords.Bottom);
                 JointPoints[3] = GetRandomJointPoint(JointPointCords.Left);
 
+                for (int i = 0; i < 4; i++)
+                    Debug.Log(JointPoints[i]);
+
                 Generate(MapToGenerate);
+                MapToGenerate.SectorMap[X, Y] = this;
             }
             public Sector(int X, int Y, byte Radius, byte SectorPointsCount, Map MapToGenerate, Tilemap ReferenceTilemap, Sector PreviousSector, int OriginSideID)
             {
                 this.X = X;
                 this.Y = Y;
-                Center = new Vector2Int(X * Radius * 2, Y * Radius * 2);
+                Center = new Vector2Int(X * (Radius * 2), Y * (Radius * 2));
                 this.Radius = Radius;
                 SectorPoints = new Vector2Int[SectorPointsCount];
                 //creating joint points
@@ -195,11 +193,16 @@ namespace Generation
                 JointPoints[2] = GetRandomJointPoint(JointPointCords.Bottom);
                 JointPoints[3] = GetRandomJointPoint(JointPointCords.Left);
 
-                JointPoints[OriginSideID] = PreviousSector.JointPoints[OriginSideID];
+              //  JointPoints[JointPointCords.GetAlterSideNumber(OriginSideID)] = PreviousSector.JointPoints[OriginSideID];
+                if (MapToGenerate.SectorMap[X, Y + 1] != null) JointPoints[0] = MapToGenerate.SectorMap[X, Y + 1].JointPoints[2];
+                if (MapToGenerate.SectorMap[X + 1, Y] != null) JointPoints[1] = MapToGenerate.SectorMap[X + 1, Y].JointPoints[3];
+                if (MapToGenerate.SectorMap[X, Y - 1] != null) JointPoints[2] = MapToGenerate.SectorMap[X, Y - 1].JointPoints[0];
+                if (MapToGenerate.SectorMap[X - 1, Y] != null) JointPoints[3] = MapToGenerate.SectorMap[X - 1, Y].JointPoints[1];
 
                 Generate(MapToGenerate);
-              //  PreviousSector.ReCheckSectorWalls(MapToGenerate, ReferenceTilemap);
-             //   if (PreviousSector.WallsSpawned) PreviousSector.ReCheckSectorWalls(MapToGenerate, ReferenceTilemap);
+                //  PreviousSector.ReCheckSectorWalls(MapToGenerate, ReferenceTilemap);
+                //   if (PreviousSector.WallsSpawned) PreviousSector.ReCheckSectorWalls(MapToGenerate, ReferenceTilemap);
+                MapToGenerate.SectorMap[X, Y] = this;
             }
             private Vector2Int GetRandomPointInSector()
             {
@@ -207,17 +210,24 @@ namespace Generation
             }
             private Vector2Int GetRandomJointPoint(JointPointCords Side)
             {
-                if (Side.x != 0) return new Vector2Int(Radius * Side.x, UnityEngine.Random.Range(-Radius, Radius - 1)) + Center;
-                else return new Vector2Int(UnityEngine.Random.Range(-Radius, Radius - 1), Radius * Side.y) + Center;
+                if (Side.x != 0) return new Vector2Int(Radius * Side.x, UnityEngine.Random.Range(-Radius + 1, Radius)) + Center;
+                else return new Vector2Int(UnityEngine.Random.Range(-Radius + 1, Radius), Radius * Side.y) + Center;
             }
             private void ConnectPoints(Vector2Int CurrentPoint, Vector2Int TargetPoint, Map ReferenceMap, List<Vector3Int> SectorTilePositions)
             {
+                int debugiteration = 0;
                 while (CurrentPoint != TargetPoint)
                 {
+                    Debug.Log("step " + debugiteration + " started");
                     CurrentPoint += BasicFunctions.GetDirectionBetween2Points(CurrentPoint, TargetPoint);
+                    Debug.Log("got direction");
                     ReferenceMap.LandscapeMap[CurrentPoint.x, CurrentPoint.y] = new LandscapePoint(LandType.Passable);
+                    Debug.Log("new landscape pos");
                     SectorTilePositions.Remove(BasicFunctions.Vector2IntToVector3Int(CurrentPoint));
+                    Debug.Log("removed");
+                    debugiteration++;
                 }
+                Debug.Log(TargetPoint + " completed");
             }
             public class JointPointCords
             {
@@ -238,6 +248,28 @@ namespace Generation
                         case 3: return Left;
                     }
                     return Top;
+                }
+                public static JointPointCords GetAlterSide(int Number)
+                {
+                    switch (Number)
+                    {
+                        case 0: return Bottom;
+                        case 1: return Left;
+                        case 2: return Top;
+                        case 3: return Right;
+                    }
+                    return Top;
+                }
+                public static int GetAlterSideNumber(int Number)
+                {
+                    switch (Number)
+                    {
+                        case 0: return 2;
+                        case 1: return 3;
+                        case 2: return 0;
+                        case 3: return 1;
+                    }
+                    return 0;
                 }
                 public static JointPointCords Top = new JointPointCords(0, 1);
                 public static JointPointCords Right = new JointPointCords(1, 0);
@@ -261,25 +293,25 @@ namespace Generation
                     }
                 }
                 //assigning points
-                int StartingPoint = 0;
-                if (SectorPoints[0] != Vector2Int.zero) StartingPoint = 1;
-                for (int i = StartingPoint; i < SectorPoints.Length; i++)
+                //adding joint points to the all points in random order
+                for (int i = 0; i < JointPoints.Length; i++)
                 {
-                    SectorPoints[i] = GetRandomPointInSector();
+                    SectorPoints[UnityEngine.Random.Range(0, SectorPoints.Length)] = JointPoints[i];
                 }
-                //connecting this points in order
+                for (int i = 0; i < SectorPoints.Length; i++)
+                {
+                    if (SectorPoints[i] == Vector2Int.zero) SectorPoints[i] = GetRandomPointInSector();
+                    Debug.Log("Point " + i + " = " + SectorPoints[i]);
+                }
+                //connecting points in order
                 Vector2Int CurrentPoint = SectorPoints[0];
-                for (int i = 0; i < SectorPoints.Length - 4; i++)
+                Debug.Log("total points " + SectorPoints.Length);
+                for (int i = 0; i < SectorPoints.Length; i++)
                 {
                     ConnectPoints(CurrentPoint, SectorPoints[i], ReferenceMap, SectorTilePositions);
                     CurrentPoint = SectorPoints[i];
                 }
-                //also connecting joint points
-                for (int i = 0; i < JointPoints.Length; i++)
-                {
-                    ConnectPoints(CurrentPoint, JointPoints[i], ReferenceMap, SectorTilePositions);
-                    CurrentPoint = JointPoints[i];
-                }
+
                 foreach (var TilePosition in SectorTilePositions) GameManager.MapGenerator.TilesAwaitingToBetSet.Push(TilePosition);
             }
             public void ReCheckSectorWalls(Map ReferenceMap, Tilemap ReferenceTilemap)

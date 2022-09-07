@@ -4465,7 +4465,7 @@ Transform:
   - {fileID: 4781640101702446491}
   - {fileID: 101546806}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &434659373
 GameObject:
@@ -14076,7 +14076,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &618357951
 GameObject:
@@ -18369,8 +18369,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MapGeneratorSettings:
-    PointsPerSector: 3
-    SectorRadius: 10
+    PointsPerSector: 5
+    SectorRadius: 20
     StartingSectorsCount: 0
   unitsSpawningSettings:
     CreepSpawnChance: 0.5
