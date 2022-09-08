@@ -42,7 +42,8 @@ namespace Generation
             ContiniousGeneration();
             GameSettings.Singleton.StartCoroutine(TilesPlacingCourotine(_tileMap, WallTiles[0]));
             GameSettings.Singleton.StartCoroutine(TilesRemovingCourotine(_tileMap, WallTiles[0]));
-            GameSettings.Singleton.StartCoroutine(GameManager.tileFormPlacer.TilesCleaningCourotine(_map));
+            // GameSettings.Singleton.StartCoroutine(GameManager.tileFormPlacer.TilesCleaningCourotine(_map));
+            DeletingUselessTilesProcessAsync();
         }
         public async Task ContiniousGeneration(int CheckIntervalMiliseconds = 1500, int InitialAwait = 250)
         {
@@ -128,7 +129,7 @@ namespace Generation
                 if (TilesAwaitingToBeRemoved.Count > 0)
                 {
                     Vector3Int TilePosition = TilesAwaitingToBeRemoved.Pop();
-                    // Debug.Log("iteration with total to place " + TilesBeingPlaced.Count);
+                    Debug.Log("Tile removed " + TilePosition + " queued " + TilesAwaitingToBeRemoved.Count);
                     ReferenceTilemap.SetTile(TilePosition, null);
                     if (Counter > PlacedPerFrame)
                     {
@@ -138,6 +139,18 @@ namespace Generation
                     else Counter++;
                 }
                 else yield return new WaitForSeconds(1);
+            }
+        }
+        public async Task DeletingUselessTilesProcessAsync()
+        {
+            while (GameManager.GameIsRunning)
+            {
+                Debug.Log("iteration");
+                await Task.Delay(2000);
+                foreach (var Sector in NewlyGeneratedSectors)
+                {
+                    Sector.CheckForUselessTiles(_map);
+                }
             }
         }
         private int GetTilePlacingSpeed(int ToBePlacedCount, float SecondsToPlaceAll = 4, int MinimumTilesPerFrameSpeed = 5)
@@ -188,6 +201,7 @@ namespace Generation
                 //  PreviousSector.ReCheckSectorWalls(MapToGenerate, ReferenceTilemap);
                 //   if (PreviousSector.WallsSpawned) PreviousSector.ReCheckSectorWalls(MapToGenerate, ReferenceTilemap);
                 MapToGenerate.SectorMap[X, Y] = this;
+                GameManager.MapGenerator.NewlyGeneratedSectors.Push(this);
             }
             private Vector2Int GetRandomPointInSector()
             {
@@ -198,22 +212,16 @@ namespace Generation
                 if (Side.x != 0) return new Vector2Int(Radius * Side.x, UnityEngine.Random.Range(-Radius + 1, Radius)) + Center;
                 else return new Vector2Int(UnityEngine.Random.Range(-Radius + 1, Radius), Radius * Side.y) + Center;
             }
-            private void ConnectPoints(Vector2Int CurrentPoint, Vector2Int TargetPoint, Map ReferenceMap, List<Vector3Int> SectorTilePositions)
+            private Vector2Int ConnectPoints(Vector2Int CurrentPoint, Vector2Int TargetPoint, Map ReferenceMap, List<Vector3Int> SectorTilePositions)
             {
-                Debug.Log(TargetPoint + " started");
-                int debugiteration = 0;
-                while (CurrentPoint != TargetPoint)
+                do
                 {
-                    //   Debug.Log("step " + debugiteration + " started");
                     CurrentPoint += BasicFunctions.GetDirectionBetween2Points(CurrentPoint, TargetPoint);
-                    //   Debug.Log("got direction");
                     ReferenceMap.LandscapeMap[CurrentPoint.x, CurrentPoint.y] = new LandscapePoint(LandType.Passable);
-                    //   Debug.Log("new landscape pos");
                     SectorTilePositions.Remove(BasicFunctions.Vector2IntToVector3Int(CurrentPoint));
-                  //  Debug.Log("removed");
-                    debugiteration++;
                 }
-                Debug.Log(TargetPoint + " completed");
+                while (CurrentPoint != TargetPoint);
+                return CurrentPoint;
             }
             public class JointPointCords
             {
@@ -309,16 +317,11 @@ namespace Generation
                 Debug.Log("total points " + SectorPoints.Length);
                 for (int i = 1; i < SectorPoints.Length; i++)
                 {
-                    while (CurrentPoint != SectorPoints[i])
-                    {
-                        CurrentPoint += BasicFunctions.GetDirectionBetween2Points(CurrentPoint, SectorPoints[i]);
-                        ReferenceMap.LandscapeMap[CurrentPoint.x, CurrentPoint.y] = new LandscapePoint(LandType.Passable);
-                        SectorTilePositions.Remove(BasicFunctions.Vector2IntToVector3Int(CurrentPoint));
-                    }
+                    CurrentPoint = ConnectPoints(CurrentPoint, SectorPoints[i], ReferenceMap, SectorTilePositions);
                 }
                 foreach (var TilePosition in SectorTilePositions) GameManager.MapGenerator.TilesAwaitingToBetSet.Push(TilePosition);
             }
-            public void ReCheckSectorWalls(Map ReferenceMap, Tilemap ReferenceTilemap)
+            public void CheckForUselessTiles(Map ReferenceMap)
             {
                 Debug.Log(Thread.CurrentThread.Name);
                 for (int y = -Radius; y <= Radius; y++)
@@ -326,7 +329,7 @@ namespace Generation
                     for (int x = -Radius; x <= Radius; x++)
                     {
                         Vector3Int CurrentTilePosition = new Vector3Int(Center.x + x, Center.y + y, 0);
-                        if (ReferenceTilemap.GetTile(CurrentTilePosition) != null && BasicFunctions.PassableTile(Center + new Vector2Int(x, y), ReferenceMap))
+                        if (TileIsUseless(new Vector2Int(Center.x + x, Center.y + y), ReferenceMap) && GameManager.MapGenerator.TilesAwaitingToBeRemoved.Contains(CurrentTilePosition) == false)
                         {
                             // GameObject NewWall = GameObject.Instantiate(PrefabManager.Singleton.WallPrefabs[0], new Vector3(x, y) + BasicFunctions.Vector2IntToVector3(Center), Quaternion.identity);
                             GameManager.MapGenerator.TilesAwaitingToBeRemoved.Push(CurrentTilePosition);
@@ -334,7 +337,33 @@ namespace Generation
                     }
                 }
             }
+            private bool TileIsUseless(Vector2Int TilePos, Map ReferenceMap)
+            {
+                if (GetNeigbhourPassableTilesCount(TilePos, ReferenceMap) < 3) return true;
+                else return false;
+            }
+            private int GetNeigbhourPassableTilesCount(Vector2Int TilePos, Map ReferenceMap)
+            {
+                int count = 0;
+                for (int y = -1; y <= 1; y++)
+                {
+                    for (int x = -1; x <= 1; x++)
+                    {
+                        if (ReferenceMap.LandscapeMap[TilePos.x + x, TilePos.y + y].Land == LandType.Passable)
+                        {
+                            count++;
+                        }
+                    }
+                }
+                return count;
+            }
+
         }
+
+
+
+
+
         public class SectorMapHolder
         {
             Dictionary<Tuple<int, int>, Sector> SectorMapDictionary = new Dictionary<Tuple<int, int>, Sector>();
