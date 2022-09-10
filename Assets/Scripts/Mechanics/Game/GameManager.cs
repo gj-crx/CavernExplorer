@@ -15,6 +15,7 @@ public static class GameManager
 
 
     public static List<Unit> PlayerRelatedCharacters = new List<Unit>();
+    public static List<Vector3> PlayerCharactersPositions = new List<Vector3>();
 
 
 
