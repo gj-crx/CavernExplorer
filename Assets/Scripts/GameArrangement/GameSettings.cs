@@ -16,6 +16,7 @@ public class GameSettings : MonoBehaviour
     public short PathfindingMaxSearchDistance = 250;
 
     public string TileNameToRemove;
+    public float FPS = 0;
 
     [HideInInspector]
     public static GameSettings Singleton;
@@ -32,7 +33,8 @@ public class GameSettings : MonoBehaviour
     }
     private void Update()
     {
-
+        GameManager.SetPlayersPositions();
+        FPS = 1.0f / Time.deltaTime;
     }
     public void DebugActionExecute()
     {
