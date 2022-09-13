@@ -12,15 +12,23 @@ public static class GameManager
     public static UnitSpawner unitSpawner;
     public static TileFormPlacer tileFormPlacer;
     public static IPathfinding Pathfinding;
+    public static System.Random _random;
 
 
     public static List<Unit> PlayerRelatedCharacters = new List<Unit>();
+    public static List<Vector3> PlayerCharactersPositions = new List<Vector3>();
 
 
 
     public static bool DebugMode = true;
 
-
+    public static void SetPlayersPositions()
+    {
+        foreach (var PlayerUnit in PlayerRelatedCharacters)
+        {
+            PlayerCharactersPositions[PlayerRelatedCharacters.IndexOf(PlayerUnit)] = PlayerUnit.transform.position;
+        }
+    }
     public static void InitializeGame()
     {
         map = new Map();
@@ -28,7 +36,13 @@ public static class GameManager
         unitSpawner = new UnitSpawner();
         tileFormPlacer = new TileFormPlacer(GameSettings.Singleton.PatternTileMap, GameSettings.Singleton.tileMap, MapGenerator);
         Pathfinding = new NormalPathfinding(map);
+        _random = new System.Random();
 
-        PlayerRelatedCharacters.Add(GameObject.Find("Character").GetComponent<Unit>());
+        AddPlayerCharacter(GameObject.Find("Character").GetComponent<Unit>());
+    }
+    public static void AddPlayerCharacter(Unit Character)
+    {
+        PlayerRelatedCharacters.Add(Character);
+        PlayerCharactersPositions.Add(Character.transform.position);
     }
 }

@@ -38,12 +38,14 @@ namespace Generation
             {
                 Player.transform.position = BasicFunctions.Vector2IntToVector3(_map.SectorMap[0, 0].RandomPoint);
             }
-            
-            ContiniousGeneration();
+            Thread nt = new Thread(sosi);
+            nt.Start();
+          //  ContiniousGeneration();
             GameSettings.Singleton.StartCoroutine(TilesPlacingCourotine(_tileMap, WallTiles[0]));
-            GameSettings.Singleton.StartCoroutine(TilesRemovingCourotine(_tileMap, WallTiles[0]));
             // GameSettings.Singleton.StartCoroutine(GameManager.tileFormPlacer.TilesCleaningCourotine(_map));
-            DeletingUselessTilesProcessAsync();
+            Thread nt2 = new Thread(sosi2);
+            nt2.Start();
+          //  DeletingUselessTilesProcessAsync();
         }
         public async Task ContiniousGeneration(int CheckIntervalMiliseconds = 1500, int InitialAwait = 250)
         {
@@ -75,6 +77,35 @@ namespace Generation
                 await Task.Delay(CheckIntervalMiliseconds);
             }
         }
+        void sosi()
+        {
+            while (GameManager.GameIsRunning)
+            {
+                foreach (var Player in GameManager.PlayerRelatedCharacters)
+                {
+                    Sector PlayerSector = GetUnitSector(Player);
+                    if (PlayerSector != null)
+                    {
+                        Sector[] CurrentNeibSectors = Get4NeigbhourSectors(PlayerSector);
+                        for (int i = 0; i < CurrentNeibSectors.Length; i++)
+                        {
+                            //   Debug.Log("negovno " + CurrentNeibSectors[i].X);
+                            if (CurrentNeibSectors[i] != null)
+                            {
+                                GeneratingNeigbhourSectors(CurrentNeibSectors[i]);
+                            }
+                            else
+                            {
+                                var Cords = Sector.JointPointCords.NumberToCords(i);
+                                new Sector(PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y, GenSettings.SectorRadius, GenSettings.PointsPerSector, _map);
+                                GeneratingNeigbhourSectors(_map.SectorMap[PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y]);
+                            }
+                        }
+                    }
+                }
+                Thread.Sleep(3000);
+            }
+        }
         private byte GeneratingNeigbhourSectors(Sector ReferenceSector)
         {
             byte GeneratedSectorsCount = 0;
@@ -98,6 +129,8 @@ namespace Generation
             public byte SectorRadius;
 
             public byte StartingSectorsCount;
+
+            public int TileLayingSpeed;
         }
         public IEnumerator TilesPlacingCourotine(Tilemap ReferenceTilemap, RuleTile WallTile)
         {
@@ -117,46 +150,67 @@ namespace Generation
                     }
                     else Counter++;
                 }
-                else yield return new WaitForSeconds(1);
+                else
+                {
+                    GameSettings.Singleton.StartCoroutine(TilesRemovingCourotine(ReferenceTilemap));
+                    yield return null;
+                }
             }
         }
-        public IEnumerator TilesRemovingCourotine(Tilemap ReferenceTilemap, RuleTile WallTile)
+        public IEnumerator TilesRemovingCourotine(Tilemap ReferenceTilemap)
         {
-            int PlacedPerFrame = GetTilePlacingSpeed(TilesAwaitingToBeRemoved.Count);
+            int PlacedPerFrame = 3;
             int Counter = 0;
+            while (TilesAwaitingToBeRemoved.Count > 0)
+            {
+                Vector3Int TilePosition = TilesAwaitingToBeRemoved.Pop();
+                Debug.Log("Tile removed " + TilePosition + " queued " + TilesAwaitingToBeRemoved.Count);
+                ReferenceTilemap.SetTile(TilePosition, null);
+                if (Counter > PlacedPerFrame)
+                {
+                    Counter = 0;
+                    yield return null;
+                }
+                else Counter++;
+            }
+            yield return null;
+        }
+        void sosi2()
+        {
+            Thread.Sleep(4000);
             while (GameManager.GameIsRunning)
             {
-                if (TilesAwaitingToBeRemoved.Count > 0)
+                Debug.LogWarning("Iteration");
+                Thread.Sleep(2500);
+                //creating the copy of newly generated sectors stack to prevent collection modified exception
+                Stack<Sector> CopyOfNewlyGeneratedSectors = new Stack<Sector>();
+                foreach (var Sector in NewlyGeneratedSectors) CopyOfNewlyGeneratedSectors.Push(Sector);
+                //checking sectors safely now
+                foreach (var Sector in CopyOfNewlyGeneratedSectors)
                 {
-                    Vector3Int TilePosition = TilesAwaitingToBeRemoved.Pop();
-                    Debug.Log("Tile removed " + TilePosition + " queued " + TilesAwaitingToBeRemoved.Count);
-                    ReferenceTilemap.SetTile(TilePosition, null);
-                    if (Counter > PlacedPerFrame)
-                    {
-                        Counter = 0;
-                        yield return null;
-                    }
-                    else Counter++;
+                    Sector.CheckForUselessTiles(_map);
+                    Thread.Sleep(400);
                 }
-                else yield return new WaitForSeconds(1);
             }
         }
         public async Task DeletingUselessTilesProcessAsync()
         {
+            await Task.Delay(4500);
             while (GameManager.GameIsRunning)
             {
-                Debug.Log("iteration");
-                await Task.Delay(2000);
+                Debug.LogWarning("Iteration");
+                await Task.Delay(2500);
                 foreach (var Sector in NewlyGeneratedSectors)
                 {
                     Sector.CheckForUselessTiles(_map);
+                    await Task.Delay(400);
                 }
             }
         }
         private int GetTilePlacingSpeed(int ToBePlacedCount, float SecondsToPlaceAll = 4, int MinimumTilesPerFrameSpeed = 5)
         {
             // return Mathf.Max((int)(ToBePlacedCount / SecondsToPlaceAll / 60), MinimumTilesPerFrameSpeed);
-            return 25;
+            return GameSettings.Singleton.MapGeneratorSettings.TileLayingSpeed;
         }
         public class Sector
         {
@@ -171,7 +225,7 @@ namespace Generation
             public bool WallsSpawned { get { return _wallsSpawned; } }
             public byte RadiusValue { get { return Radius; } }
 
-            public Vector2Int RandomPoint { get { return SectorPoints[UnityEngine.Random.Range(0, SectorPoints.Length)]; } }
+            public Vector2Int RandomPoint { get { return SectorPoints[GameManager._random.Next(0, SectorPoints.Length)]; } }
 
             public Sector(int X, int Y, byte Radius, byte SectorPointsCount, Map MapToGenerate)
             {
@@ -191,12 +245,6 @@ namespace Generation
                 if (MapToGenerate.SectorMap[X + 1, Y] != null) JointPoints[1] = MapToGenerate.SectorMap[X + 1, Y].JointPoints[3];
                 if (MapToGenerate.SectorMap[X, Y - 1] != null) JointPoints[2] = MapToGenerate.SectorMap[X, Y - 1].JointPoints[0];
                 if (MapToGenerate.SectorMap[X - 1, Y] != null) JointPoints[3] = MapToGenerate.SectorMap[X - 1, Y].JointPoints[1];
-
-                for (int i = 0; i < JointPoints.Length; i++)
-                {
-                    Debug.Log(JointPoints[i] + " " + i);
-                }
-
                 Generate(MapToGenerate);
                 //  PreviousSector.ReCheckSectorWalls(MapToGenerate, ReferenceTilemap);
                 //   if (PreviousSector.WallsSpawned) PreviousSector.ReCheckSectorWalls(MapToGenerate, ReferenceTilemap);
@@ -205,12 +253,12 @@ namespace Generation
             }
             private Vector2Int GetRandomPointInSector()
             {
-                return new Vector2Int(UnityEngine.Random.Range(-Radius, Radius), UnityEngine.Random.Range(-Radius, Radius)) + Center;
+                return new Vector2Int(GameManager._random.Next(-Radius, Radius), GameManager._random.Next(-Radius, Radius)) + Center;
             }
             private Vector2Int GetRandomJointPoint(JointPointCords Side)
             {
-                if (Side.x != 0) return new Vector2Int(Radius * Side.x, UnityEngine.Random.Range(-Radius + 1, Radius)) + Center;
-                else return new Vector2Int(UnityEngine.Random.Range(-Radius + 1, Radius), Radius * Side.y) + Center;
+                if (Side.x != 0) return new Vector2Int(Radius * Side.x, GameManager._random.Next(-Radius + 1, Radius)) + Center;
+                else return new Vector2Int(GameManager._random.Next(-Radius + 1, Radius), Radius * Side.y) + Center;
             }
             private Vector2Int ConnectPoints(Vector2Int CurrentPoint, Vector2Int TargetPoint, Map ReferenceMap, List<Vector3Int> SectorTilePositions)
             {
@@ -293,7 +341,7 @@ namespace Generation
                     bool Found = false;
                     while (Found == false)
                     {
-                        int rnd = UnityEngine.Random.Range(0, SectorPoints.Length);
+                        int rnd = GameManager._random.Next(0, SectorPoints.Length);
                         if (SectorPoints[rnd] == Vector2Int.zero)
                         {
                             SectorPoints[rnd] = JointPoints[i];
@@ -307,14 +355,13 @@ namespace Generation
                     if (SectorPoints[i] == Vector2Int.zero)
                     {
                         SectorPoints[i] = GetRandomPointInSector();
-                        Debug.Log("Randomed Point " + i + " = " + SectorPoints[i]);
+                   //     Debug.Log("Randomed Point " + i + " = " + SectorPoints[i]);
                     }
-                    else Debug.Log("Point is a joint " + i + " = " + SectorPoints[i]);
+               //     else Debug.Log("Point is a joint " + i + " = " + SectorPoints[i]);
 
                 }
                 //connecting points in order
                 Vector2Int CurrentPoint = SectorPoints[0];
-                Debug.Log("total points " + SectorPoints.Length);
                 for (int i = 1; i < SectorPoints.Length; i++)
                 {
                     CurrentPoint = ConnectPoints(CurrentPoint, SectorPoints[i], ReferenceMap, SectorTilePositions);
@@ -323,7 +370,7 @@ namespace Generation
             }
             public void CheckForUselessTiles(Map ReferenceMap)
             {
-                Debug.Log(Thread.CurrentThread.Name);
+                Debug.Log("Sector " + X + " " + Y + " is checked");
                 for (int y = -Radius; y <= Radius; y++)
                 {
                     for (int x = -Radius; x <= Radius; x++)
@@ -331,15 +378,17 @@ namespace Generation
                         Vector3Int CurrentTilePosition = new Vector3Int(Center.x + x, Center.y + y, 0);
                         if (TileIsUseless(new Vector2Int(Center.x + x, Center.y + y), ReferenceMap) && GameManager.MapGenerator.TilesAwaitingToBeRemoved.Contains(CurrentTilePosition) == false)
                         {
-                            // GameObject NewWall = GameObject.Instantiate(PrefabManager.Singleton.WallPrefabs[0], new Vector3(x, y) + BasicFunctions.Vector2IntToVector3(Center), Quaternion.identity);
+                            Debug.Log("Tile " + CurrentTilePosition + " is added to removal queue");
                             GameManager.MapGenerator.TilesAwaitingToBeRemoved.Push(CurrentTilePosition);
+                            ReferenceMap.LandscapeMap[CurrentTilePosition.x, CurrentTilePosition.y].Land = LandType.Passable;
                         }
                     }
                 }
             }
             private bool TileIsUseless(Vector2Int TilePos, Map ReferenceMap)
             {
-                if (GetNeigbhourPassableTilesCount(TilePos, ReferenceMap) < 3) return true;
+                if ((ReferenceMap.LandscapeMap[TilePos.x, TilePos.y] != null && ReferenceMap.LandscapeMap[TilePos.x, TilePos.y].Land == LandType.Impassable) 
+                    && GetNeigbhourPassableTilesCount(TilePos, ReferenceMap) < 3) return true;
                 else return false;
             }
             private int GetNeigbhourPassableTilesCount(Vector2Int TilePos, Map ReferenceMap)
@@ -349,7 +398,8 @@ namespace Generation
                 {
                     for (int x = -1; x <= 1; x++)
                     {
-                        if (ReferenceMap.LandscapeMap[TilePos.x + x, TilePos.y + y].Land == LandType.Passable)
+                        if ((ReferenceMap.LandscapeMap[TilePos.x + x, TilePos.y + y] != null && ReferenceMap.LandscapeMap[TilePos.x + x, TilePos.y + y].Land == LandType.Impassable) 
+                            && (x != 0 || y != 0))
                         {
                             count++;
                         }
@@ -414,8 +464,9 @@ namespace Generation
         private Sector GetUnitSector(Unit MentionedUnit)
         {
             int SectorRadius = _map.SectorMap[0, 0].RadiusValue;
-            int SectorX = (int)(MentionedUnit.transform.position.x / (SectorRadius * 2));
-            int SectorY = (int)(MentionedUnit.transform.position.y / (SectorRadius * 2));
+            Vector3 UnitPos = BasicFunctions.GetPlayerTransformPositionFromMainthread(MentionedUnit);
+            int SectorX = (int)(UnitPos.x / (SectorRadius * 2));
+            int SectorY = (int)(UnitPos.y / (SectorRadius * 2));
             return _map.SectorMap[SectorX, SectorY];
         }
     }

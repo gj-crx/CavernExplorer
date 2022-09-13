@@ -20,7 +20,7 @@ public static class BasicFunctions
     public static Vector2Int GetDirectionBetween2Points(Vector2Int From, Vector2Int To)
     {
         Vector2Int Delta = To - From;
-        bool XAxisPriority = Convert.ToBoolean(UnityEngine.Random.Range(0, 2));
+        bool XAxisPriority = Convert.ToBoolean(GameManager._random.Next(0, 2));
         //if x == 0 or y == 0 then return immidiatly, direction is clear
         if (Delta.x == 0 || Delta.y == 0)
         {
@@ -108,5 +108,9 @@ public static class BasicFunctions
     public static bool PassableTile(Vector2Int TilePosition, Map ReferenceMap)
     {
         return ReferenceMap.LandscapeMap[TilePosition.x, TilePosition.y].Land == LandType.Passable || ReferenceMap.LandscapeMap[TilePosition.x, TilePosition.y].Land == LandType.WaterLow;
+    }
+    public static Vector3 GetPlayerTransformPositionFromMainthread(Unit MentionedUnit)
+    {
+        return GameManager.PlayerCharactersPositions[GameManager.PlayerRelatedCharacters.IndexOf(MentionedUnit)];
     }
 }
