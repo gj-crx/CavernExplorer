@@ -113,4 +113,9 @@ public static class BasicFunctions
     {
         return GameManager.PlayerCharactersPositions[GameManager.PlayerRelatedCharacters.IndexOf(MentionedUnit)];
     }
+
+    public static Vector2 AngleToVector2(float degree)
+    {
+        return new Vector2(Mathf.Cos(degree * Mathf.Deg2Rad), Mathf.Sin(degree * Mathf.Deg2Rad));
+    }
 }
