@@ -4766,14 +4766,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 422302187}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2, y: -2, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2083156232}
   - {fileID: 4781640101702446491}
   - {fileID: 101546806}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &422302195
 MeshFilter:
@@ -14429,7 +14429,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2, y: -2, z: -10}
+  m_LocalPosition: {x: -2, y: -2, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -14549,13 +14549,30 @@ GameObject:
   - component: {fileID: 818531139}
   - component: {fileID: 818531137}
   - component: {fileID: 818531140}
+  - component: {fileID: 818531136}
+  - component: {fileID: 818531141}
   m_Layer: 0
-  m_Name: TestSquare
+  m_Name: 
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &818531136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818531135}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f63d117ccc6fa3c44928ae91f95587b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!23 &818531137
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -14604,12 +14621,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 818531135}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -33.9203, y: 18.7183, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.6100094, y: 1.9342741, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &818531139
 MeshFilter:
@@ -14631,14 +14648,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a348ff6872c288e4288c47cd24d97850, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TestObjectToSpawn: {fileID: 70115538}
   meshFilter: {fileID: 818531139}
-  Mask:
+  ObstacleObjectsLayerMask:
     serializedVersion: 2
-    m_Bits: 0
-  RaysCount: 3
+    m_Bits: 8
+  RaysCount: 128
   AngleOfSight: 360
-  DistanceOfSight: 20
+  DistanceOfSight: 15
+--- !u!114 &818531141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818531135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42ddaf03852a9954db37b9efa08f1934, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &866486369
 GameObject:
   m_ObjectHideFlags: 0
