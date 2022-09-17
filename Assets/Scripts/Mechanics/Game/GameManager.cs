@@ -17,6 +17,7 @@ public static class GameManager
 
     public static List<Unit> PlayerRelatedCharacters = new List<Unit>();
     public static List<Vector3> PlayerCharactersPositions = new List<Vector3>();
+    public static Unit LocalPlayerHeroUnit;
 
 
 
@@ -44,5 +45,6 @@ public static class GameManager
     {
         PlayerRelatedCharacters.Add(Character);
         PlayerCharactersPositions.Add(Character.transform.position);
+        LocalPlayerHeroUnit = Character;
     }
 }

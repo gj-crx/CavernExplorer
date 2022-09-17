@@ -118,4 +118,5 @@ public static class BasicFunctions
     {
         return new Vector2(Mathf.Cos(degree * Mathf.Deg2Rad), Mathf.Sin(degree * Mathf.Deg2Rad));
     }
+
 }
