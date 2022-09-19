@@ -44,8 +44,8 @@ namespace Vision {
                 int[] Triangles = new int[(Verticles.Length - 2) * 3];
                 int TriangleIndex = 0;
                 int VertexIndex = 1;
-                Verticles[0] = transform.InverseTransformPoint(transform.position);
 
+                Verticles[0] = transform.InverseTransformPoint(transform.position);
 
                 for (int i = 0; i < RaysCount; i++)
                 {
@@ -124,6 +124,44 @@ namespace Vision {
 
             meshFilter.mesh = Mesh;
 
+        }
+        private Vector3 GetCurrentCameraCorner(float SourceAngle, float CameraSize = 30)
+        {
+            if (SourceAngle >= 270)
+            {
+                return transform.position + (new Vector3(1, -1) * CameraSize);
+            }
+            else if (SourceAngle >= 180)
+            {
+                return transform.position + (new Vector3(-1, -1) * CameraSize);
+            }
+            else if (SourceAngle >= 90)
+            {
+                return transform.position + (new Vector3(-1, 1) * CameraSize);
+            }
+            else
+            {
+                return transform.position + (new Vector3(1, 1) * CameraSize);
+            }
+        }
+        private int GetCurrentCameraCornerIndex(float SourceAngle)
+        {
+            if (SourceAngle >= 270)
+            {
+                return 3;
+            }
+            else if (SourceAngle >= 180)
+            {
+                return 2;
+            }
+            else if (SourceAngle >= 90)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }
