@@ -110,7 +110,7 @@ namespace Generation {
             bool[] NeibghourTiles = new bool[8];
             for (int i = 0; i < NeibghourTiles.Length; i++)
             {
-                NeibghourTiles[i] = ReferenceTileMap.GetTile(TilePosition + BasicFunctions.Vector2IntToVector3Int(BasicFunctions.NumberToOffsetPosition(i))) != null;
+                NeibghourTiles[i] = ReferenceTileMap.GetTile(TilePosition + BasicFunctions.ToVector3Int(BasicFunctions.NumberToOffsetPosition(i))) != null;
             }
             return NeibghourTiles;
         }
@@ -140,7 +140,7 @@ namespace Generation {
             _tile = ReferenceTileMap.GetTile(TilePosition);
             for (int i = 0; i < OtherTilesPositions.Length; i++)
             {
-                OtherTilesPositions[i] = ReferenceTileMap.GetTile(TilePosition + BasicFunctions.Vector2IntToVector3Int(BasicFunctions.NumberToOffsetPosition(i))) != null;
+                OtherTilesPositions[i] = ReferenceTileMap.GetTile(TilePosition + BasicFunctions.ToVector3Int(BasicFunctions.NumberToOffsetPosition(i))) != null;
             }
         }
 

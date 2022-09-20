@@ -36,7 +36,7 @@ namespace Generation
          //   new Sector(-1, 0, GenSettings.SectorRadius, GenSettings.PointsPerSector, _map);
             foreach (var Player in GameManager.PlayerRelatedCharacters)
             {
-                Player.transform.position = BasicFunctions.Vector2IntToVector3(_map.SectorMap[0, 0].RandomPoint);
+                Player.transform.position = BasicFunctions.ToVector3(_map.SectorMap[0, 0].RandomPoint);
             }
             Thread nt = new Thread(sosi);
             nt.Start();
@@ -212,6 +212,7 @@ namespace Generation
             // return Mathf.Max((int)(ToBePlacedCount / SecondsToPlaceAll / 60), MinimumTilesPerFrameSpeed);
             return GameSettings.Singleton.MapGeneratorSettings.TileLayingSpeed;
         }
+        
         public class Sector
         {
             public int X = 0;
@@ -262,14 +263,31 @@ namespace Generation
             }
             private Vector2Int ConnectPoints(Vector2Int CurrentPoint, Vector2Int TargetPoint, Map ReferenceMap, List<Vector3Int> SectorTilePositions)
             {
+                Vector3Int _currentPoint = BasicFunctions.ToVector3Int(CurrentPoint);
+                if (SectorTilePositions.Contains(_currentPoint))
+                {
+                    ReferenceMap.LandscapeMap[CurrentPoint.x, CurrentPoint.y] = new LandscapePoint(LandType.Passable);
+                    SectorTilePositions.Remove(_currentPoint);
+                }
                 do
                 {
                     CurrentPoint += BasicFunctions.GetDirectionBetween2Points(CurrentPoint, TargetPoint);
                     ReferenceMap.LandscapeMap[CurrentPoint.x, CurrentPoint.y] = new LandscapePoint(LandType.Passable);
-                    SectorTilePositions.Remove(BasicFunctions.Vector2IntToVector3Int(CurrentPoint));
+                    SectorTilePositions.Remove(BasicFunctions.ToVector3Int(CurrentPoint));
                 }
                 while (CurrentPoint != TargetPoint);
                 return CurrentPoint;
+            }
+            private void CreateRoom(Vector2Int CenterOfRoom, int RoomRadius, Map ReferenceMap, List<Vector3Int> SectorTilePositions)
+            {
+                for (int y = -RoomRadius; y <= RoomRadius; y++)
+                {
+                    for (int x = -RoomRadius; x <= RoomRadius; x++)
+                    {
+                        ReferenceMap.LandscapeMap[CenterOfRoom.x + x, CenterOfRoom.y + y] = new LandscapePoint(LandType.Passable);
+                        SectorTilePositions.Remove(new Vector3Int(CenterOfRoom.x + x, CenterOfRoom.y + y, 0));
+                    }
+                }
             }
             public class JointPointCords
             {
@@ -364,6 +382,7 @@ namespace Generation
                 Vector2Int CurrentPoint = SectorPoints[0];
                 for (int i = 1; i < SectorPoints.Length; i++)
                 {
+                    CreateRoom(SectorPoints[i], 2, ReferenceMap, SectorTilePositions); //clearing a bit of space at each point
                     CurrentPoint = ConnectPoints(CurrentPoint, SectorPoints[i], ReferenceMap, SectorTilePositions);
                 }
                 foreach (var TilePosition in SectorTilePositions) GameManager.MapGenerator.TilesAwaitingToBetSet.Push(TilePosition);

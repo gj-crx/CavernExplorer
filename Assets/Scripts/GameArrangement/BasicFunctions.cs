@@ -5,17 +5,25 @@ using UnityEngine;
 
 public static class BasicFunctions
 {
-    public static Vector3 Vector2IntToVector3(Vector2Int Vector)
+    public static Vector3 ToVector3(Vector2Int Vector)
     {
         return new Vector3(Vector.x, Vector.y);
     }
-    public static Vector3Int Vector2IntToVector3Int(Vector2Int Vector)
+    public static Vector3Int ToVector3Int(Vector2Int Vector)
     {
         return new Vector3Int(Vector.x, Vector.y, 0);
     }
-    public static Vector2Int Vector3ToVector2Int(Vector3 v)
+    public static Vector3Int ToVector3Int(Vector3 Vector)
+    {
+        return new Vector3Int((int)Vector.x, (int)Vector.y, (int)Vector.z);
+    }
+    public static Vector2Int ToVector2Int(Vector3 v)
     {
         return new Vector2Int((int)v.x, (int)v.y);
+    }
+    public static Vector2Int ToVector2Int(Vector3Int v)
+    {
+        return new Vector2Int(v.x, v.y);
     }
     public static Vector2Int GetDirectionBetween2Points(Vector2Int From, Vector2Int To)
     {
@@ -100,7 +108,7 @@ public static class BasicFunctions
         Vector3[] NewArray = new Vector3[SourceArray.Length];
         for (int i = 0; i < SourceArray.Length; i++)
         {
-            NewArray[i] = Vector2IntToVector3(SourceArray[i]);
+            NewArray[i] = ToVector3(SourceArray[i]);
             NewArray[i] += new Vector3(AddictiveValue, AddictiveValue);
         }
         return NewArray;

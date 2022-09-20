@@ -18,7 +18,7 @@ namespace Generation
         {
             while (Random.Range(0.0f, 1.0f) < GameSettings.Singleton.unitsSpawningSettings.CreepSpawnChance)
             {
-                SpawnUnit(BasicFunctions.Vector2IntToVector3(ReferenceSector.RandomPoint), PrefabManager.Singleton.CreepPrefabs[0]);
+                SpawnUnit(BasicFunctions.ToVector3(ReferenceSector.RandomPoint), PrefabManager.Singleton.CreepPrefabs[0]);
             }
         }
     }
