@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 
+
 public class Unit : MonoBehaviour
 {
     public int ID = -1;
@@ -174,5 +175,19 @@ public class Unit : MonoBehaviour
         public float[] ResourcesGivenOnKilled;
 
         public byte CollisionRadius;
+
+        public void CombineStats(UnitStats AdditionalStats)
+        {
+            MaxHP += AdditionalStats.MaxHP;
+            CurrentHP += AdditionalStats.CurrentHP;
+            Damage += AdditionalStats.Damage;
+            Regeneration += AdditionalStats.Regeneration;
+            MoveSpeed += AdditionalStats.MoveSpeed;
+            AttackDelay += AdditionalStats.AttackDelay;
+            AttackRange += AdditionalStats.AttackRange;
+            VisionRadius += AdditionalStats.VisionRadius;
+            TrainTimeNeeded += AdditionalStats.TrainTimeNeeded;
+            ResourcesCarriedMaximum += AdditionalStats.ResourcesCarriedMaximum;
+        }
     }
 }
