@@ -8,7 +8,20 @@ namespace UI
 {
     public class UIDraggable : MonoBehaviour, IDragHandler, IEndDragHandler
     {
-        public List<GameObject> PossibleDropSpots = new List<GameObject>();
+        public DraggableObjectType DraggableType;
+
+        private List<GameObject> PossibleDropSpots = new List<GameObject>();
+
+        
+        void Start()
+        {
+            if (DraggableType == DraggableObjectType.ItemInInventory)
+            {
+                PossibleDropSpots.Add(UIManager.Singleton.PlayerInventory.UIGrid);
+                PossibleDropSpots.Add(UIManager.Singleton.ExternalInventory.UIGrid);
+            }
+        }
+
         public void OnDrag(PointerEventData eventData)
         {
             if (UIManager.Singleton.MobileControls == false)
@@ -47,6 +60,9 @@ namespace UI
         }
 
 
-
+        public enum DraggableObjectType : byte
+        {
+            ItemInInventory = 0
+        }
     }
 }

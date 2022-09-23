@@ -12,12 +12,16 @@ namespace UI
         [HideInInspector]
         public static UIManager Singleton;
 
+
+
+        [Header("Main enteties")]
         public Inventory PlayerInventory;
         public Inventory ExternalInventory = null;
 
 
         private void Awake()
         {
+            Singleton = this;
             if (SystemInfo.deviceType == DeviceType.Handheld)
             {
                 MobileControls = true;
@@ -27,6 +31,7 @@ namespace UI
                 MobileControls = false;
             }
         }
+
 
 
 
