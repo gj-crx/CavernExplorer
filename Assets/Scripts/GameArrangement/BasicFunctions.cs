@@ -126,5 +126,19 @@ public static class BasicFunctions
     {
         return new Vector2(Mathf.Cos(degree * Mathf.Deg2Rad), Mathf.Sin(degree * Mathf.Deg2Rad));
     }
+    public static float DirectionToAngle(Vector3 Direction)
+    {
+        if (Direction.x > 0)
+        {
+            return -90;
+        }
+        else if (Direction.x < 0)
+        {
+            return 90;
+        }
+        if (Direction.y > 0) return 0;
+        if (Direction.y < 0) return 180;
+        return 0;
+    }
 
 }

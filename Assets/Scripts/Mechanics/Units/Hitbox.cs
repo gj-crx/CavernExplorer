@@ -6,25 +6,39 @@ namespace Player
 {
     public class Hitbox : MonoBehaviour
     {
-        private PlayerControls _controls;
+        private PlayerControls controls;
+
+        public bool IsBullet = false;
+        public List<string> TargetsTagsToDamage = new List<string>();
+
         public Vector3 UpperPosition;
         public Vector3 DownPosition;
         public Vector3 SidePosition;
 
         private void Start()
         {
-            _controls = PlayerControls.Singleton;
+            controls = PlayerControls.Singleton;
 
         }
         private void OnTriggerStay2D(Collider2D  collision)
         {
-            if (collision.gameObject.tag != "Creep") return;
-            var _target = collision.gameObject.GetComponent<Unit>();
-            if (_controls.AlreadyHittedTargets.Contains(_target) == false)
+            if (TargetsTagsToDamage.Contains(collision.gameObject.tag) == false) return;
+            if (IsBullet == false) MeleeHit(collision);
+            else BulletHit(collision);
+        }
+        private void MeleeHit(Collider2D collision)
+        {
+            var target = collision.gameObject.GetComponent<Unit>();
+            if (controls.AlreadyHittedTargets.Contains(target) == false)
             {
-                _target.GetDamage(_controls.PlayerCharacterUnit.Stats.Damage, _controls.PlayerCharacterUnit);
-                _controls.AlreadyHittedTargets.Add(_target);
+                target.GetDamage(controls.PlayerCharacterUnit.Stats.Damage, controls.PlayerCharacterUnit);
+                controls.AlreadyHittedTargets.Add(target);
             }
+        }
+        private void BulletHit(Collider2D collision)
+        {
+            collision.gameObject.GetComponent<Unit>().GetDamage(controls.PlayerCharacterUnit.Stats.Damage, controls.PlayerCharacterUnit);
+            Destroy(gameObject);
         }
     }
 }

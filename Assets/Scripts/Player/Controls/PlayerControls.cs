@@ -29,6 +29,10 @@ namespace Player
         [SerializeReference]
         private GameObject[] AnimationAvatars;
         private GameObject CurrentAvatar = null;
+        [SerializeField]
+        private GameObject Prefab_Bullet;
+        [SerializeField]
+        private Vector3 ShootingBulletsOffset = new Vector3(0, 0.4f, 0);
 
         private void Awake()
         {
@@ -83,9 +87,17 @@ namespace Player
         {
             if (Input.GetButtonDown("Fire1") && AttackAnimatinoBeingPlayed == false)
             {
-                _Animator.SetBool("Attack", true);
-                ChangeAvatar(CurrentSelectedWeapon);
-                Hit();
+                if (GameManager.LocalPlayerHeroUnit.Stats.attackType == Unit.AttackType.Melee)
+                {
+                    _Animator.SetBool("Attack", true);
+                    ChangeAvatar(CurrentSelectedWeapon);
+                    Hit();
+                }
+                else if (GameManager.LocalPlayerHeroUnit.Stats.attackType == Unit.AttackType.Ranged)
+                {
+                    GameObject.Instantiate(Prefab_Bullet, transform.position + ShootingBulletsOffset + (LastDirection.normalized * 1f),
+                        Quaternion.identity).transform.eulerAngles = new Vector3(0, 0, BasicFunctions.DirectionToAngle(LastDirection));
+                }
             }
         }
         public void ChangeAvatar(AnimationAvatarType NewAvatar)
@@ -106,6 +118,8 @@ namespace Player
             AttackAnimatinoBeingPlayed = false;
             _hitBox.gameObject.SetActive(false);
         }
+
+
         public enum AnimationAvatarType : int
         {
             NoWeapon = 0,

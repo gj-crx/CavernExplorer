@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6315399453908203501}
   - component: {fileID: 5087704632033164438}
   - component: {fileID: 4887983367710136049}
+  - component: {fileID: 7390892763473831993}
   m_Layer: 0
   m_Name: Bullet1
   m_TagString: Untagged
@@ -95,7 +96,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0.011237422, y: -0.011237599}
@@ -136,3 +137,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 10
   rigidbody: {fileID: 5087704632033164438}
+--- !u!114 &7390892763473831993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2356535765661442275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44851032816ab5f4c9a8039ede0e9278, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsBullet: 1
+  TargetsTagsToDamage:
+  - Creep
+  UpperPosition: {x: 0, y: 0, z: 0}
+  DownPosition: {x: 0, y: 0, z: 0}
+  SidePosition: {x: 0, y: 0, z: 0}

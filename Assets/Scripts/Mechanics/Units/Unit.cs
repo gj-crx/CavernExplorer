@@ -161,6 +161,8 @@ public class Unit : MonoBehaviour
     [System.Serializable]
     public struct UnitStats
     {
+        public AttackType attackType;
+
         public float MaxHP;
         public float CurrentHP;
         public float Damage;
@@ -178,6 +180,8 @@ public class Unit : MonoBehaviour
 
         public void CombineStats(UnitStats AdditionalStats)
         {
+            attackType = AdditionalStats.attackType;
+
             MaxHP += AdditionalStats.MaxHP;
             CurrentHP += AdditionalStats.CurrentHP;
             Damage += AdditionalStats.Damage;
@@ -189,5 +193,10 @@ public class Unit : MonoBehaviour
             TrainTimeNeeded += AdditionalStats.TrainTimeNeeded;
             ResourcesCarriedMaximum += AdditionalStats.ResourcesCarriedMaximum;
         }
+    }
+    public enum AttackType : byte
+    {
+        Melee = 0,
+        Ranged = 1
     }
 }

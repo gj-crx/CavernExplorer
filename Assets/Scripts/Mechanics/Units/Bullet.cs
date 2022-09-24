@@ -18,6 +18,6 @@ public class Bullet : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        rigidbody.AddForce(transform.up * Speed);
+        rigidbody.velocity = transform.up * Speed;
     }
 }
