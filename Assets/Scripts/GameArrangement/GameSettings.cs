@@ -44,7 +44,10 @@ public class GameSettings : MonoBehaviour
     [System.Serializable]
     public struct UnitsSpawningSettings
     {
-        public float CreepSpawnChance;
+        /// <summary>
+        /// range 0-100%
+        /// </summary>
+        public int CreepSpawnChance;
     }
     private void OnApplicationQuit()
     {

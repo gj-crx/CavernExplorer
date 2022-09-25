@@ -22,12 +22,13 @@ namespace Player
         }
         private void OnTriggerStay2D(Collider2D  collision)
         {
-            if (TargetsTagsToDamage.Contains(collision.gameObject.tag) == false) return;
             if (IsBullet == false) MeleeHit(collision);
             else BulletHit(collision);
         }
         private void MeleeHit(Collider2D collision)
         {
+            if (TargetsTagsToDamage.Contains(collision.gameObject.tag) == false) return;
+
             var target = collision.gameObject.GetComponent<Unit>();
             if (controls.AlreadyHittedTargets.Contains(target) == false)
             {
@@ -37,8 +38,11 @@ namespace Player
         }
         private void BulletHit(Collider2D collision)
         {
-            collision.gameObject.GetComponent<Unit>().GetDamage(controls.PlayerCharacterUnit.Stats.Damage, controls.PlayerCharacterUnit);
-            Destroy(gameObject);
+            if (TargetsTagsToDamage.Contains(collision.gameObject.tag))
+            {
+                collision.gameObject.GetComponent<Unit>().GetDamage(controls.PlayerCharacterUnit.Stats.Damage, controls.PlayerCharacterUnit);
+            }
+            Destroy(gameObject); //any collision event destroys bullet
         }
     }
 }

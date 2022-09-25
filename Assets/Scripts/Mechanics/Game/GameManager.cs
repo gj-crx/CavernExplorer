@@ -12,7 +12,7 @@ public static class GameManager
     public static UnitSpawner unitSpawner;
     public static TileFormPlacer tileFormPlacer;
     public static IPathfinding Pathfinding;
-    public static System.Random _random;
+    public static System.Random random;
 
 
     public static List<Unit> PlayerRelatedCharacters = new List<Unit>();
@@ -33,11 +33,11 @@ public static class GameManager
     public static void InitializeGame()
     {
         map = new Map();
-        MapGenerator = new MapGenerator1(GameSettings.Singleton.MapGeneratorSettings, map, GameSettings.Singleton.tileMap, GameSettings.Singleton.WallTiles);
         unitSpawner = new UnitSpawner();
+        MapGenerator = new MapGenerator1(GameSettings.Singleton.MapGeneratorSettings, map, GameSettings.Singleton.tileMap, GameSettings.Singleton.WallTiles);
         tileFormPlacer = new TileFormPlacer(GameSettings.Singleton.PatternTileMap, GameSettings.Singleton.tileMap, MapGenerator);
         Pathfinding = new NormalPathfinding(map);
-        _random = new System.Random();
+        random = new System.Random();
 
         AddPlayerCharacter(GameObject.Find("Character").GetComponent<Unit>());
     }

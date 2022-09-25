@@ -28,16 +28,16 @@ namespace Player
         private Hitbox _hitBox;
         [SerializeReference]
         private GameObject[] AnimationAvatars;
-        private GameObject CurrentAvatar = null;
         [SerializeField]
         private GameObject Prefab_Bullet;
         [SerializeField]
         private Vector3 ShootingBulletsOffset = new Vector3(0, 0.4f, 0);
+        [SerializeField]
+        private float ShootingBulletOffsetModifier = 1.2f;
 
         private void Awake()
         {
             Singleton = this;
-            CurrentAvatar = gameObject.transform.Find("Avatar").gameObject;
         }
 
         private void Update()
@@ -95,16 +95,17 @@ namespace Player
                 }
                 else if (GameManager.LocalPlayerHeroUnit.Stats.attackType == Unit.AttackType.Ranged)
                 {
-                    GameObject.Instantiate(Prefab_Bullet, transform.position + ShootingBulletsOffset + (LastDirection.normalized * 1f),
+                    GameObject.Instantiate(Prefab_Bullet, transform.position + ShootingBulletsOffset + (LastDirection.normalized * ShootingBulletOffsetModifier),
                         Quaternion.identity).transform.eulerAngles = new Vector3(0, 0, BasicFunctions.DirectionToAngle(LastDirection));
+                    _Animator.SetBool("Attack", true);
+                    ChangeAvatar(DirectionToGunAvatar(LastDirection));
                 }
             }
         }
         public void ChangeAvatar(AnimationAvatarType NewAvatar)
         {
-            CurrentAvatar.SetActive(false);
+            foreach (var Avatar in AnimationAvatars) Avatar.SetActive(false);
             AnimationAvatars[(int)NewAvatar].SetActive(true);
-            CurrentAvatar = AnimationAvatars[(int)NewAvatar];
         }
 
         private void Hit()
@@ -124,10 +125,18 @@ namespace Player
         {
             NoWeapon = 0,
             SwordAttack = 1,
-            GunAttack = 2,
-            ScytheAttack = 3,
-            HammerAttack = 4,
-            BowAttack = 5
+            GunAttackDown = 2,
+            GunAttackUp = 3,
+            GunAttackSide = 4,
+            ScytheAttack = 5,
+            HammerAttack = 6,
+            BowAttack = 7
+        }
+        private AnimationAvatarType DirectionToGunAvatar(Vector3 Direction)
+        {
+            if (Direction.x != 0) return AnimationAvatarType.GunAttackSide;
+            if (Direction.y > 0) return AnimationAvatarType.GunAttackUp;
+            else return AnimationAvatarType.GunAttackDown;
         }
     }
     

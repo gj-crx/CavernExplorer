@@ -27,6 +27,7 @@ namespace Generation
             this._map = _map;
             this._tileMap = _tileMap;
             this.WallTiles = WallTiles;
+            GameSettings.Singleton.StartCoroutine(GameManager.unitSpawner.IterateUnitSpawningQueue());
         }
 
         public void GenerateMap()
@@ -226,7 +227,7 @@ namespace Generation
             public bool WallsSpawned { get { return _wallsSpawned; } }
             public byte RadiusValue { get { return Radius; } }
 
-            public Vector2Int RandomPoint { get { return SectorPoints[GameManager._random.Next(0, SectorPoints.Length)]; } }
+            public Vector2Int RandomPoint { get { return SectorPoints[GameManager.random.Next(0, SectorPoints.Length)]; } }
 
             public Sector(int X, int Y, byte Radius, byte SectorPointsCount, Map MapToGenerate)
             {
@@ -254,12 +255,12 @@ namespace Generation
             }
             private Vector2Int GetRandomPointInSector()
             {
-                return new Vector2Int(GameManager._random.Next(-Radius, Radius), GameManager._random.Next(-Radius, Radius)) + Center;
+                return new Vector2Int(GameManager.random.Next(-Radius, Radius), GameManager.random.Next(-Radius, Radius)) + Center;
             }
             private Vector2Int GetRandomJointPoint(JointPointCords Side)
             {
-                if (Side.x != 0) return new Vector2Int(Radius * Side.x, GameManager._random.Next(-Radius + 1, Radius)) + Center;
-                else return new Vector2Int(GameManager._random.Next(-Radius + 1, Radius), Radius * Side.y) + Center;
+                if (Side.x != 0) return new Vector2Int(Radius * Side.x, GameManager.random.Next(-Radius + 1, Radius)) + Center;
+                else return new Vector2Int(GameManager.random.Next(-Radius + 1, Radius), Radius * Side.y) + Center;
             }
             private Vector2Int ConnectPoints(Vector2Int CurrentPoint, Vector2Int TargetPoint, Map ReferenceMap, List<Vector3Int> SectorTilePositions)
             {
@@ -359,7 +360,7 @@ namespace Generation
                     bool Found = false;
                     while (Found == false)
                     {
-                        int rnd = GameManager._random.Next(0, SectorPoints.Length);
+                        int rnd = GameManager.random.Next(0, SectorPoints.Length);
                         if (SectorPoints[rnd] == Vector2Int.zero)
                         {
                             SectorPoints[rnd] = JointPoints[i];
@@ -386,6 +387,8 @@ namespace Generation
                     CurrentPoint = ConnectPoints(CurrentPoint, SectorPoints[i], ReferenceMap, SectorTilePositions);
                 }
                 foreach (var TilePosition in SectorTilePositions) GameManager.MapGenerator.TilesAwaitingToBetSet.Push(TilePosition);
+                //create positions to spawn units
+                GameManager.unitSpawner.SpawnUnitsInSector(this, GameManager.random);
             }
             public void CheckForUselessTiles(Map ReferenceMap)
             {
