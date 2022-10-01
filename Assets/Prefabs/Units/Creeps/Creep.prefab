@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 5000566942055694710}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -2, z: 0}
-  m_LocalScale: {x: 4, y: 4, z: 3}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -139,6 +139,7 @@ MonoBehaviour:
   ID: -1
   AIControlled: 1
   Stats:
+    attackType: 0
     MaxHP: 100
     CurrentHP: 100
     Damage: 15
@@ -152,7 +153,12 @@ MonoBehaviour:
     ResourcesCarriedMaximum: 0
     ResourcesGivenOnKilled: []
     CollisionRadius: 0
-  Way: []
+  unitMovement:
+    Way: []
+    currentTarget: {fileID: 0}
+    CurrentDirection: {x: 0, y: 0, z: 0}
+  LastNonTransformPosition: {x: 0, y: 0, z: 0}
+  MovementHalted: 0
 --- !u!114 &-4444343729125353677
 MonoBehaviour:
   m_ObjectHideFlags: 0

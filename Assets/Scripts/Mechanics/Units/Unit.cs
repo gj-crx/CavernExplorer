@@ -9,19 +9,19 @@ public class Unit : MonoBehaviour
     public int ID = -1;
     public bool AIControlled = true;
     public UnitStats Stats;
+    public UnitMovement unitMovement;
+    [HideInInspector]
+    public Vector3 LastNonTransformPosition;
 
 
 
 
-    public Vector3[] Way = null;
-    public int CurrentDistance { private get; set; } = 1;
 
     public delegate void OnKill(Unit killed);
     public OnKill OnKilled;
     public IBehavior behavior;
-    private Animator _animator;
+    public Animator animator;
 
-    private float _movingTime = 0;
     private Unit _currentTarget;
   //  [HideInInspector]
     public bool MovementHalted = false;
@@ -29,44 +29,23 @@ public class Unit : MonoBehaviour
 
     private void Start()
     {
+        unitMovement = new UnitMovement(this);
         GetBehavior();
-        StartUnitActionsControlling();
-        try { _animator = GetComponent<Animator>(); } catch { }
+       // StartUnitActionsControlling();
+        try { animator = GetComponent<Animator>(); } catch { }
+        GameManager.dataBase.AllUnits.Add(this);
     }
 
     private void Update()
     {
-
+        LastNonTransformPosition = transform.position;
     }
     private void FixedUpdate()
     {
-        if (AIControlled && MovementHalted == false) WayMoving(true);
+        if (AIControlled && MovementHalted == false) unitMovement.WayMoving();
     }
 
-    public bool GetWayTarget(Vector3 Target)
-    {
-        if (Stats.MoveSpeed == 0)
-        {
-            Debug.Log("Attempting to move unit with 0 movespeed");
-        }
-        CurrentDistance = 1;
-        Way = null;
-        bool Result = GameManager.Pathfinding.GetWayPath(this, Target, 2);
-        return Result;
-    }
-    public bool GetWayTarget(Unit TargetUnit)
-    {
-        if (Stats.MoveSpeed == 0)
-        {
-            Debug.Log("Attempting to move unit with 0 movespeed");
-        }
-        CurrentDistance = 1;
-        Way = null;
-        bool Result = GameManager.Pathfinding.GetWayPath(this, TargetUnit.transform.position, 2);
-        if (Result) _currentTarget = TargetUnit;
-        else _currentTarget = null;
-        return Result;
-    }
+    
     public void GetDamage(float Damage, Unit Attacker)
     {
         Stats.CurrentHP -= Damage;
@@ -99,46 +78,25 @@ public class Unit : MonoBehaviour
     {
         if (behavior != null && behavior.HaveExternalOrder == false && behavior.Active)
         {
-            behavior.StartIterationsAsync(10000, Random.Range(0, 1000));
+            behavior.StartBehaviourIterations(2000, GameManager.random.Next(0, 1000));
         }
-
     }
-    private void WayMoving(bool alternative)
+    public void ControlUnitBehaviour()
     {
-        _animator.SetBool("Stopped", true);
-        if (Way != null && Way.Length > 1)
+        if (behavior != null && behavior.HaveExternalOrder == false && behavior.Active)
         {
-            _movingTime += Stats.MoveSpeed * Time.fixedDeltaTime;
-            transform.position = Vector3.Lerp(Way[CurrentDistance - 1], Way[CurrentDistance], _movingTime);
-            //settings up animations and visuals
-            Vector3 delta = Way[CurrentDistance] - Way[CurrentDistance - 1];
-            _animator.SetFloat("XSpeed", delta.x);
-            _animator.SetFloat("YSpeed", delta.y);
-            _animator.SetBool("Stopped", false);
-            if (delta.x < 0) transform.eulerAngles = new Vector3(0, -180, 0);
-            else transform.eulerAngles = new Vector3(0, 0, 0);
-            if (_movingTime > 1)
-            {
-                _movingTime = 0;
-                CurrentDistance++;
-                if (CurrentDistance >= Way.Length)
-                {
-                    Way = null;
-                    CurrentDistance = 1;
-                    if (behavior != null) behavior.HaveExternalOrder = false;
-                }
-            }
+            behavior.StartBehaviourIterations(2000, GameManager.random.Next(0, 1000));
         }
-        else if (_currentTarget != null) Chase();
     }
+  
     private void Chase()
     {
         Vector3 Direction = _currentTarget.transform.position - transform.position;
 
         transform.eulerAngles = new Vector3(0, 0, 0);
-        _animator.SetBool("Stopped", false);
-        _animator.SetFloat("XSpeed", Direction.x);
-        _animator.SetFloat("YSpeed", Direction.y);
+        animator.SetBool("Stopped", false);
+        animator.SetFloat("XSpeed", Direction.x);
+        animator.SetFloat("YSpeed", Direction.y);
 
         transform.Translate(Direction.normalized * Stats.MoveSpeed * Time.fixedDeltaTime);
         if (Direction.x < 0) transform.eulerAngles = new Vector3(0, -180, 0);

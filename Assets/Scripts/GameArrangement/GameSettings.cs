@@ -12,6 +12,8 @@ public class GameSettings : MonoBehaviour
     public Tilemap PatternTileMap;
     public RuleTile[] WallTiles;
 
+    public float UnitMovementTileSkipTreshhold = 1;
+
 
     public short PathfindingMaxSearchDistance = 250;
 

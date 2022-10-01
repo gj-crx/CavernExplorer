@@ -35,7 +35,7 @@ public class NormalPathfinding : IPathfinding
     }
     public bool GetWayPath(Unit MovingUnit, Vector3 Target, byte MaximumCorrectionStep = 2)
     {
-        Vector2Int from = Vector3ToVector2Int(MovingUnit.transform.position);
+        Vector2Int from = Vector3ToVector2Int(MovingUnit.LastNonTransformPosition);
         if (PassablePath(from) == false)
         {
             var Result = CorrectPath(from);
@@ -53,8 +53,8 @@ public class NormalPathfinding : IPathfinding
         bool result = CalculateWay(from, target);
         if (result)
         {
-            MovingUnit.Way = BasicFunctions.ConvertToVector3Array(Way, 0.5f);
-            MovingUnit.CurrentDistance = 1;
+            MovingUnit.unitMovement.Way = BasicFunctions.ConvertToVector3Array(Way, 0.5f);
+            MovingUnit.unitMovement.CurrentDistance = 1;
         }
         return result;
     }

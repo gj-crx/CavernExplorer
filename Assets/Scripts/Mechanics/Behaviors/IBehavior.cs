@@ -8,7 +8,7 @@ public interface IBehavior
 {
     bool Active { get; set; }
     bool HaveExternalOrder { get; set; }
-    Task StartIterationsAsync(int ActualDelay, int PreDelay);
+    void StartBehaviourIterations(int ActualDelay, int PreDelay);
     void BehaviorAction();
 
     void Clear();

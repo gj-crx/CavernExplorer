@@ -22,6 +22,6 @@ public class TestUnitController : MonoBehaviour
     }
     public void Test()
     {
-        unit.GetWayTarget(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        unit.unitMovement.GetWayTarget(Camera.main.ScreenToWorldPoint(Input.mousePosition));
     }
 }

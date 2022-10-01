@@ -34,7 +34,7 @@ namespace Behaviours
             {
                 if (CurrentTarget != null && Vector3.Distance(transform.position, CurrentTarget.transform.position) < OwnerUnit.Stats.AttackRange)
                 {
-                    OwnerUnit.Way = null;
+                    OwnerUnit.unitMovement.Way = null;
                     Hit(CurrentTarget);
                     if (_animator != null) _animator.SetBool("Attacked", true);
                     OwnerUnit.MovementHalted = true;

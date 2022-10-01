@@ -1,18 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Controllers;
 using Generation;
 
 public static class GameManager
 {
     public static bool GameIsRunning = true;
 
+    public static DataBase dataBase = new DataBase();
     public static Map map;
     public static MapGenerator1 MapGenerator;
     public static UnitSpawner unitSpawner;
     public static TileFormPlacer tileFormPlacer;
     public static IPathfinding Pathfinding;
     public static System.Random random;
+
+    private static UnitController unitController;
 
 
     public static List<Unit> PlayerRelatedCharacters = new List<Unit>();
@@ -38,6 +42,8 @@ public static class GameManager
         tileFormPlacer = new TileFormPlacer(GameSettings.Singleton.PatternTileMap, GameSettings.Singleton.tileMap, MapGenerator);
         Pathfinding = new NormalPathfinding(map);
         random = new System.Random();
+
+        unitController = new UnitController();
 
         AddPlayerCharacter(GameObject.Find("Character").GetComponent<Unit>());
     }

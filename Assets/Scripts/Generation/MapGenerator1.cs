@@ -392,7 +392,7 @@ namespace Generation
             }
             public void CheckForUselessTiles(Map ReferenceMap)
             {
-                Debug.Log("Sector " + X + " " + Y + " is checked");
+            //    Debug.Log("Sector " + X + " " + Y + " is checked");
                 for (int y = -Radius; y <= Radius; y++)
                 {
                     for (int x = -Radius; x <= Radius; x++)

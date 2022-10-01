@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -32,18 +33,33 @@ namespace Behaviours
             _unit = null;
         }
 
-        public async Task StartIterationsAsync(int ActualDelay, int PreDelay)
+        public void StartBehaviourIterations(int ActualDelay, int PreDelay)
+        {
+            siso();
+        }
+        private async Task BehaviourIterationsAsync(int ActualDelay, int PreDelay)
         {
             await Task.Delay(PreDelay);
             while (Active)
             {
+                Debug.Log(Thread.CurrentThread.IsBackground);
                 var Target = GetNearestPlayerObject();
                 if (Target != null)
                 {
-                    _unit.GetWayTarget(Target);
+                    _unit.unitMovement.GetWayTarget(Target);
                     _fighting.CurrentTarget = Target;
                 }
                 await Task.Delay(ActualDelay);
+            }
+        }
+        private void siso()
+        {
+            Debug.Log(Thread.CurrentThread.IsBackground);
+            var Target = GetNearestPlayerObject();
+            if (Target != null)
+            {
+                _unit.unitMovement.GetWayTarget(Target);
+                _fighting.CurrentTarget = Target;
             }
         }
 
@@ -54,7 +70,7 @@ namespace Behaviours
 
             foreach (var CurrentObject in GameManager.PlayerRelatedCharacters)
             {
-                float CurrentDistance = Vector2.Distance(CurrentObject.transform.position, _unit.transform.position);
+                float CurrentDistance = Vector2.Distance(CurrentObject.LastNonTransformPosition, _unit.LastNonTransformPosition);
                 if (CurrentDistance < MinimalDistance)
                 {
                     CurrentDistance = MinimalDistance;
