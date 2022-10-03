@@ -54,7 +54,6 @@ namespace Behaviours
         }
         private void siso()
         {
-            Debug.Log(Thread.CurrentThread.IsBackground);
             var Target = GetNearestPlayerObject();
             if (Target != null)
             {

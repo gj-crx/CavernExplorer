@@ -37,6 +37,12 @@ public class GameSettings : MonoBehaviour
     {
         GameManager.SetPlayersPositions();
         FPS = 1.0f / Time.deltaTime;
+
+        if (GameManager.MapGenerator.ToGenerateOrder)
+        {
+            GameManager.MapGenerator.ToGenerateOrder = false;
+            GameManager.MapGenerator.TilesPlacingCourotine(tileMap, WallTiles[0]);
+        }
     }
     public void DebugActionExecute()
     {

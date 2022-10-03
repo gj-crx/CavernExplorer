@@ -15,18 +15,21 @@ namespace Generation
         private GeneratorSettings GenSettings;
         private Map _map;
         private Tilemap _tileMap;
-        private RuleTile[] WallTiles;
+        private RuleTile[] WallRuleTiles;
 
-        public Stack<Vector3Int> TilesAwaitingToBetSet = new Stack<Vector3Int>();
+        public List<Vector3Int> TilesToSet = new List<Vector3Int>();
         public Stack<Vector3Int> TilesAwaitingToBeRemoved = new Stack<Vector3Int>();
         public Stack<Sector> NewlyGeneratedSectors = new Stack<Sector>();
+
+        public bool ToGenerateOrder = false;
+
 
         public MapGenerator1(GeneratorSettings _settings, Map _map, Tilemap _tileMap, RuleTile[] WallTiles)
         {
             GenSettings = _settings;
             this._map = _map;
             this._tileMap = _tileMap;
-            this.WallTiles = WallTiles;
+            this.WallRuleTiles = WallTiles;
             GameSettings.Singleton.StartCoroutine(GameManager.unitSpawner.IterateUnitSpawningQueue());
         }
 
@@ -39,13 +42,13 @@ namespace Generation
             {
                 Player.transform.position = BasicFunctions.ToVector3(_map.SectorMap[0, 0].RandomPoint);
             }
-            Thread nt = new Thread(sosi);
-            nt.Start();
+            Thread ContiniousGenerationThread = new Thread(ContiniousGeneration);
+            ContiniousGenerationThread.Start();
           //  ContiniousGeneration();
-            GameSettings.Singleton.StartCoroutine(TilesPlacingCourotine(_tileMap, WallTiles[0]));
+          //  GameSettings.Singleton.StartCoroutine(TilesPlacingCourotine(_tileMap, WallRuleTiles[0]));
             // GameSettings.Singleton.StartCoroutine(GameManager.tileFormPlacer.TilesCleaningCourotine(_map));
-            Thread nt2 = new Thread(sosi2);
-            nt2.Start();
+            Thread UselessTilesDetectionThread = new Thread(ContiniousDetectionOfUselessTiles);
+            UselessTilesDetectionThread.Start();
           //  DeletingUselessTilesProcessAsync();
         }
         public async Task ContiniousGeneration(int CheckIntervalMiliseconds = 1500, int InitialAwait = 250)
@@ -78,7 +81,7 @@ namespace Generation
                 await Task.Delay(CheckIntervalMiliseconds);
             }
         }
-        void sosi()
+        void ContiniousGeneration()
         {
             while (GameManager.GameIsRunning)
             {
@@ -93,13 +96,15 @@ namespace Generation
                             //   Debug.Log("negovno " + CurrentNeibSectors[i].X);
                             if (CurrentNeibSectors[i] != null)
                             {
-                                GeneratingNeigbhourSectors(CurrentNeibSectors[i]);
+                                int GeneratedCount = GeneratingNeigbhourSectors(CurrentNeibSectors[i]);
+                                if (GeneratedCount > 0) GameManager.MapGenerator.ToGenerateOrder = true;
                             }
                             else
                             {
                                 var Cords = Sector.JointPointCords.NumberToCords(i);
                                 new Sector(PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y, GenSettings.SectorRadius, GenSettings.PointsPerSector, _map);
-                                GeneratingNeigbhourSectors(_map.SectorMap[PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y]);
+                                int GeneratedCount = GeneratingNeigbhourSectors(_map.SectorMap[PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y]);
+                                if (GeneratedCount > 0) GameManager.MapGenerator.ToGenerateOrder = true;
                             }
                         }
                     }
@@ -133,29 +138,15 @@ namespace Generation
 
             public int TileLayingSpeed;
         }
-        public IEnumerator TilesPlacingCourotine(Tilemap ReferenceTilemap, RuleTile WallTile)
+        public void TilesPlacingCourotine(Tilemap ReferenceTilemap, RuleTile WallTile)
         {
-            int Counter = 0;
-            int PlacedPerFrame = GetTilePlacingSpeed(TilesAwaitingToBetSet.Count);
-            while (GameManager.GameIsRunning)
+            if (TilesToSet.Count > 0)
             {
-                if (TilesAwaitingToBetSet.Count > 0)
-                {
-                    Vector3Int TilePosition = TilesAwaitingToBetSet.Pop();
-                    // Debug.Log("iteration with total to place " + TilesBeingPlaced.Count);
-                    ReferenceTilemap.SetTile(TilePosition, WallTile);
-                    if (Counter > PlacedPerFrame)
-                    {
-                        Counter = 0;
-                        yield return null;
-                    }
-                    else Counter++;
-                }
-                else
-                {
-                    GameSettings.Singleton.StartCoroutine(TilesRemovingCourotine(ReferenceTilemap));
-                    yield return null;
-                }
+                Debug.Log("123");
+                RuleTile[] t = new RuleTile[TilesToSet.Count];
+                for (int i = 0; i < t.Length; i++) t[i] = WallTile;
+                ReferenceTilemap.SetTiles(TilesToSet.ToArray(), t);
+                Debug.Log("234");
             }
         }
         public IEnumerator TilesRemovingCourotine(Tilemap ReferenceTilemap)
@@ -165,7 +156,6 @@ namespace Generation
             while (TilesAwaitingToBeRemoved.Count > 0)
             {
                 Vector3Int TilePosition = TilesAwaitingToBeRemoved.Pop();
-                Debug.Log("Tile removed " + TilePosition + " queued " + TilesAwaitingToBeRemoved.Count);
                 ReferenceTilemap.SetTile(TilePosition, null);
                 if (Counter > PlacedPerFrame)
                 {
@@ -176,7 +166,7 @@ namespace Generation
             }
             yield return null;
         }
-        void sosi2()
+        void ContiniousDetectionOfUselessTiles()
         {
             Thread.Sleep(4000);
             while (GameManager.GameIsRunning)
@@ -347,7 +337,7 @@ namespace Generation
                     {
                         Vector3Int CurrentTilePos = new Vector3Int(Center.x + x, Center.y + y, 0);
                         ReferenceMap.LandscapeMap[CurrentTilePos.x, CurrentTilePos.y] = new LandscapePoint(LandType.Impassable);
-                        if (GameManager.MapGenerator.TilesAwaitingToBetSet.Contains(CurrentTilePos) == false)
+                        if (GameManager.MapGenerator.TilesToSet.Contains(CurrentTilePos) == false)
                         {
                             SectorTilePositions.Add(CurrentTilePos);
                         }
@@ -365,7 +355,7 @@ namespace Generation
                         {
                             SectorPoints[rnd] = JointPoints[i];
                             Found = true;
-                            Debug.Log("Joint " + i + " assigned to SectorPoint " + rnd);
+                        //    Debug.Log("Joint " + i + " assigned to SectorPoint " + rnd);
                         }
                     }
                 }
@@ -386,7 +376,7 @@ namespace Generation
                     CreateRoom(SectorPoints[i], 2, ReferenceMap, SectorTilePositions); //clearing a bit of space at each point
                     CurrentPoint = ConnectPoints(CurrentPoint, SectorPoints[i], ReferenceMap, SectorTilePositions);
                 }
-                foreach (var TilePosition in SectorTilePositions) GameManager.MapGenerator.TilesAwaitingToBetSet.Push(TilePosition);
+                foreach (var TilePosition in SectorTilePositions) GameManager.MapGenerator.TilesToSet.Add(TilePosition);
                 //create positions to spawn units
                 GameManager.unitSpawner.SpawnUnitsInSector(this, GameManager.random);
             }
@@ -400,7 +390,7 @@ namespace Generation
                         Vector3Int CurrentTilePosition = new Vector3Int(Center.x + x, Center.y + y, 0);
                         if (TileIsUseless(new Vector2Int(Center.x + x, Center.y + y), ReferenceMap) && GameManager.MapGenerator.TilesAwaitingToBeRemoved.Contains(CurrentTilePosition) == false)
                         {
-                            Debug.Log("Tile " + CurrentTilePosition + " is added to removal queue");
+                          //  Debug.Log("Tile " + CurrentTilePosition + " is added to removal queue");
                             GameManager.MapGenerator.TilesAwaitingToBeRemoved.Push(CurrentTilePosition);
                             ReferenceMap.LandscapeMap[CurrentTilePosition.x, CurrentTilePosition.y].Land = LandType.Passable;
                         }

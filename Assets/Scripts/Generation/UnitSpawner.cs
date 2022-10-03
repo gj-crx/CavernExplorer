@@ -18,7 +18,7 @@ namespace Generation
         {
             while (GameManager.GameIsRunning)
             {
-                if (UnitsToSpawn.Count > 0 && GameManager.MapGenerator.TilesAwaitingToBetSet.Count == 0)
+                if (UnitsToSpawn.Count > 0 && GameManager.MapGenerator.TilesToSet.Count == 0)
                 {
                     var CurrentUnitToSpawn = UnitsToSpawn.Pop();
                     GameObject.Instantiate(CurrentUnitToSpawn.Item1, CurrentUnitToSpawn.Item2, Quaternion.identity);

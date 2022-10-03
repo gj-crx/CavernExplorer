@@ -26,7 +26,7 @@ namespace Controllers
                 {
                     Unit currentUnit = unitsToControl.Dequeue();
                     currentUnit.ControlUnitBehaviour();
-                    Thread.Sleep(100);
+                    Thread.Sleep(1000);
                 }
             }
             UnitControllingThread = null;

@@ -14,7 +14,9 @@ public static class GameManager
     public static UnitSpawner unitSpawner;
     public static TileFormPlacer tileFormPlacer;
     public static IPathfinding Pathfinding;
+
     public static System.Random random;
+    public static System.Threading.Thread MainThread;
 
     private static UnitController unitController;
 
@@ -41,7 +43,9 @@ public static class GameManager
         MapGenerator = new MapGenerator1(GameSettings.Singleton.MapGeneratorSettings, map, GameSettings.Singleton.tileMap, GameSettings.Singleton.WallTiles);
         tileFormPlacer = new TileFormPlacer(GameSettings.Singleton.PatternTileMap, GameSettings.Singleton.tileMap, MapGenerator);
         Pathfinding = new NormalPathfinding(map);
+
         random = new System.Random();
+        MainThread = System.Threading.Thread.CurrentThread;
 
         unitController = new UnitController();
 
