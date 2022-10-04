@@ -10,15 +10,13 @@ namespace Generation
 {
     public class MapGenerator1
     {
+        public Thread GenerationThread = null;
         public bool Generated = false;
 
         private GeneratorSettings GenSettings;
-        private Map _map;
-        private Tilemap _tileMap;
-        private RuleTile[] WallRuleTiles;
+        private readonly Map map;
 
         public List<Vector3Int> TilesToSet = new List<Vector3Int>();
-        public Stack<Vector3Int> TilesAwaitingToBeRemoved = new Stack<Vector3Int>();
         public Stack<Sector> NewlyGeneratedSectors = new Stack<Sector>();
 
         public bool ToGenerateOrder = false;
@@ -27,59 +25,20 @@ namespace Generation
         public MapGenerator1(GeneratorSettings _settings, Map _map, Tilemap _tileMap, RuleTile[] WallTiles)
         {
             GenSettings = _settings;
-            this._map = _map;
-            this._tileMap = _tileMap;
-            this.WallRuleTiles = WallTiles;
+            this.map = _map;
             GameSettings.Singleton.StartCoroutine(GameManager.unitSpawner.IterateUnitSpawningQueue());
         }
 
         public void GenerateMap()
         {
             Generated = true;
-            new Sector(0, 0, GenSettings.SectorRadius, GenSettings.PointsPerSector, _map);
-         //   new Sector(-1, 0, GenSettings.SectorRadius, GenSettings.PointsPerSector, _map);
+            new Sector(0, 0, GenSettings.SectorRadius, GenSettings.PointsPerSector, map);
             foreach (var Player in GameManager.PlayerRelatedCharacters)
             {
-                Player.transform.position = BasicFunctions.ToVector3(_map.SectorMap[0, 0].RandomPoint);
+                Player.transform.position = BasicFunctions.ToVector3(map.SectorMap[0, 0].RandomPoint);
             }
-            Thread ContiniousGenerationThread = new Thread(ContiniousGeneration);
-            ContiniousGenerationThread.Start();
-          //  ContiniousGeneration();
-          //  GameSettings.Singleton.StartCoroutine(TilesPlacingCourotine(_tileMap, WallRuleTiles[0]));
-            // GameSettings.Singleton.StartCoroutine(GameManager.tileFormPlacer.TilesCleaningCourotine(_map));
-            Thread UselessTilesDetectionThread = new Thread(ContiniousDetectionOfUselessTiles);
-            UselessTilesDetectionThread.Start();
-          //  DeletingUselessTilesProcessAsync();
-        }
-        public async Task ContiniousGeneration(int CheckIntervalMiliseconds = 1500, int InitialAwait = 250)
-        {
-            await Task.Delay(InitialAwait);
-            while (GameManager.GameIsRunning)
-            {
-                foreach (var Player in GameManager.PlayerRelatedCharacters)
-                {
-                    Sector PlayerSector = GetUnitSector(Player);
-                    if (PlayerSector != null)
-                    {
-                        Sector[] CurrentNeibSectors = Get4NeigbhourSectors(PlayerSector);
-                        for (int i = 0; i < CurrentNeibSectors.Length; i++)
-                        {
-                         //   Debug.Log("negovno " + CurrentNeibSectors[i].X);
-                            if (CurrentNeibSectors[i] != null)
-                            {
-                                GeneratingNeigbhourSectors(CurrentNeibSectors[i]);
-                            }
-                            else
-                            {
-                                var Cords = Sector.JointPointCords.NumberToCords(i);
-                                new Sector(PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y, GenSettings.SectorRadius, GenSettings.PointsPerSector, _map);
-                                GeneratingNeigbhourSectors(_map.SectorMap[PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y]);
-                            }
-                        }
-                    }
-                }
-                await Task.Delay(CheckIntervalMiliseconds);
-            }
+            GenerationThread = new Thread(ContiniousGeneration);
+            GenerationThread.Start();
         }
         void ContiniousGeneration()
         {
@@ -93,26 +52,32 @@ namespace Generation
                         Sector[] CurrentNeibSectors = Get4NeigbhourSectors(PlayerSector);
                         for (int i = 0; i < CurrentNeibSectors.Length; i++)
                         {
-                            //   Debug.Log("negovno " + CurrentNeibSectors[i].X);
+                            int GeneratedCount = 0;
                             if (CurrentNeibSectors[i] != null)
                             {
-                                int GeneratedCount = GeneratingNeigbhourSectors(CurrentNeibSectors[i]);
-                                if (GeneratedCount > 0) GameManager.MapGenerator.ToGenerateOrder = true;
+                                GeneratedCount = GenerataNeibghourSectors(CurrentNeibSectors[i]);
                             }
                             else
                             {
                                 var Cords = Sector.JointPointCords.NumberToCords(i);
-                                new Sector(PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y, GenSettings.SectorRadius, GenSettings.PointsPerSector, _map);
-                                int GeneratedCount = GeneratingNeigbhourSectors(_map.SectorMap[PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y]);
-                                if (GeneratedCount > 0) GameManager.MapGenerator.ToGenerateOrder = true;
+                                new Sector(PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y, GenSettings.SectorRadius, GenSettings.PointsPerSector, map);
+                                GeneratedCount = GenerataNeibghourSectors(map.SectorMap[PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y]);
+                            }
+                            if (GeneratedCount > 0)
+                            {
+                                for (int n = 0; n < 1; n++)
+                                {
+                                    CheckForUselessTiles();
+                                }
+                                GameManager.MapGenerator.ToGenerateOrder = true;
                             }
                         }
                     }
                 }
-                Thread.Sleep(3000);
+                Thread.Sleep(1500);
             }
         }
-        private byte GeneratingNeigbhourSectors(Sector ReferenceSector)
+        private byte GenerataNeibghourSectors(Sector ReferenceSector)
         {
             byte GeneratedSectorsCount = 0;
             var Neibs = Get4NeigbhourSectors(ReferenceSector);
@@ -121,7 +86,7 @@ namespace Generation
                 if (Neibs[i] == null)
                 {
                     var Cords = Sector.JointPointCords.NumberToCords(i);
-                    new Sector(ReferenceSector.X + Cords.x, ReferenceSector.Y + Cords.y, GenSettings.SectorRadius, GenSettings.PointsPerSector, _map);
+                    new Sector(ReferenceSector.X + Cords.x, ReferenceSector.Y + Cords.y, GenSettings.SectorRadius, GenSettings.PointsPerSector, map);
                     GeneratedSectorsCount++;
                 }
             }
@@ -138,85 +103,35 @@ namespace Generation
 
             public int TileLayingSpeed;
         }
-        public void TilesPlacingCourotine(Tilemap ReferenceTilemap, RuleTile WallTile)
+        public void SpawnAllTiles_MainThread(Tilemap ReferenceTilemap, RuleTile WallTile)
         {
             if (TilesToSet.Count > 0)
             {
-                Debug.Log("123");
-                RuleTile[] t = new RuleTile[TilesToSet.Count];
+                var TilesToSetArray = TilesToSet.ToArray();
+                Debug.Log(TilesToSetArray.Length);
+                TilesToSet = new List<Vector3Int>();
+                Debug.Log(TilesToSetArray.Length);
+
+
+                RuleTile[] t = new RuleTile[TilesToSetArray.Length];
                 for (int i = 0; i < t.Length; i++) t[i] = WallTile;
-                ReferenceTilemap.SetTiles(TilesToSet.ToArray(), t);
-                Debug.Log("234");
+                ReferenceTilemap.SetTiles(TilesToSetArray, t);
             }
         }
-        public IEnumerator TilesRemovingCourotine(Tilemap ReferenceTilemap)
+        public void CheckForUselessTiles()
         {
-            int PlacedPerFrame = 3;
-            int Counter = 0;
-            while (TilesAwaitingToBeRemoved.Count > 0)
-            {
-                Vector3Int TilePosition = TilesAwaitingToBeRemoved.Pop();
-                ReferenceTilemap.SetTile(TilePosition, null);
-                if (Counter > PlacedPerFrame)
-                {
-                    Counter = 0;
-                    yield return null;
-                }
-                else Counter++;
-            }
-            yield return null;
-        }
-        void ContiniousDetectionOfUselessTiles()
-        {
-            Thread.Sleep(4000);
-            while (GameManager.GameIsRunning)
-            {
-                Debug.LogWarning("Iteration");
-                Thread.Sleep(2500);
-                //creating the copy of newly generated sectors stack to prevent collection modified exception
-                Stack<Sector> CopyOfNewlyGeneratedSectors = new Stack<Sector>();
-                foreach (var Sector in NewlyGeneratedSectors) CopyOfNewlyGeneratedSectors.Push(Sector);
-                //checking sectors safely now
-                foreach (var Sector in CopyOfNewlyGeneratedSectors)
-                {
-                    Sector.CheckForUselessTiles(_map);
-                    Thread.Sleep(400);
-                }
-            }
-        }
-        public async Task DeletingUselessTilesProcessAsync()
-        {
-            await Task.Delay(4500);
-            while (GameManager.GameIsRunning)
-            {
-                Debug.LogWarning("Iteration");
-                await Task.Delay(2500);
-                foreach (var Sector in NewlyGeneratedSectors)
-                {
-                    Sector.CheckForUselessTiles(_map);
-                    await Task.Delay(400);
-                }
-            }
-        }
-        private int GetTilePlacingSpeed(int ToBePlacedCount, float SecondsToPlaceAll = 4, int MinimumTilesPerFrameSpeed = 5)
-        {
-            // return Mathf.Max((int)(ToBePlacedCount / SecondsToPlaceAll / 60), MinimumTilesPerFrameSpeed);
-            return GameSettings.Singleton.MapGeneratorSettings.TileLayingSpeed;
+            foreach (var Sector in NewlyGeneratedSectors) Sector.CheckForUselessTiles(map);
         }
         
         public class Sector
         {
             public int X = 0;
             public int Y = 0;
-            private bool _wallsSpawned = false;
             private Vector2Int Center;
             private byte Radius = 50;
             private Vector2Int[] SectorPoints;
             public Vector2Int[] JointPoints = new Vector2Int[4];
-
-            public bool WallsSpawned { get { return _wallsSpawned; } }
             public byte RadiusValue { get { return Radius; } }
-
             public Vector2Int RandomPoint { get { return SectorPoints[GameManager.random.Next(0, SectorPoints.Length)]; } }
 
             public Sector(int X, int Y, byte Radius, byte SectorPointsCount, Map MapToGenerate)
@@ -232,14 +147,12 @@ namespace Generation
                 JointPoints[2] = GetRandomJointPoint(JointPointCords.Bottom);
                 JointPoints[3] = GetRandomJointPoint(JointPointCords.Left);
 
-              //  JointPoints[JointPointCords.GetAlterSideNumber(OriginSideID)] = PreviousSector.JointPoints[OriginSideID];
                 if (MapToGenerate.SectorMap[X, Y + 1] != null) JointPoints[0] = MapToGenerate.SectorMap[X, Y + 1].JointPoints[2];
                 if (MapToGenerate.SectorMap[X + 1, Y] != null) JointPoints[1] = MapToGenerate.SectorMap[X + 1, Y].JointPoints[3];
                 if (MapToGenerate.SectorMap[X, Y - 1] != null) JointPoints[2] = MapToGenerate.SectorMap[X, Y - 1].JointPoints[0];
                 if (MapToGenerate.SectorMap[X - 1, Y] != null) JointPoints[3] = MapToGenerate.SectorMap[X - 1, Y].JointPoints[1];
+
                 Generate(MapToGenerate);
-                //  PreviousSector.ReCheckSectorWalls(MapToGenerate, ReferenceTilemap);
-                //   if (PreviousSector.WallsSpawned) PreviousSector.ReCheckSectorWalls(MapToGenerate, ReferenceTilemap);
                 MapToGenerate.SectorMap[X, Y] = this;
                 GameManager.MapGenerator.NewlyGeneratedSectors.Push(this);
             }
@@ -364,10 +277,7 @@ namespace Generation
                     if (SectorPoints[i] == Vector2Int.zero)
                     {
                         SectorPoints[i] = GetRandomPointInSector();
-                   //     Debug.Log("Randomed Point " + i + " = " + SectorPoints[i]);
                     }
-               //     else Debug.Log("Point is a joint " + i + " = " + SectorPoints[i]);
-
                 }
                 //connecting points in order
                 Vector2Int CurrentPoint = SectorPoints[0];
@@ -382,17 +292,16 @@ namespace Generation
             }
             public void CheckForUselessTiles(Map ReferenceMap)
             {
-            //    Debug.Log("Sector " + X + " " + Y + " is checked");
                 for (int y = -Radius; y <= Radius; y++)
                 {
                     for (int x = -Radius; x <= Radius; x++)
                     {
                         Vector3Int CurrentTilePosition = new Vector3Int(Center.x + x, Center.y + y, 0);
-                        if (TileIsUseless(new Vector2Int(Center.x + x, Center.y + y), ReferenceMap) && GameManager.MapGenerator.TilesAwaitingToBeRemoved.Contains(CurrentTilePosition) == false)
+                        if (TileIsUseless(new Vector2Int(Center.x + x, Center.y + y), ReferenceMap) && GameManager.MapGenerator.TilesToSet.Contains(CurrentTilePosition) == true)
                         {
-                          //  Debug.Log("Tile " + CurrentTilePosition + " is added to removal queue");
-                            GameManager.MapGenerator.TilesAwaitingToBeRemoved.Push(CurrentTilePosition);
+                             Debug.Log("Tile " + CurrentTilePosition + " is added to removal queue");
                             ReferenceMap.LandscapeMap[CurrentTilePosition.x, CurrentTilePosition.y].Land = LandType.Passable;
+                            GameManager.MapGenerator.TilesToSet.Remove(CurrentTilePosition);
                         }
                     }
                 }
@@ -446,40 +355,24 @@ namespace Generation
                 }
             }
         }
-        private Sector[] Get8NeigbhourSectors(Sector ReferenceSector)
-        {
-            Sector[] NeibSectors = new Sector[8];
-            byte Count = 0;
-            for (int y = -1; y <= 1; y++)
-            {
-                for (int x = -1; x <= 1; x++) 
-                {
-                    if (x != 0 || y != 0)
-                    {
-                        NeibSectors[Count] = _map.SectorMap[ReferenceSector.X + x, ReferenceSector.Y + y];
-                        Count++;
-                    }
-                }
-            }
-            return NeibSectors;
-        }
+
         private Sector[] Get4NeigbhourSectors(Sector ReferenceSector)
         {
             Sector[] NeibSectors = new Sector[4];
-            NeibSectors[0] = _map.SectorMap[ReferenceSector.X, ReferenceSector.Y + 1];
-            NeibSectors[1] = _map.SectorMap[ReferenceSector.X + 1, ReferenceSector.Y];
-            NeibSectors[2] = _map.SectorMap[ReferenceSector.X, ReferenceSector.Y - 1];
-            NeibSectors[3] = _map.SectorMap[ReferenceSector.X - 1, ReferenceSector.Y];
+            NeibSectors[0] = map.SectorMap[ReferenceSector.X, ReferenceSector.Y + 1];
+            NeibSectors[1] = map.SectorMap[ReferenceSector.X + 1, ReferenceSector.Y];
+            NeibSectors[2] = map.SectorMap[ReferenceSector.X, ReferenceSector.Y - 1];
+            NeibSectors[3] = map.SectorMap[ReferenceSector.X - 1, ReferenceSector.Y];
             return NeibSectors;
         }
 
         private Sector GetUnitSector(Unit MentionedUnit)
         {
-            int SectorRadius = _map.SectorMap[0, 0].RadiusValue;
+            int SectorRadius = map.SectorMap[0, 0].RadiusValue;
             Vector3 UnitPos = BasicFunctions.GetPlayerTransformPositionFromMainthread(MentionedUnit);
             int SectorX = (int)(UnitPos.x / (SectorRadius * 2));
             int SectorY = (int)(UnitPos.y / (SectorRadius * 2));
-            return _map.SectorMap[SectorX, SectorY];
+            return map.SectorMap[SectorX, SectorY];
         }
     }
 }

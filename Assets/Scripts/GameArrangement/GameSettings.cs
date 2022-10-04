@@ -41,7 +41,7 @@ public class GameSettings : MonoBehaviour
         if (GameManager.MapGenerator.ToGenerateOrder)
         {
             GameManager.MapGenerator.ToGenerateOrder = false;
-            GameManager.MapGenerator.TilesPlacingCourotine(tileMap, WallTiles[0]);
+            GameManager.MapGenerator.SpawnAllTiles_MainThread(tileMap, WallTiles[0]);
         }
     }
     public void DebugActionExecute()

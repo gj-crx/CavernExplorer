@@ -28,42 +28,6 @@ namespace Generation {
 
             //   CreateTilePatterns();
         }
-
-
-        public IEnumerator TilesCleaningCourotine(Map ReferenceMap, int IterationsPerFrame = 20)
-        {
-            while (GameManager.GameIsRunning)
-            {
-                if (MapGen.NewlyGeneratedSectors.Count > 0)
-                {
-                    MapGenerator1.Sector Sector = MapGen.NewlyGeneratedSectors.Pop();
-                    int Counter = 0;
-                    for (int y = -Sector.RadiusValue; y <= Sector.RadiusValue; y++)
-                    {
-                        for (int x = -Sector.RadiusValue; x <= Sector.RadiusValue; x++)
-                        {
-                            Vector3Int CurrentPosition = new Vector3Int(Sector.X + x, Sector.Y + y, 0);
-                            var _tile = ActualTileMap.GetSprite(CurrentPosition);
-                            if (_tile != null && _tile.name == GameSettings.Singleton.TileNameToRemove)
-                            {
-                                //  Debug.Log(_tile.name + " detected and removed in " + new Vector3Int(x, y, 0));
-                                ActualTileMap.SetTile(CurrentPosition, null);
-                                ReferenceMap.LandscapeMap[CurrentPosition.x, CurrentPosition.y] = new LandscapePoint(LandType.Passable);
-                            }
-                            if (Counter > IterationsPerFrame)
-                            {
-                                Counter = 0;
-                                yield return null;
-                            }
-                            else Counter++;
-                        }
-                    }
-                }
-                yield return new WaitForSeconds(0.5f);
-            }
-        }
-
-
         private void CreateTilePatterns()
         {
             int PatternBorderMinX = PatternTileMap.cellBounds.xMin;

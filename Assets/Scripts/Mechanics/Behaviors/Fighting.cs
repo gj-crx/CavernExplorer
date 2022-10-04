@@ -40,7 +40,6 @@ namespace Behaviours
                     OwnerUnit.MovementHalted = true;
                     await Task.Delay((int)OwnerUnit.Stats.AttackDelay * 1000);
                 }
-                Debug.Log("wait2");
                 await Task.Delay(CheckIntervalMiliseconds);
             }
         }

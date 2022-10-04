@@ -43,7 +43,7 @@ public class UnitMovement
 
         if (CurrentDirection == Vector3.zero) CurrentDirection = GetDirection();
 
-        Debug.Log(CurrentDirection + " new");
+      //  Debug.Log(CurrentDirection + " new");
 
         unit.transform.eulerAngles = new Vector3(0, 0, 0);
         unit.transform.Translate(CurrentDirection * unit.Stats.MoveSpeed * Time.fixedDeltaTime);
@@ -73,7 +73,7 @@ public class UnitMovement
             CurrentDirection.y = 0;
             unit.transform.position = new Vector3(unit.transform.position.x, localWay[localCurrentDistance].y, 0); 
         }
-        Debug.Log(CurrentDirection);
+      //  Debug.Log(CurrentDirection);
 
         if (CurrentDirection == Vector3.zero)
         {
