@@ -12,11 +12,11 @@ namespace UI
         [HideInInspector]
         public static UIManager Singleton;
 
-
-
-        [Header("Main enteties")]
         public Inventory PlayerInventory;
         public Inventory ExternalInventory = null;
+
+        [Header("Main panels")]
+        public GameObject panel_HealthBar;
 
 
         private void Awake()

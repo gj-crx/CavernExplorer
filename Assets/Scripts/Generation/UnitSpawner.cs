@@ -18,7 +18,6 @@ namespace Generation
         {
             while (GameManager.GameIsRunning)
             {
-                Debug.Log("spawning q iteration " + UnitsToSpawn.Count);
                 if (UnitsToSpawn.Count > 0 && GameManager.MapGenerator.TilesToSet.Count == 0)
                 {
                     var CurrentUnitToSpawn = UnitsToSpawn.Pop();
