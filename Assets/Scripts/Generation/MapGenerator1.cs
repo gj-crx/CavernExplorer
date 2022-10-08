@@ -105,13 +105,11 @@ namespace Generation
         }
         public void SpawnAllTiles_MainThread(Tilemap ReferenceTilemap, RuleTile WallTile)
         {
+            Debug.Log("Tiles placing started");
             if (TilesToSet.Count > 0)
             {
                 var TilesToSetArray = TilesToSet.ToArray();
-                Debug.Log(TilesToSetArray.Length);
                 TilesToSet = new List<Vector3Int>();
-                Debug.Log(TilesToSetArray.Length);
-
 
                 RuleTile[] t = new RuleTile[TilesToSetArray.Length];
                 for (int i = 0; i < t.Length; i++) t[i] = WallTile;
@@ -306,13 +304,30 @@ namespace Generation
                     }
                 }
             }
+            public void CheckForUselessTiles(Map ReferenceMap, bool PhysicallyRemove)
+            {
+                for (int y = -Radius; y <= Radius; y++)
+                {
+                    for (int x = -Radius; x <= Radius; x++)
+                    {
+                        var currentTile = GameSettings.Singleton.tileMap.GetTile(new Vector3Int(Center.x + x, Center.y + y, 0));
+
+                        if (currentTile != null)
+                        {
+                            Vector2Int CurrentTilePosition = new Vector2Int(Center.x + x, Center.y + y);
+                            if (GetNeigbhourImpassableTilesCount(CurrentTilePosition, ReferenceMap) < 3) GameSettings.Singleton.tileMap.SetTile(BasicFunctions.ToVector3Int(CurrentTilePosition), null);
+                        }
+                    }
+                }
+            }
+
             private bool TileIsUseless(Vector2Int TilePos, Map ReferenceMap)
             {
                 if ((ReferenceMap.LandscapeMap[TilePos.x, TilePos.y] != null && ReferenceMap.LandscapeMap[TilePos.x, TilePos.y].Land == LandType.Impassable) 
-                    && GetNeigbhourPassableTilesCount(TilePos, ReferenceMap) < 3) return true;
+                    && GetNeigbhourImpassableTilesCount(TilePos, ReferenceMap) < 3) return true;
                 else return false;
             }
-            private int GetNeigbhourPassableTilesCount(Vector2Int TilePos, Map ReferenceMap)
+            private int GetNeigbhourImpassableTilesCount(Vector2Int TilePos, Map ReferenceMap)
             {
                 int count = 0;
                 for (int y = -1; y <= 1; y++)

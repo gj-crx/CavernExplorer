@@ -9,7 +9,8 @@ public class GameSettings : MonoBehaviour
     public MapGenerator1.GeneratorSettings MapGeneratorSettings;
     public UnitsSpawningSettings unitsSpawningSettings;
     public Tilemap tileMap;
-    public Tilemap PatternTileMap;
+    public Sprite UselessTileSprite;
+
     public RuleTile[] WallTiles;
 
     public float UnitMovementTileSkipTreshhold = 1;
@@ -40,8 +41,8 @@ public class GameSettings : MonoBehaviour
 
         if (GameManager.MapGenerator.ToGenerateOrder)
         {
-            GameManager.MapGenerator.ToGenerateOrder = false;
             GameManager.MapGenerator.SpawnAllTiles_MainThread(tileMap, WallTiles[0]);
+            GameManager.MapGenerator.ToGenerateOrder = false;
         }
     }
     public void DebugActionExecute()

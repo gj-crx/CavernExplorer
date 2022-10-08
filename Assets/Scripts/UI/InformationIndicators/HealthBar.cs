@@ -10,14 +10,17 @@ namespace UI.Indicators
     {
         public Unit unitToShow;
 
-        private Text HPShowText = null;
+        private Text HPShowText;
+        private Image FillerImage;
 
         private void Awake()
         {
+            FillerImage = transform.Find("Filler").GetComponent<Image>();
             HPShowText = transform.Find("Filler").Find("Text").GetComponent<Text>();
         }
         void Update()
         {
+            FillerImage.fillAmount = unitToShow.Stats.CurrentHP / unitToShow.Stats.MaxHP;
             HPShowText.text = unitToShow.Stats.CurrentHP.ToString() + "/" + unitToShow.Stats.MaxHP;
         }
     }

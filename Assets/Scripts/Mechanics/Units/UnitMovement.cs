@@ -27,7 +27,7 @@ public class UnitMovement
     {
         if (Way != null && Way.Length > 1)
         {
-            Debug.Log("got a new way");
+        //    Debug.Log("new way");
             localWay = Way;
             Way = null;
             localCurrentDistance = CurrentDistance;

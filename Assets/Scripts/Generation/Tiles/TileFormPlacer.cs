@@ -7,67 +7,22 @@ using System.Threading.Tasks;
 namespace Generation {
     public class TileFormPlacer
     {
-        private Tilemap PatternTileMap;
         private Tilemap ActualTileMap;
         private MapGenerator1 MapGen;
 
 
 
-        private List<TilePattern> TilePatterns = new List<TilePattern>();
 
 
 
 
-
-        public TileFormPlacer(Tilemap PatternTileMap, Tilemap ActualTileMap, MapGenerator1 MapGen)
+        public TileFormPlacer(Tilemap ActualTileMap, MapGenerator1 MapGen)
         {
-            this.PatternTileMap = PatternTileMap;
             this.ActualTileMap = ActualTileMap;
             this.MapGen = MapGen;
 
 
             //   CreateTilePatterns();
-        }
-        private void CreateTilePatterns()
-        {
-            int PatternBorderMinX = PatternTileMap.cellBounds.xMin;
-            int PatternBorderMinY = PatternTileMap.cellBounds.yMin;
-            int PatternBorderMaxX = PatternTileMap.cellBounds.xMax;
-            int PatternBorderMaxY = PatternTileMap.cellBounds.yMax;
-
-            for (int y = PatternTileMap.cellBounds.yMin; y <= PatternTileMap.cellBounds.yMax; y++)
-            {
-                for (int x = PatternTileMap.cellBounds.xMin; x <= PatternTileMap.cellBounds.xMax; x++)
-                {
-                    var _tile = PatternTileMap.GetTile(new Vector3Int(x, y, 0));
-                    if (_tile != null && PatternsListContainsTile(GetTilesAround(new Vector3Int(x, y, 0), PatternTileMap)) == false)
-                    {
-                        TilePatterns.Add(new TilePattern(new Vector3Int(x, y, 0), PatternTileMap));
-                    }
-                }
-            }
-            Debug.Log(TilePatterns.Count);
-        }
-        private TileBase GetProperTileType(bool[] TilesAround)
-        {
-            foreach (var Pattern in TilePatterns)
-            {
-                if (BasicFunctions.ArrayOfBoolEquals(Pattern.OtherTilesPositions, TilesAround))
-                {
-                    Debug.Log("found type");
-                    return Pattern._tile;
-                }
-            }
-            Debug.Log("pattern for tile not found");
-            return null;
-        }
-        private bool PatternsListContainsTile(bool[] SurroundingTiles)
-        {
-            foreach (var Pattern in TilePatterns)
-            {
-                if (BasicFunctions.ArrayOfBoolEquals(SurroundingTiles, Pattern.OtherTilesPositions)) return true;
-            }
-            return false;
         }
         private bool[] GetTilesAround(Vector3Int TilePosition, Tilemap ReferenceTileMap)
         {
@@ -78,19 +33,13 @@ namespace Generation {
             }
             return NeibghourTiles;
         }
-        public void ReplaceAllTiles()
+        public void ClearUselessTiles()
         {
-            for (int y = ActualTileMap.cellBounds.yMin; y <= ActualTileMap.cellBounds.yMax; y++)
+            Debug.Log("test");
+            foreach (var sector in GameManager.MapGenerator.NewlyGeneratedSectors)
             {
-                for (int x = ActualTileMap.cellBounds.xMin; x <= ActualTileMap.cellBounds.xMax; x++)
-                {
-                    var _tile = ActualTileMap.GetTile(new Vector3Int(x, y, 0));
-                    if (_tile != null)
-                    {
-                        ActualTileMap.SetTile(new Vector3Int(x, y, 0), GetProperTileType(GetTilesAround(new Vector3Int(x, y, 0), ActualTileMap)));
-
-                    }
-                }
+                Debug.Log("test3");
+                sector.CheckForUselessTiles(GameManager.map, true);
             }
         }
     }
