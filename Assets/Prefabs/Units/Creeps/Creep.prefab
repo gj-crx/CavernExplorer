@@ -94,7 +94,7 @@ CapsuleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5000566942055694710}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -155,9 +155,12 @@ MonoBehaviour:
     CollisionRadius: 0
   unitMovement:
     Way: []
+    localWay: []
+    localCurrentDistance: 0
     currentTarget: {fileID: 0}
     CurrentDirection: {x: 0, y: 0, z: 0}
   LastNonTransformPosition: {x: 0, y: 0, z: 0}
+  animator: {fileID: 0}
   MovementHalted: 0
 --- !u!114 &-4444343729125353677
 MonoBehaviour:

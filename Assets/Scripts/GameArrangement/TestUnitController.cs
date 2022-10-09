@@ -30,7 +30,7 @@ public class TestUnitController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q))
         {
             Vector3Int s = new Vector3Int((int)Camera.main.ScreenToWorldPoint(Input.mousePosition).x, (int)Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
-          //  UnityEngine.Debug.Log(GameManager.map.LandscapeMap[(int)s.x, (int)s.y].Land + " " + s.x + " : " + s.y);
+            UnityEngine.Debug.Log(GameManager.map.LandscapeMap[(int)s.x, (int)s.y].Land + " " + s.x + " : " + s.y);
             TileBase currentTile = GameSettings.Singleton.tileMap.GetTile(s);
             UnityEngine.Debug.Log(currentTile);
         }

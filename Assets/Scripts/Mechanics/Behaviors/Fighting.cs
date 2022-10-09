@@ -37,7 +37,7 @@ namespace Behaviours
                     OwnerUnit.unitMovement.Way = null;
                     Hit(CurrentTarget);
                     if (_animator != null) _animator.SetBool("Attacked", true);
-                    OwnerUnit.MovementHalted = true;
+                   // OwnerUnit.MovementHalted = true;
                     await Task.Delay((int)OwnerUnit.Stats.AttackDelay * 1000);
                 }
                 await Task.Delay(CheckIntervalMiliseconds);

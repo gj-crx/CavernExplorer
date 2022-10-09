@@ -15,8 +15,8 @@ namespace UI.Indicators
 
         private void Awake()
         {
-            FillerImage = transform.Find("Filler").GetComponent<Image>();
-            HPShowText = transform.Find("Filler").Find("Text").GetComponent<Text>();
+            FillerImage = transform.Find("Bar").Find("Filler").GetComponent<Image>();
+            HPShowText = transform.Find("Bar").Find("Filler").Find("Text").GetComponent<Text>();
         }
         void Update()
         {

@@ -122,7 +122,7 @@ public class NormalPathfinding : IPathfinding
             for (int x = -1; x <= 1; x++)
             {
                 Vector2Int current = new Vector2Int(Point.x + x, Point.y + y);
-                if (ValidPath(current))
+                if ((x == 0 || y == 0) && (x != 0 || y != 0) && ValidPath(current))
                 {
                     ToCheck[StackToAdd].Push(current);
                 }
@@ -138,6 +138,7 @@ public class NormalPathfinding : IPathfinding
             for (int x = 0; x != -2; x++)
             {
                 //  Debug.Log("path " + new Vector2Int(CurrentPoint.x, CurrentPoint.y) + " distance: " + DistancesMap[CurrentPoint.x, CurrentPoint.y]);
+                if ((x == 0 || y == 0) && (x != 0 || y != 0))
                 if (DistancesMap[CurrentPoint.x + x, CurrentPoint.y + y] != null && DistancesMap[CurrentPoint.x + x, CurrentPoint.y + y].Distance < CurrentMinDistance)
                 {
                     CurrentMinDistance = DistancesMap[CurrentPoint.x + x, CurrentPoint.y + y].Distance;
