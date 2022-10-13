@@ -129,10 +129,6 @@ public class Unit : MonoBehaviour
         public float AttackDelay;
         public float AttackRange;
         public float VisionRadius;
-        public float TrainTimeNeeded;
-        public float[] ResourcesCostToBuild;
-        public float ResourcesCarriedMaximum;
-        public float[] ResourcesGivenOnKilled;
 
         public byte CollisionRadius;
 
@@ -148,8 +144,6 @@ public class Unit : MonoBehaviour
             AttackDelay += AdditionalStats.AttackDelay;
             AttackRange += AdditionalStats.AttackRange;
             VisionRadius += AdditionalStats.VisionRadius;
-            TrainTimeNeeded += AdditionalStats.TrainTimeNeeded;
-            ResourcesCarriedMaximum += AdditionalStats.ResourcesCarriedMaximum;
         }
     }
     public enum AttackType : byte

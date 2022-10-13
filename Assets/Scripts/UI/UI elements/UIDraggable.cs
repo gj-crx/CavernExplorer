@@ -19,11 +19,13 @@ namespace UI
             {
                 PossibleDropSpots.Add(UIManager.Singleton.PlayerInventory.UIGrid);
                 PossibleDropSpots.Add(UIManager.Singleton.ExternalInventory.UIGrid);
+                PossibleDropSpots.Add(UIManager.Singleton.panel_Toolbar.transform.Find("ItemGrid").gameObject);
             }
         }
 
         public void OnDrag(PointerEventData eventData)
         {
+            transform.SetParent(UIManager.Singleton.gameObject.transform);
             if (UIManager.Singleton.MobileControls == false)
             {
                 transform.position = Input.mousePosition;

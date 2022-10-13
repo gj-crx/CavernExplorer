@@ -94,7 +94,7 @@ CapsuleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5000566942055694710}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -148,10 +148,6 @@ MonoBehaviour:
     AttackDelay: 1
     AttackRange: 2.1
     VisionRadius: 50
-    TrainTimeNeeded: 0
-    ResourcesCostToBuild: []
-    ResourcesCarriedMaximum: 0
-    ResourcesGivenOnKilled: []
     CollisionRadius: 0
   unitMovement:
     Way: []

@@ -38,6 +38,8 @@ public static class GameManager
     }
     public static void InitializeGame()
     {
+        Application.targetFrameRate = 60;
+
         map = new Map();
         unitSpawner = new UnitSpawner();
         MapGenerator = new MapGenerator1(GameSettings.Singleton.MapGeneratorSettings, map, GameSettings.Singleton.tileMap, GameSettings.Singleton.WallTiles);
