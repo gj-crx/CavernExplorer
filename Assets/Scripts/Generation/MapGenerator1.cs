@@ -49,10 +49,11 @@ namespace Generation
                     Sector PlayerSector = GetUnitSector(Player);
                     if (PlayerSector != null)
                     {
+                        int GeneratedCount = 0;
                         Sector[] CurrentNeibSectors = Get4NeigbhourSectors(PlayerSector);
                         for (int i = 0; i < CurrentNeibSectors.Length; i++)
                         {
-                            int GeneratedCount = 0;
+                            
                             if (CurrentNeibSectors[i] != null)
                             {
                                 GeneratedCount = GenerataNeibghourSectors(CurrentNeibSectors[i]);
@@ -63,14 +64,14 @@ namespace Generation
                                 new Sector(PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y, GenSettings.SectorRadius, GenSettings.PointsPerSector, map);
                                 GeneratedCount = GenerataNeibghourSectors(map.SectorMap[PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y]);
                             }
-                            if (GeneratedCount > 0)
+                        }
+                        if (GeneratedCount > 0)
+                        {
+                            for (int n = 0; n < 1; n++)
                             {
-                                for (int n = 0; n < 1; n++)
-                                {
-                                    CheckForUselessTiles();
-                                }
-                                GameManager.MapGenerator.ToGenerateOrder = true;
+                                CheckForUselessTiles();
                             }
+                            GameManager.MapGenerator.ToGenerateOrder = true;
                         }
                     }
                 }
@@ -300,6 +301,19 @@ namespace Generation
                              Debug.Log("Tile " + CurrentTilePosition + " is added to removal queue");
                             ReferenceMap.LandscapeMap[CurrentTilePosition.x, CurrentTilePosition.y].Land = LandType.Passable;
                             GameManager.MapGenerator.TilesToSet.Remove(CurrentTilePosition);
+
+                            //and now we also checking neib tiles to removed one
+                            for (int Y = -1; Y <= 1; Y++)
+                                for (int X = -1; X <= 1; X++)
+                                {
+                                    Vector3Int NeibTilePosition = CurrentTilePosition + new Vector3Int(X, Y, 0);
+                                    if ((X != 0 || Y != 0) && (X == 0 || Y == 0)) //checking only 4 directly connected tiles
+                                    if (GameManager.MapGenerator.TilesToSet.Contains(NeibTilePosition) == true && TileIsUseless(BasicFunctions.ToVector2Int(NeibTilePosition), ReferenceMap))
+                                    {
+                                        ReferenceMap.LandscapeMap[NeibTilePosition.x, NeibTilePosition.y].Land = LandType.Passable;
+                                        GameManager.MapGenerator.TilesToSet.Remove(NeibTilePosition);
+                                    }
+                                }
                         }
                     }
                 }
@@ -315,7 +329,7 @@ namespace Generation
                         if (currentTile != null)
                         {
                             Vector2Int CurrentTilePosition = new Vector2Int(Center.x + x, Center.y + y);
-                            if (GetNeigbhourImpassableTilesCount(CurrentTilePosition, ReferenceMap) < 3) GameSettings.Singleton.tileMap.SetTile(BasicFunctions.ToVector3Int(CurrentTilePosition), null);
+                            if (TileIsUseless(CurrentTilePosition, ReferenceMap)) GameSettings.Singleton.tileMap.SetTile(BasicFunctions.ToVector3Int(CurrentTilePosition), null);
                         }
                     }
                 }
@@ -323,9 +337,30 @@ namespace Generation
 
             private bool TileIsUseless(Vector2Int TilePos, Map ReferenceMap)
             {
-                if ((ReferenceMap.LandscapeMap[TilePos.x, TilePos.y] != null && ReferenceMap.LandscapeMap[TilePos.x, TilePos.y].Land == LandType.Impassable) 
-                    && GetNeigbhourImpassableTilesCount(TilePos, ReferenceMap) < 3) return true;
+                if (ReferenceMap.LandscapeMap[TilePos.x, TilePos.y] != null && ReferenceMap.LandscapeMap[TilePos.x, TilePos.y].Land == LandType.Impassable
+                    && TileHasConnections(TilePos, ReferenceMap) == false) return true;
                 else return false;
+            }
+            private bool TileHasConnections(Vector2Int TilePos, Map ReferenceMap)
+            {
+                if (ReferenceMap.LandscapeMap[TilePos.x + 1, TilePos.y] == null || ReferenceMap.LandscapeMap[TilePos.x + 1, TilePos.y].Land != LandType.Impassable)
+                {
+                    if (ReferenceMap.LandscapeMap[TilePos.x - 1, TilePos.y] == null || ReferenceMap.LandscapeMap[TilePos.x - 1, TilePos.y].Land != LandType.Impassable)
+                    {
+                        return false;
+                    }
+                }
+                
+                if (ReferenceMap.LandscapeMap[TilePos.x, TilePos.y + 1] == null || ReferenceMap.LandscapeMap[TilePos.x, TilePos.y + 1].Land != LandType.Impassable)
+                {
+                    if (ReferenceMap.LandscapeMap[TilePos.x, TilePos.y - 1] == null || ReferenceMap.LandscapeMap[TilePos.x, TilePos.y - 1].Land != LandType.Impassable)
+                    {
+                        return false;
+                    }
+                }
+                
+
+                return true;
             }
             private int GetNeigbhourImpassableTilesCount(Vector2Int TilePos, Map ReferenceMap)
             {

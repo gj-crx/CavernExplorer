@@ -55,7 +55,7 @@ namespace Player
             _Animator.SetFloat("YSpeed", Movement.y);
 
             if (Movement.magnitude == 0)
-            {
+            { //movement stops
                 _Animator.SetBool("Stopped", true);
                 _Animator.SetFloat("LastDirX", LastDirection.x);
                 _Animator.SetFloat("LastDirY", LastDirection.y);
@@ -64,6 +64,7 @@ namespace Player
             {
                 _Animator.SetBool("Stopped", false);
                 LastDirection = Movement.normalized;
+                //correcting hitbox
                 if (LastDirection.x != 0) _hitBox.transform.localPosition = _hitBox.SidePosition;
                 else
                 {
@@ -87,6 +88,8 @@ namespace Player
         {
             if (Input.GetButtonDown("Fire1") && AttackAnimatinoBeingPlayed == false)
             {
+                //checking for input to change facing direction of character, but not no actually move it
+                Vector3 CurrentDirection = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")).normalized;
                 if (GameManager.LocalPlayerHeroUnit.Stats.attackType == Unit.AttackType.Melee)
                 {
                     _Animator.SetBool("Attack", true);
@@ -95,10 +98,10 @@ namespace Player
                 }
                 else if (GameManager.LocalPlayerHeroUnit.Stats.attackType == Unit.AttackType.Ranged)
                 {
-                    GameObject.Instantiate(Prefab_Bullet, transform.position + ShootingBulletsOffset + (LastDirection.normalized * ShootingBulletOffsetModifier),
-                        Quaternion.identity).transform.eulerAngles = new Vector3(0, 0, BasicFunctions.DirectionToAngle(LastDirection));
+                    GameObject.Instantiate(Prefab_Bullet, transform.position + ShootingBulletsOffset + (CurrentDirection * ShootingBulletOffsetModifier),
+                        Quaternion.identity).transform.eulerAngles = new Vector3(0, 0, BasicFunctions.DirectionToAngle(CurrentDirection));
                     _Animator.SetBool("Attack", true);
-                    ChangeAvatar(DirectionToGunAvatar(LastDirection));
+                    ChangeAvatar(DirectionToGunAvatar(CurrentDirection));
                 }
             }
         }

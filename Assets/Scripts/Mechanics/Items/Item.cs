@@ -11,6 +11,7 @@ namespace Items
         public string ItemName = "Undefined item";
         public Sprite Icon;
         public Unit.UnitStats ItemStats;
+        public Inventory.EquipmentSlot UsedSlot;
 
     }
 }

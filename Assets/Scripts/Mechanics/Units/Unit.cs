@@ -134,7 +134,7 @@ public class Unit : MonoBehaviour
 
         public void CombineStats(UnitStats AdditionalStats)
         {
-            attackType = AdditionalStats.attackType;
+            if (AdditionalStats.attackType != AttackType.None) attackType = AdditionalStats.attackType;
 
             MaxHP += AdditionalStats.MaxHP;
             CurrentHP += AdditionalStats.CurrentHP;
@@ -145,10 +145,24 @@ public class Unit : MonoBehaviour
             AttackRange += AdditionalStats.AttackRange;
             VisionRadius += AdditionalStats.VisionRadius;
         }
+        public void SubstactStats(UnitStats SubstractedStats)
+        {
+            if (SubstractedStats.attackType != AttackType.None) attackType = AttackType.Melee;
+
+            MaxHP -= SubstractedStats.MaxHP;
+            CurrentHP -= SubstractedStats.CurrentHP;
+            Damage -= SubstractedStats.Damage;
+            Regeneration -= SubstractedStats.Regeneration;
+            MoveSpeed -= SubstractedStats.MoveSpeed;
+            AttackDelay -= SubstractedStats.AttackDelay;
+            AttackRange -= SubstractedStats.AttackRange;
+            VisionRadius -= SubstractedStats.VisionRadius;
+        }
     }
     public enum AttackType : byte
     {
         Melee = 0,
-        Ranged = 1
+        Ranged = 1,
+        None = 2
     }
 }

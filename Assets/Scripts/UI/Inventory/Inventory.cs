@@ -14,7 +14,7 @@ namespace UI.InventoryLogic
         public Unit CarrierOfItems = null;
 
         public List<Item> CarriedItems = new List<Item>();
-        private List<Item> AppliedItems = new List<Item>();
+        public Item[] ItemsInEquipmentSlots = new Item[6];
 
         private void Awake()
         {
@@ -50,11 +50,18 @@ namespace UI.InventoryLogic
         }
         public void ApplyItem(Item ReferenceItem)
         {
-            if (AppliedItems.Contains(ReferenceItem) == false && CarriedItems != null)
+            if (ItemsInEquipmentSlots[(byte)ReferenceItem.UsedSlot] != null)
             {
-                AppliedItems.Add(ReferenceItem);
-                CarrierOfItems.Stats.CombineStats(ReferenceItem.ItemStats);
+                DisapplyItem(ItemsInEquipmentSlots[(byte)ReferenceItem.UsedSlot]);
             }
+            if (ReferenceItem.UsedSlot != EquipmentSlot.None) ItemsInEquipmentSlots[(byte)ReferenceItem.UsedSlot] = ReferenceItem;
+            CarrierOfItems.Stats.CombineStats(ReferenceItem.ItemStats);
+        }
+        public void DisapplyItem(Item ReferenceItem)
+        {
+            Debug.Log("Item disapplied " + ReferenceItem.ItemName);
+            ItemsInEquipmentSlots[(byte)ReferenceItem.UsedSlot] = null;
+            CarrierOfItems.Stats.SubstactStats(ReferenceItem.ItemStats);
         }
         public void StartingItemsInitializer()
         {
@@ -63,6 +70,17 @@ namespace UI.InventoryLogic
                 AddItem(StartingItem, true);
                 ApplyItem(StartingItem);
             }
+        }
+
+        public enum EquipmentSlot : byte
+        {
+            Helmet = 0,
+            Chestplates = 1,
+            Leggings = 2,
+            Boots = 3,
+            LeftHand = 4,
+            RightHand = 5,
+            None = 6
         }
     }
 }
