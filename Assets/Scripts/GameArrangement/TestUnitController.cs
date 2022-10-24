@@ -38,6 +38,7 @@ public class TestUnitController : MonoBehaviour
         {
             GameManager.tileFormPlacer.ClearUselessTiles();
         }
+
         return;
         if (tt)
         {

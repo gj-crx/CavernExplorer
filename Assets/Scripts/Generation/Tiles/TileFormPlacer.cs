@@ -39,7 +39,7 @@ namespace Generation {
             foreach (var sector in GameManager.MapGenerator.NewlyGeneratedSectors)
             {
                 Debug.Log("test3");
-                sector.CheckForUselessTiles(GameManager.map, true);
+                sector.ManuallyRemoveUselessTiles(GameManager.map, true);
             }
         }
     }

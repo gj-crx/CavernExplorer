@@ -29,7 +29,7 @@ namespace Generation
             }
         }
 
-        public void SpawnUnitsInSector(MapGenerator1.Sector ReferenceSector, System.Random random)
+        public void SpawnUnitsInSector(Sector ReferenceSector, System.Random random)
         {
             while (random.Next(0, 100) < GameSettings.Singleton.unitsSpawningSettings.CreepSpawnChance)
             {
