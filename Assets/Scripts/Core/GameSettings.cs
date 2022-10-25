@@ -7,6 +7,7 @@ using Generation;
 public class GameSettings : MonoBehaviour
 {
     public MapGenerator1.GeneratorSettings MapGeneratorSettings;
+    public int Seed = 0;
     public UnitsSpawningSettings unitsSpawningSettings;
     public Tilemap tileMap;
     public Sprite UselessTileSprite;

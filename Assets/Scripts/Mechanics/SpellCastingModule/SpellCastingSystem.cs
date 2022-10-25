@@ -17,11 +17,12 @@ namespace Spells
 
         public enum SpellEffect : byte
         {
-            HPRestoration = 0,
-            MovespeedBonus = 1,
-            Slow = 2,
-            Damage = 3,
-            FireballCast = 4
+            None = 0,
+            HPRestoration = 1,
+            MovespeedBonus = 2,
+            Slow = 3,
+            Damage = 4,
+            FireballCast = 5
         }
     }
 }

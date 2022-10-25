@@ -13,7 +13,7 @@ namespace Generation
         private Vector2Int[] SectorPoints;
         public Vector2Int[] JointPoints = new Vector2Int[4];
         public byte RadiusValue { get { return Radius; } }
-        public Vector2Int RandomPoint { get { return SectorPoints[GameManager.random.Next(0, SectorPoints.Length)]; } }
+        public Vector2Int RandomPoint { get { return SectorPoints[GameManager.GenRandom.Next(0, SectorPoints.Length)]; } }
 
         public Sector(int X, int Y, byte Radius, byte SectorPointsCount, Map MapToGenerate)
         {
@@ -39,12 +39,12 @@ namespace Generation
         }
         private Vector2Int GetRandomPointInSector()
         {
-            return new Vector2Int(GameManager.random.Next(-Radius, Radius), GameManager.random.Next(-Radius, Radius)) + Center;
+            return new Vector2Int(GameManager.GenRandom.Next(-Radius, Radius), GameManager.GenRandom.Next(-Radius, Radius)) + Center;
         }
         private Vector2Int GetRandomJointPoint(JointPointCords Side)
         {
-            if (Side.x != 0) return new Vector2Int(Radius * Side.x, GameManager.random.Next(-Radius + 1, Radius)) + Center;
-            else return new Vector2Int(GameManager.random.Next(-Radius + 1, Radius), Radius * Side.y) + Center;
+            if (Side.x != 0) return new Vector2Int(Radius * Side.x, GameManager.GenRandom.Next(-Radius + 1, Radius)) + Center;
+            else return new Vector2Int(GameManager.GenRandom.Next(-Radius + 1, Radius), Radius * Side.y) + Center;
         }
         private Vector2Int ConnectPoints(Vector2Int CurrentPoint, Vector2Int TargetPoint, Map ReferenceMap, List<Vector3Int> SectorTilePositions)
         {
@@ -149,7 +149,7 @@ namespace Generation
                 bool Found = false;
                 while (Found == false)
                 {
-                    int rnd = GameManager.random.Next(0, SectorPoints.Length);
+                    int rnd = GameManager.GenRandom.Next(0, SectorPoints.Length);
                     if (SectorPoints[rnd] == Vector2Int.zero)
                     {
                         SectorPoints[rnd] = JointPoints[i];
@@ -174,7 +174,7 @@ namespace Generation
             }
             foreach (var TilePosition in SectorTilePositions) GameManager.MapGenerator.TilesToSet.Add(TilePosition);
             //create positions to spawn units
-            GameManager.unitSpawner.SpawnUnitsInSector(this, GameManager.random);
+            GameManager.unitSpawner.SpawnUnitsInSector(this, GameManager.GenRandom);
         }
         public void CheckForUselessTiles(Map ReferenceMap)
         {

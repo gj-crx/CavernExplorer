@@ -9,18 +9,34 @@ namespace UI.InventoryLogic
 {
     public class ToolbarItem : MonoBehaviour
     {
-        public Item RepresentedItem;
+        public Item RepresentedItem = null;
+        public bool IsEquipedArmor = false;
+
+        private UIDraggable draggable;
 
         private void Start()
         {
+            try
+            {
+                draggable = GetComponent<UIDraggable>();
+            }
+            catch { }
             GetComponent<Button>().onClick.AddListener(UseItem);
         }
 
 
         public void UseItem()
         {
-            Debug.Log(RepresentedItem.ItemName + " is applied " + RepresentedItem.ItemStats.attackType);
-            UIManager.Singleton.PlayerInventory.ApplyItem(RepresentedItem);
+            if (draggable != null && draggable.BeingDragged) return;
+            if (!IsEquipedArmor)
+            {
+                Debug.Log(RepresentedItem.ItemName + " is applied " + RepresentedItem.ItemStats.attackType);
+                UIManager.Singleton.PlayerInventory.ApplyItem(this);
+            }
+            else
+            {
+                if (RepresentedItem != null) UIManager.Singleton.PlayerInventory.DisapplyItem(this);
+            }
         }
     }
 }

@@ -28,7 +28,7 @@ public static class BasicFunctions
     public static Vector2Int GetDirectionBetween2Points(Vector2Int From, Vector2Int To)
     {
         Vector2Int Delta = To - From;
-        bool XAxisPriority = Convert.ToBoolean(GameManager.random.Next(0, 2));
+        bool XAxisPriority = Convert.ToBoolean(GameManager.GenRandom.Next(0, 2));
         //if x == 0 or y == 0 then return immidiatly, direction is clear
         if (Delta.x == 0 || Delta.y == 0)
         {

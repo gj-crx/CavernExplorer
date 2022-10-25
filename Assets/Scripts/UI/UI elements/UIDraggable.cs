@@ -12,6 +12,9 @@ namespace UI
 
         private List<GameObject> PossibleDropSpots = new List<GameObject>();
 
+        [HideInInspector]
+        public bool BeingDragged = false;
+
         
         void Start()
         {
@@ -25,6 +28,7 @@ namespace UI
 
         public void OnDrag(PointerEventData eventData)
         {
+            BeingDragged = true;
             transform.SetParent(UIManager.Singleton.gameObject.transform);
             if (UIManager.Singleton.MobileControls == false)
             {
@@ -38,6 +42,7 @@ namespace UI
 
         public void OnEndDrag(PointerEventData eventData)
         {
+            BeingDragged = false;
             transform.SetParent(null);
             transform.SetParent(GetNearestDropSpot().transform);
         }

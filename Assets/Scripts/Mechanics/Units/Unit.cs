@@ -78,14 +78,14 @@ public class Unit : MonoBehaviour
     {
         if (behavior != null && behavior.HaveExternalOrder == false && behavior.Active)
         {
-            behavior.StartBehaviourIterations(2000, GameManager.random.Next(0, 1000));
+            behavior.StartBehaviourIterations(2000, GameManager.Random.Next(0, 1000));
         }
     }
     public void ControlUnitBehaviour()
     {
         if (behavior != null && behavior.HaveExternalOrder == false && behavior.Active)
         {
-            behavior.StartBehaviourIterations(2000, GameManager.random.Next(0, 1000));
+            behavior.StartBehaviourIterations(2000, GameManager.Random.Next(0, 1000));
         }
     }
   
