@@ -9,12 +9,14 @@ public class GameSettings : MonoBehaviour
     public MapGenerator1.GeneratorSettings MapGeneratorSettings;
     public int Seed = 0;
     public UnitsSpawningSettings unitsSpawningSettings;
-    public Tilemap tileMap;
+    public Tilemap unpassableTilemap;
+    public Tilemap passableTilemap;
     public Sprite UselessTileSprite;
 
     public PlayerCharacterStartingAssets startingCharacterAsset;
 
     public RuleTile[] WallTiles;
+    public RuleTile FloorTile;
 
     public float UnitMovementTileSkipTreshhold = 1;
 
@@ -43,7 +45,7 @@ public class GameSettings : MonoBehaviour
 
         if (GameManager.MapGenerator.ToGenerateOrder)
         {
-            GameManager.MapGenerator.SpawnAllTiles_MainThread(tileMap, WallTiles[0]);
+            GameManager.MapGenerator.SpawnAllTiles_MainThread(unpassableTilemap, passableTilemap, WallTiles[0], FloorTile);
             GameManager.MapGenerator.ToGenerateOrder = false;
         }
     }

@@ -12,6 +12,10 @@ namespace UI
         [HideInInspector]
         public static UIManager Singleton;
 
+        [Header("UIs")]
+        public GameObject PreGameMenu;
+        public GameObject InGameUI;
+
         [Header("Main panels")]
         public GameObject panel_HealthBar;
         public GameObject panel_Toolbar;
@@ -31,6 +35,9 @@ namespace UI
             {
                 MobileControls = false;
             }
+            PreGameMenu.SetActive(true);
+            InGameUI.gameObject.SetActive(false);
+            
         }
 
 

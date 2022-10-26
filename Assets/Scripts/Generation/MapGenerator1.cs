@@ -16,7 +16,8 @@ namespace Generation
         private GeneratorSettings GenSettings;
         private readonly Map map;
 
-        public List<Vector3Int> TilesToSet = new List<Vector3Int>();
+        public List<Vector3Int> UnpassableToSet = new List<Vector3Int>();
+        public List<Vector3Int> FloorsToSet = new List<Vector3Int>();
         public Stack<Sector> NewlyGeneratedSectors = new Stack<Sector>();
 
         public bool ToGenerateOrder = false;
@@ -108,22 +109,30 @@ namespace Generation
         public void FiltrateWallsList()
         {
             Stack<Vector3Int> ToRemove = new Stack<Vector3Int>();
-            foreach (var tile in TilesToSet)
+            foreach (var tile in UnpassableToSet)
             {
                 if (map.LandscapeMap[tile.x, tile.y].Land != LandType.Impassable) ToRemove.Push(tile);
             }
-            foreach (var tile in ToRemove) TilesToSet.Remove(tile);
+            foreach (var tile in ToRemove) UnpassableToSet.Remove(tile);
         }
-        public void SpawnAllTiles_MainThread(Tilemap ReferenceTilemap, RuleTile WallTile)
+        public void SpawnAllTiles_MainThread(Tilemap UnpassableTilemap, Tilemap PassableTilemap, RuleTile WallTile, RuleTile FloorTile)
         {
             Debug.Log("Tiles placing started");
-            if (TilesToSet.Count > 0)
+            if (UnpassableToSet.Count > 0)
             {
-                var TilesToSetArray = TilesToSet.ToArray();
-                TilesToSet = new List<Vector3Int>();
-                RuleTile[] t = new RuleTile[TilesToSetArray.Length];
-                for (int i = 0; i < t.Length; i++) t[i] = WallTile;
-                ReferenceTilemap.SetTiles(TilesToSetArray, t);
+                var TilesToSetArray = UnpassableToSet.ToArray();
+                UnpassableToSet = new List<Vector3Int>();
+                RuleTile[] RuleTileArray = new RuleTile[TilesToSetArray.Length];
+                for (int i = 0; i < RuleTileArray.Length; i++) RuleTileArray[i] = WallTile; //unity does require that
+                UnpassableTilemap.SetTiles(TilesToSetArray, RuleTileArray);
+            }
+            if (FloorsToSet.Count > 0)
+            {
+                var TilesToSetTemporalArray = FloorsToSet.ToArray();
+                FloorsToSet = new List<Vector3Int>();
+                RuleTile[] RuleTileArray = new RuleTile[TilesToSetTemporalArray.Length];
+                for (int i = 0; i < RuleTileArray.Length; i++) RuleTileArray[i] = FloorTile;
+                PassableTilemap.SetTiles(TilesToSetTemporalArray, RuleTileArray);
             }
         }
         public void CheckForUselessTiles()

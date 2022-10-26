@@ -43,8 +43,8 @@ public static class GameManager
 
         map = new Map();
         unitSpawner = new UnitSpawner();
-        MapGenerator = new MapGenerator1(GameSettings.Singleton.MapGeneratorSettings, map, GameSettings.Singleton.tileMap, GameSettings.Singleton.WallTiles);
-        tileFormPlacer = new TileFormPlacer(GameSettings.Singleton.tileMap, MapGenerator);
+        MapGenerator = new MapGenerator1(GameSettings.Singleton.MapGeneratorSettings, map, GameSettings.Singleton.unpassableTilemap, GameSettings.Singleton.WallTiles);
+        tileFormPlacer = new TileFormPlacer(GameSettings.Singleton.unpassableTilemap, MapGenerator);
         Pathfinding = new NormalPathfinding(map);
 
         if (GameSettings.Singleton.Seed == 0) GameSettings.Singleton.Seed = UnityEngine.Random.Range(0, int.MaxValue);

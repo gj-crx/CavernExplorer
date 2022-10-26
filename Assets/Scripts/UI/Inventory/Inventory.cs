@@ -56,6 +56,8 @@ namespace UI.InventoryLogic
             ItemObject.transform.Find("Icon").GetComponent<Image>().color = new Color(1, 1, 1);
             ItemObject.GetComponent<ToolbarItem>().RepresentedItem = NewlyAddedItem;
             CarriedItems.Add(ItemObject.GetComponent<ToolbarItem>());
+
+            if (InstantApply) ApplyItem(ItemObject.GetComponent<ToolbarItem>());
         }
         public void RemoveItem(ToolbarItem ReferenceItem)
         {
@@ -67,7 +69,7 @@ namespace UI.InventoryLogic
             if (ReferenceItem.RepresentedItem.UsedSlot != EquipmentSlot.None)
             { //item uses a slot
                 //checking slot before equiping item
-                if (EquipmentSlots[(byte)ReferenceItem.RepresentedItem.UsedSlot].RepresentedItem is null == false) DisapplyItem(EquipmentSlots[(byte)ReferenceItem.RepresentedItem.UsedSlot]);
+                if (EquipmentSlots[(byte)ReferenceItem.RepresentedItem.UsedSlot] != null && EquipmentSlots[(byte)ReferenceItem.RepresentedItem.UsedSlot].RepresentedItem != null) DisapplyItem(EquipmentSlots[(byte)ReferenceItem.RepresentedItem.UsedSlot]);
                 EquipmentSlots[(byte)ReferenceItem.RepresentedItem.UsedSlot].RepresentedItem = ReferenceItem.RepresentedItem;
                 CarrierOfItems.Stats.CombineStats(ReferenceItem.RepresentedItem.ItemStats);
                 VisualizeArmorSlots(ReferenceItem, true);
