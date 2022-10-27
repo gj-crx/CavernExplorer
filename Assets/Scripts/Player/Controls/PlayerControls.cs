@@ -7,6 +7,8 @@ namespace Player
 {
     public class PlayerControls : MonoBehaviour
     {
+        [SerializeField]
+        private FloatingJoystick joystick;
         [HideInInspector]
         public static PlayerControls Singleton;
         public Unit PlayerCharacterUnit = null;
@@ -46,7 +48,14 @@ namespace Player
 
             if (AttackAnimatinoBeingPlayed == false)
             {
-                Movement = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+                if (SystemInfo.deviceType == DeviceType.Handheld || true)
+                {
+                    Movement = Vector3.up * joystick.Vertical + Vector3.right * joystick.Horizontal;
+                }
+                else
+                {
+                    Movement = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+                }
             }
             else Movement = Vector3.zero;
 
@@ -86,7 +95,7 @@ namespace Player
 
         private void AttackInputCheck()
         {
-            if (Input.GetButtonDown("Fire1") && AttackAnimatinoBeingPlayed == false)
+            if (Input.GetButtonUp("Fire1") && AttackAnimatinoBeingPlayed == false)
             {
                 //checking for input to change facing direction of character, but not no actually move it
                 Vector3 CurrentDirection = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")).normalized;
