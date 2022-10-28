@@ -7,25 +7,20 @@ namespace Player
 {
     public class PlayerControls : MonoBehaviour
     {
-        [SerializeField]
-        private FloatingJoystick joystick;
+        public Unit PlayerCharacterUnit = null;
+        public AnimationAvatarType CurrentSelectedWeapon = AnimationAvatarType.SwordAttack;
+        public List<Unit> AlreadyHittedTargets = new List<Unit>();
+
         [HideInInspector]
         public static PlayerControls Singleton;
-        public Unit PlayerCharacterUnit = null;
-
-        public AnimationAvatarType CurrentSelectedWeapon = AnimationAvatarType.SwordAttack;
         [HideInInspector]
         public Vector3 LastDirection;
-
-        [SerializeField]
-        private Animator _Animator = null;
-
+        [HideInInspector]
+        public bool AttackAnimatinoBeingPlayed = false;
 
 
         private Vector3 Movement;
-        [HideInInspector]
-        public bool AttackAnimatinoBeingPlayed = false;
-        public List<Unit> AlreadyHittedTargets = new List<Unit>();
+        
         [SerializeField]
         private Hitbox _hitBox;
         [SerializeReference]
@@ -36,16 +31,18 @@ namespace Player
         private Vector3 ShootingBulletsOffset = new Vector3(0, 0.4f, 0);
         [SerializeField]
         private float ShootingBulletOffsetModifier = 1.2f;
+        [SerializeField]
+        private Animator _Animator = null;
+        [SerializeField]
+        private FloatingJoystick joystick;
 
         private void Awake()
         {
             Singleton = this;
         }
 
-        private void Update()
+        private void LateUpdate()
         {
-            AttackInputCheck();
-
             if (AttackAnimatinoBeingPlayed == false)
             {
                 if (SystemInfo.deviceType == DeviceType.Handheld || true)
@@ -93,12 +90,12 @@ namespace Player
             if (Movement.x > 0) transform.eulerAngles = new Vector3(0, -180, 0);
         }
 
-        private void AttackInputCheck()
+        public void AttackInputCheck()
         {
-            if (Input.GetButtonUp("Fire1") && AttackAnimatinoBeingPlayed == false)
+            Debug.Log("attack");
+            if (AttackAnimatinoBeingPlayed == false)
             {
                 //checking for input to change facing direction of character, but not no actually move it
-                Vector3 CurrentDirection = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")).normalized;
                 if (GameManager.LocalPlayerHeroUnit.Stats.attackType == Unit.AttackType.Melee)
                 {
                     _Animator.SetBool("Attack", true);
@@ -107,10 +104,10 @@ namespace Player
                 }
                 else if (GameManager.LocalPlayerHeroUnit.Stats.attackType == Unit.AttackType.Ranged)
                 {
-                    GameObject.Instantiate(Prefab_Bullet, transform.position + ShootingBulletsOffset + (CurrentDirection * ShootingBulletOffsetModifier),
-                        Quaternion.identity).transform.eulerAngles = new Vector3(0, 0, BasicFunctions.DirectionToAngle(CurrentDirection));
+                    GameObject.Instantiate(Prefab_Bullet, transform.position + ShootingBulletsOffset + (LastDirection * ShootingBulletOffsetModifier),
+                        Quaternion.identity).transform.eulerAngles = new Vector3(0, 0, BasicFunctions.DirectionToAngle(LastDirection));
                     _Animator.SetBool("Attack", true);
-                    ChangeAvatar(DirectionToGunAvatar(CurrentDirection));
+                    ChangeAvatar(DirectionToGunAvatar(LastDirection));
                 }
             }
         }
@@ -146,8 +143,8 @@ namespace Player
         }
         private AnimationAvatarType DirectionToGunAvatar(Vector3 Direction)
         {
-            if (Direction.x != 0) return AnimationAvatarType.GunAttackSide;
-            if (Direction.y > 0) return AnimationAvatarType.GunAttackUp;
+            if (Direction.x != 0 && Mathf.Abs(Direction.x) > Mathf.Abs(Direction.y)) return AnimationAvatarType.GunAttackSide;
+            else if (Direction.y > 0) return AnimationAvatarType.GunAttackUp;
             else return AnimationAvatarType.GunAttackDown;
         }
     }
