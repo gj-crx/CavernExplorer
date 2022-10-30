@@ -7,7 +7,6 @@ using Generation;
 public class GameSettings : MonoBehaviour
 {
     public MapGenerator1.GeneratorSettings MapGeneratorSettings;
-    public int Seed = 0;
     public UnitsSpawningSettings unitsSpawningSettings;
     public Tilemap unpassableTilemap;
     public Tilemap passableTilemap;
@@ -16,7 +15,7 @@ public class GameSettings : MonoBehaviour
     public PlayerCharacterStartingAssets startingCharacterAsset;
 
     public RuleTile[] WallTiles;
-    public RuleTile FloorTile;
+    public Tile[] FloorTiles;
 
     public float UnitMovementTileSkipTreshhold = 1;
 
@@ -45,7 +44,7 @@ public class GameSettings : MonoBehaviour
 
         if (GameManager.MapGenerator.ToGenerateOrder)
         {
-            GameManager.MapGenerator.SpawnAllTiles_MainThread(unpassableTilemap, passableTilemap, WallTiles[0], FloorTile);
+            GameManager.MapGenerator.SpawnAllTiles_MainThread(unpassableTilemap, passableTilemap);
             GameManager.MapGenerator.ToGenerateOrder = false;
         }
     }

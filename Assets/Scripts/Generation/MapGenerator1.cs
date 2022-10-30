@@ -20,6 +20,11 @@ namespace Generation
         public List<Vector3Int> FloorsToSet = new List<Vector3Int>();
         public Stack<Sector> NewlyGeneratedSectors = new Stack<Sector>();
 
+        private RuleTile[] unpassableTilesArrayToSet;
+        private Vector3Int[] unpassablePositionsToSet;
+        private Vector3Int[] floorPositionsToSet;
+        private Tile[] floorTilesArrayToSet;
+
         public bool ToGenerateOrder = false;
 
 
@@ -38,8 +43,16 @@ namespace Generation
             {
                 Player.transform.position = BasicFunctions.ToVector3(map.SectorMap[0, 0].RandomPoint);
             }
-            GenerationThread = new Thread(ContiniousGeneration);
-            GenerationThread.Start();
+            if (GameSettings.Singleton.MapGeneratorSettings.ContiniousGeneration)
+            {
+                GenerationThread = new Thread(ContiniousGeneration);
+                GenerationThread.Start();
+            }
+            else
+            {
+                GenerationThread = new Thread(FixedRoomGeneration);
+                GenerationThread.Start();
+            }
         }
         void ContiniousGeneration()
         {
@@ -50,35 +63,55 @@ namespace Generation
                     Sector PlayerSector = GetUnitSector(Player);
                     if (PlayerSector != null)
                     {
+                        Debug.Log(PlayerSector.X * PlayerSector.RadiusValue + " " + PlayerSector.Y * PlayerSector.RadiusValue);
                         int GeneratedCount = 0;
                         Sector[] CurrentNeibSectors = Get4NeigbhourSectors(PlayerSector);
                         for (int i = 0; i < CurrentNeibSectors.Length; i++)
                         {
-                            
                             if (CurrentNeibSectors[i] != null)
-                            {
-                                GeneratedCount = GenerataNeibghourSectors(CurrentNeibSectors[i]);
+                            { //generating the neibghours of selected neibghour
+                                GeneratedCount += GenerataNeibghourSectors(CurrentNeibSectors[i]);
                             }
                             else
-                            {
+                            { //generating selected sector and his neibghours
                                 var Cords = Sector.JointPointCords.NumberToCords(i);
                                 new Sector(PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y, GenSettings.SectorRadius, GenSettings.PointsPerSector, map);
-                                GeneratedCount = GenerataNeibghourSectors(map.SectorMap[PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y]);
+                                GeneratedCount++;
+                                GeneratedCount += GenerataNeibghourSectors(map.SectorMap[PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y]);
                             }
                         }
+                        Debug.Log("Generated count " + GeneratedCount);
                         if (GeneratedCount > 0)
                         {
+                            Debug.Log("generated smth");
                             for (int n = 0; n < 1; n++)
                             {
                                 CheckForUselessTiles();
                             }
                             FiltrateWallsList();
+                            PrepareTilesToSet();
                             GameManager.MapGenerator.ToGenerateOrder = true;
                         }
                     }
                 }
                 Thread.Sleep(1500);
             }
+        }
+
+        void FixedRoomGeneration()
+        {
+            int GenRadius = GameSettings.Singleton.MapGeneratorSettings.StartingSectorsCount;
+            for (int y = -GenRadius; y <= GenRadius; y++)
+            {
+                for (int x = -GenRadius; x <= GenRadius; x++)
+                {
+                    new Sector(x, y, GenSettings.SectorRadius, GenSettings.PointsPerSector, map);
+                }
+            }
+            CheckForUselessTiles();
+            FiltrateWallsList();
+            PrepareTilesToSet();
+            GameManager.MapGenerator.ToGenerateOrder = true;
         }
         private byte GenerataNeibghourSectors(Sector ReferenceSector)
         {
@@ -99,6 +132,10 @@ namespace Generation
         [System.Serializable]
         public struct GeneratorSettings
         {
+            public int Seed;
+
+            public bool ContiniousGeneration;
+
             public byte PointsPerSector;
             public byte SectorRadius;
 
@@ -115,25 +152,26 @@ namespace Generation
             }
             foreach (var tile in ToRemove) UnpassableToSet.Remove(tile);
         }
-        public void SpawnAllTiles_MainThread(Tilemap UnpassableTilemap, Tilemap PassableTilemap, RuleTile WallTile, RuleTile FloorTile)
+        private void PrepareTilesToSet()
+        {//unity does require that
+            unpassablePositionsToSet = UnpassableToSet.ToArray();
+            UnpassableToSet = new List<Vector3Int>();
+            unpassableTilesArrayToSet = new RuleTile[unpassablePositionsToSet.Length];
+            for (int i = 0; i < unpassableTilesArrayToSet.Length; i++) unpassableTilesArrayToSet[i] = GameSettings.Singleton.WallTiles[0];
+
+            floorPositionsToSet = FloorsToSet.ToArray();
+            FloorsToSet = new List<Vector3Int>();
+            floorTilesArrayToSet = new Tile[floorPositionsToSet.Length];
+            for (int i = 0; i < floorTilesArrayToSet.Length; i++) floorTilesArrayToSet[i] = GameSettings.Singleton.FloorTiles[0];
+        }
+        public void SpawnAllTiles_MainThread(Tilemap UnpassableTilemap, Tilemap PassableTilemap)
         {
-            Debug.Log("Tiles placing started");
-            if (UnpassableToSet.Count > 0)
-            {
-                var TilesToSetArray = UnpassableToSet.ToArray();
-                UnpassableToSet = new List<Vector3Int>();
-                RuleTile[] RuleTileArray = new RuleTile[TilesToSetArray.Length];
-                for (int i = 0; i < RuleTileArray.Length; i++) RuleTileArray[i] = WallTile; //unity does require that
-                UnpassableTilemap.SetTiles(TilesToSetArray, RuleTileArray);
-            }
-            if (FloorsToSet.Count > 0)
-            {
-                var TilesToSetTemporalArray = FloorsToSet.ToArray();
-                FloorsToSet = new List<Vector3Int>();
-                RuleTile[] RuleTileArray = new RuleTile[TilesToSetTemporalArray.Length];
-                for (int i = 0; i < RuleTileArray.Length; i++) RuleTileArray[i] = FloorTile;
-                PassableTilemap.SetTiles(TilesToSetTemporalArray, RuleTileArray);
-            }
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            UnpassableTilemap.SetTiles(unpassablePositionsToSet, unpassableTilesArrayToSet);
+            PassableTilemap.SetTiles(floorPositionsToSet, floorTilesArrayToSet);
+            stopwatch.Stop();
+            Debug.Log("took time " + stopwatch.ElapsedMilliseconds);
         }
         public void CheckForUselessTiles()
         {

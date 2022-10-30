@@ -128,16 +128,16 @@ public static class BasicFunctions
     }
     public static float DirectionToAngle(Vector3 Direction)
     {
-        if (Direction.x > 0)
+        if (Mathf.Abs(Direction.x) > Mathf.Abs(Direction.y))
         {
-            return -90;
+            if (Direction.x > 0) return -90;
+            else if (Direction.x < 0) return 90;
         }
-        else if (Direction.x < 0)
+        else
         {
-            return 90;
+            if (Direction.y > 0) return 0;
+            else if (Direction.y < 0) return 180;
         }
-        if (Direction.y > 0) return 0;
-        if (Direction.y < 0) return 180;
         return 0;
     }
 

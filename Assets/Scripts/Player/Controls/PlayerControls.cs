@@ -92,7 +92,6 @@ namespace Player
 
         public void AttackInputCheck()
         {
-            Debug.Log("attack");
             if (AttackAnimatinoBeingPlayed == false)
             {
                 //checking for input to change facing direction of character, but not no actually move it
@@ -104,8 +103,8 @@ namespace Player
                 }
                 else if (GameManager.LocalPlayerHeroUnit.Stats.attackType == Unit.AttackType.Ranged)
                 {
-                    GameObject.Instantiate(Prefab_Bullet, transform.position + ShootingBulletsOffset + (LastDirection * ShootingBulletOffsetModifier),
-                        Quaternion.identity).transform.eulerAngles = new Vector3(0, 0, BasicFunctions.DirectionToAngle(LastDirection));
+                    Vector3 BulletPosition = transform.position + ShootingBulletsOffset + (LastDirection * ShootingBulletOffsetModifier);
+                    GameObject.Instantiate(Prefab_Bullet, BulletPosition, Quaternion.identity).transform.eulerAngles = new Vector3(0, 0, BasicFunctions.DirectionToAngle(LastDirection));
                     _Animator.SetBool("Attack", true);
                     ChangeAvatar(DirectionToGunAvatar(LastDirection));
                 }

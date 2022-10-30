@@ -47,8 +47,8 @@ public static class GameManager
         tileFormPlacer = new TileFormPlacer(GameSettings.Singleton.unpassableTilemap, MapGenerator);
         Pathfinding = new NormalPathfinding(map);
 
-        if (GameSettings.Singleton.Seed == 0) GameSettings.Singleton.Seed = UnityEngine.Random.Range(0, int.MaxValue);
-        GenRandom = new System.Random(GameSettings.Singleton.Seed);
+        if (GameSettings.Singleton.MapGeneratorSettings.Seed == 0) GameSettings.Singleton.MapGeneratorSettings.Seed = UnityEngine.Random.Range(0, int.MaxValue);
+        GenRandom = new System.Random(GameSettings.Singleton.MapGeneratorSettings.Seed);
         Random = new System.Random();
 
         MainThread = System.Threading.Thread.CurrentThread;
