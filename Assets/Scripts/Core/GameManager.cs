@@ -43,7 +43,7 @@ public static class GameManager
 
         map = new Map();
         unitSpawner = new UnitSpawner();
-        MapGenerator = new MapGenerator1(GameSettings.Singleton.MapGeneratorSettings, map, GameSettings.Singleton.unpassableTilemap, GameSettings.Singleton.WallTiles);
+        MapGenerator = new MapGenerator1(GameSettings.Singleton.MapGeneratorSettings, map);
         tileFormPlacer = new TileFormPlacer(GameSettings.Singleton.unpassableTilemap, MapGenerator);
         Pathfinding = new NormalPathfinding(map);
 

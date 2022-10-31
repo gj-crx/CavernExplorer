@@ -13,15 +13,19 @@ namespace UI
         public static UIManager Singleton;
 
         [Header("UIs")]
-        public GameObject PreGameMenu;
+        public GameObject PreGameUI;
         public GameObject InGameUI;
 
         [Header("Main panels")]
         public GameObject panel_HealthBar;
         public GameObject panel_Toolbar;
 
+
+        [Header("Second elements")]
         public Inventory PlayerInventory;
         public Inventory ExternalInventory = null;
+
+        public GameObject GenerationProgressBar;
 
 
         private void Awake()
@@ -35,7 +39,7 @@ namespace UI
             {
                 MobileControls = false;
             }
-            PreGameMenu.SetActive(true);
+            PreGameUI.SetActive(true);
             InGameUI.gameObject.SetActive(false);
             
         }

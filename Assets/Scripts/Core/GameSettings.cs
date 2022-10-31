@@ -6,7 +6,7 @@ using Generation;
 
 public class GameSettings : MonoBehaviour
 {
-    public MapGenerator1.GeneratorSettings MapGeneratorSettings;
+    public GeneratorSettings MapGeneratorSettings;
     public UnitsSpawningSettings unitsSpawningSettings;
     public Tilemap unpassableTilemap;
     public Tilemap passableTilemap;
@@ -71,5 +71,20 @@ public class GameSettings : MonoBehaviour
     private void OnApplicationQuit()
     {
         GameManager.GameIsRunning = false;
+    }
+
+    [System.Serializable]
+    public struct GeneratorSettings
+    {
+        public int Seed;
+
+        public bool ContiniousGeneration;
+
+        public byte PointsPerSector;
+        public byte SectorRadius;
+
+        public byte StartingSectorsCreationRadius;
+
+        public int TileLayingSpeed;
     }
 }
