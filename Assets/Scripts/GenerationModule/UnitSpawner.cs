@@ -31,7 +31,7 @@ namespace Generation
 
         public void SpawnUnitsInSector(Sector ReferenceSector, System.Random random)
         {
-            while (random.Next(0, 100) < GameSettings.Singleton.unitsSpawningSettings.CreepSpawnChance)
+            while (random.Next(0, 100) < GameManager.MapGenerator.CurrentGenSettings.CreepSpawningChance)
             {
                UnitsToSpawn.Push(new Tuple<GameObject, Vector3>(PrefabManager.Singleton.CreepPrefabs[0], BasicFunctions.ToVector3(ReferenceSector.RandomPoint)));
             }

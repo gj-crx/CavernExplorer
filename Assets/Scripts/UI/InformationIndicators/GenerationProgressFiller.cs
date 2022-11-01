@@ -15,7 +15,7 @@ namespace UI
         {
             fillerImage = GetComponent<Image>();
             progressText = transform.Find("ProgressAmount").GetComponent<Text>();
-            int Radius = GameSettings.Singleton.MapGeneratorSettings.StartingSectorsCreationRadius;
+            int Radius = GameManager.MapGenerator.CurrentGenSettings.StartingSectorsCreationRadius;
             for (int y = -Radius; y <= Radius; y++)
             {
                 for (int x = -Radius; x <= Radius; x++)

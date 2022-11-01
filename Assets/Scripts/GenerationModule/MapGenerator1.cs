@@ -12,9 +12,13 @@ namespace Generation
     {
         public Thread GenerationThread = null;
 
-        private GameSettings.GeneratorSettings GenSettings;
+        public GameSettings.GeneratorSettings CurrentGenSettings;
         private readonly Map map;
 
+        public int CurrentLevelToGenerate = 1;
+        /// <summary>
+        /// Indicates current progress of generation in UI
+        /// </summary>
         public int UIGenerationProgress = 0;
         public bool GenerationCompleted = false;
 
@@ -32,20 +36,28 @@ namespace Generation
 
         public MapGenerator1(GameSettings.GeneratorSettings settings, Map map)
         {
-            GenSettings = settings;
+            CurrentGenSettings = settings;
             this.map = map;
             GameSettings.Singleton.StartCoroutine(GameManager.unitSpawner.IterateUnitSpawningQueue());
         }
 
-        public void GenerateMap()
+        public void GenerateMap(GameSettings.GeneratorSettings SettingsToGenerate)
         {
+            CurrentGenSettings = SettingsToGenerate;
+            map.LandscapeMap = new LandscapeMapHolder();
+            map.SectorMap = new SectorMapHolder();
+            NewlyGeneratedSectors = new Stack<Sector>();
+
+            UIGenerationProgress = 0;
             GenerationCompleted = false;
-            new Sector(0, 0, GenSettings.SectorRadius, GenSettings.PointsPerSector, map);
+
+            GameSettings.Singleton.unpassableTilemap.ClearAllTiles();
+            new Sector(0, 0, CurrentGenSettings.SectorRadius, CurrentGenSettings.PointsPerSector, map);
             foreach (var Player in GameManager.PlayerRelatedCharacters)
             {
                 Player.transform.position = BasicFunctions.ToVector3(map.SectorMap[0, 0].RandomPoint);
             }
-            if (GameSettings.Singleton.MapGeneratorSettings.ContiniousGeneration)
+            if (CurrentGenSettings.ContiniousGeneration)
             {
                 GenerationThread = new Thread(ContiniousGeneration);
                 GenerationThread.Start();
@@ -77,7 +89,7 @@ namespace Generation
                             else
                             { //generating selected sector and his neibghours
                                 var Cords = Sector.JointPointCords.NumberToCords(i);
-                                new Sector(PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y, GenSettings.SectorRadius, GenSettings.PointsPerSector, map);
+                                new Sector(PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y, CurrentGenSettings.SectorRadius, CurrentGenSettings.PointsPerSector, map);
                                 GeneratedCount++;
                                 GeneratedCount += GenerataNeibghourSectors(map.SectorMap[PlayerSector.X + Cords.x, PlayerSector.Y + Cords.y]);
                             }
@@ -102,13 +114,13 @@ namespace Generation
 
         void FixedRoomGeneration()
         {
-            int GenRadius = GameSettings.Singleton.MapGeneratorSettings.StartingSectorsCreationRadius;
+            int GenRadius = CurrentGenSettings.StartingSectorsCreationRadius;
             for (int y = -GenRadius; y <= GenRadius; y++)
             {
                 for (int x = -GenRadius; x <= GenRadius; x++)
                 {
                     Thread.Sleep(100);
-                    Sector newSector = new Sector(x, y, GenSettings.SectorRadius, GenSettings.PointsPerSector, map);
+                    Sector newSector = new Sector(x, y, CurrentGenSettings.SectorRadius, CurrentGenSettings.PointsPerSector, map);
                     //borders check
                     if (x == -GenRadius) newSector.CreateBorderLine(-1, 0, map);
                     else if (x == GenRadius) newSector.CreateBorderLine(1, 0, map);
@@ -134,7 +146,7 @@ namespace Generation
                 if (Neibs[i] == null)
                 {
                     var Cords = Sector.JointPointCords.NumberToCords(i);
-                    new Sector(ReferenceSector.X + Cords.x, ReferenceSector.Y + Cords.y, GenSettings.SectorRadius, GenSettings.PointsPerSector, map);
+                    new Sector(ReferenceSector.X + Cords.x, ReferenceSector.Y + Cords.y, CurrentGenSettings.SectorRadius, CurrentGenSettings.PointsPerSector, map);
                     GeneratedSectorsCount++;
                 }
             }
@@ -177,7 +189,7 @@ namespace Generation
         }
         private void CreateBorderWalls()
         {
-            int GenRadius = GameSettings.Singleton.MapGeneratorSettings.StartingSectorsCreationRadius;
+            int GenRadius = CurrentGenSettings.StartingSectorsCreationRadius;
             foreach (var sector in NewlyGeneratedSectors)
             {
                 if (sector.X == -GenRadius) sector.CreateBorderLine(-1, 0, map);

@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class CameraFollowing : MonoBehaviour
 {
-    private float ZCord;
+    private float StaticZCord;
     private void Start()
     {
-        ZCord = transform.position.z;
+        StaticZCord = transform.position.z;
     }
     void Update()
     {
-        transform.position = new Vector3(GameManager.PlayerRelatedCharacters[0].transform.position.x, GameManager.PlayerRelatedCharacters[0].transform.position.y, ZCord);
+        if (GameManager.PlayerRelatedCharacters[0].isActiveAndEnabled)
+        {
+            transform.position = new Vector3(GameManager.PlayerRelatedCharacters[0].transform.position.x, GameManager.PlayerRelatedCharacters[0].transform.position.y, StaticZCord);
+        }
     }
 }

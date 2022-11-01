@@ -5,9 +5,9 @@ using UnityEngine;
 
 public static class BasicFunctions
 {
-    public static Vector3 ToVector3(Vector2Int Vector)
+    public static Vector3 ToVector3(Vector2Int Vector, float ZCord = 0)
     {
-        return new Vector3(Vector.x, Vector.y);
+        return new Vector3(Vector.x, Vector.y, ZCord);
     }
     public static Vector3Int ToVector3Int(Vector2Int Vector)
     {

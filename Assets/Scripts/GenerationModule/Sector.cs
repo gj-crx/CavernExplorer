@@ -13,6 +13,7 @@ namespace Generation
         private Vector2Int[] SectorPoints;
         public Vector2Int[] JointPoints = new Vector2Int[4];
         public byte RadiusValue { get { return Radius; } }
+        public Vector2Int GetCentralPoint { get { return Center; } }
         public Vector2Int RandomPoint { get { return SectorPoints[GameManager.GenRandom.Next(0, SectorPoints.Length)]; } }
 
         public Sector(int X, int Y, byte Radius, byte SectorPointsCount, Map MapToGenerate)

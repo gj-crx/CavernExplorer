@@ -43,12 +43,15 @@ public static class GameManager
 
         map = new Map();
         unitSpawner = new UnitSpawner();
-        MapGenerator = new MapGenerator1(GameSettings.Singleton.MapGeneratorSettings, map);
+        MapGenerator = new MapGenerator1(GameSettings.Singleton.GeneratorSettingsPerLevels[1], map);
         tileFormPlacer = new TileFormPlacer(GameSettings.Singleton.unpassableTilemap, MapGenerator);
         Pathfinding = new NormalPathfinding(map);
 
-        if (GameSettings.Singleton.MapGeneratorSettings.Seed == 0) GameSettings.Singleton.MapGeneratorSettings.Seed = UnityEngine.Random.Range(0, int.MaxValue);
-        GenRandom = new System.Random(GameSettings.Singleton.MapGeneratorSettings.Seed);
+        for (int i = 0; i < GameSettings.Singleton.GeneratorSettingsPerLevels.Length; i++)
+        {
+            if (GameSettings.Singleton.GeneratorSettingsPerLevels[i].Seed == 0) GameSettings.Singleton.GeneratorSettingsPerLevels[i].Seed = UnityEngine.Random.Range(0, int.MaxValue);
+            GenRandom = new System.Random(GameSettings.Singleton.GeneratorSettingsPerLevels[i].Seed);
+        }
         Random = new System.Random();
 
         MainThread = System.Threading.Thread.CurrentThread;

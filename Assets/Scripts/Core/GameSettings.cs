@@ -6,8 +6,7 @@ using Generation;
 
 public class GameSettings : MonoBehaviour
 {
-    public GeneratorSettings MapGeneratorSettings;
-    public UnitsSpawningSettings unitsSpawningSettings;
+    public GeneratorSettings[] GeneratorSettingsPerLevels;
     public Tilemap unpassableTilemap;
     public Tilemap passableTilemap;
     public Sprite UselessTileSprite;
@@ -48,10 +47,6 @@ public class GameSettings : MonoBehaviour
             GameManager.MapGenerator.ToGenerateOrder = false;
         }
     }
-    public void DebugActionExecute()
-    {
-        GameManager.MapGenerator.GenerateMap();
-    }
 
     [System.Serializable]
     public struct UnitsSpawningSettings
@@ -84,7 +79,6 @@ public class GameSettings : MonoBehaviour
         public byte SectorRadius;
 
         public byte StartingSectorsCreationRadius;
-
-        public int TileLayingSpeed;
+        public float CreepSpawningChance;
     }
 }
