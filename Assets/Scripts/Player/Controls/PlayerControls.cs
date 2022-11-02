@@ -34,7 +34,7 @@ namespace Player
         [SerializeField]
         private Animator _Animator = null;
         [SerializeField]
-        private FloatingJoystick joystick;
+        private VariableJoystick joystick;
 
         private void Awake()
         {
