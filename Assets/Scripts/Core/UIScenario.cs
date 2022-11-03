@@ -15,7 +15,7 @@ namespace UI {
                 LateInit = false;
                 MainMenuBackgroundScenario();
             }
-            if (backgroundScenario.isActive && backgroundScenario.MovingPointsCount > 1)
+            else if (backgroundScenario.isActive && backgroundScenario.MovingPointsCount > 1)
             {
                 backgroundScenario.MoveCameraThroughThePoints();
             }
@@ -44,32 +44,20 @@ namespace UI {
             GameManager.LocalPlayerHeroUnit.gameObject.SetActive(true);
             Camera.main.orthographicSize = NormalCameraDistance;
         }
-        private IEnumerator BackgroundGenerationWaiterCoroutine()
-        {
-            while (GameManager.GameIsRunning)
-            {
-                Debug.Log("check");
-                if (GameManager.MapGenerator.GenerationCompleted)
-                {
-                    break;
-                }
-                else yield return null;
-            }
-            backgroundScenario.GetPointsFromSectors();
-            backgroundScenario.isActive = true;
-        }
         private void MainMenuBackgroundScenario()
         {
             GameManager.LocalPlayerHeroUnit.gameObject.SetActive(false);
-            GameManager.MapGenerator.GenerateMap(GameSettings.Singleton.GeneratorSettingsPerLevels[0]);
             NormalCameraDistance = Camera.main.orthographicSize;
-            StartCoroutine(BackgroundGenerationWaiterCoroutine());
+            backgroundScenario.GetRandomPoints();
+            backgroundScenario.isActive = true;
         }
         [System.Serializable]
         public struct MenuBackgroundScenario
         {
             public bool isActive;
 
+            public float CameraMovingPointsRadius;
+            public int CameraMovingPointsCount;
             public float CameraMaxDistance;
             public float CameraMinDistance;
             public int MovingPointsCount { get { return CameraMovingPoints.Count; } }
@@ -94,15 +82,15 @@ namespace UI {
                     if (CurrentPoint >= CameraMovingPoints.Count) CurrentPoint = 0;
                 }
             }
-            public void GetPointsFromSectors()
+            public void GetRandomPoints()
             {
                 CameraMovingPoints = new List<Vector3>();
                 RandomCameraDistances = new List<float>();
-                foreach (var sector in GameManager.MapGenerator.NewlyGeneratedSectors)
+                float staticZCord = Camera.main.transform.position.z;
+                for (int i = 0; i < CameraMovingPointsCount; i++)
                 {
-                    Debug.Log(sector.GetCentralPoint);
-                    CameraMovingPoints.Add(BasicFunctions.ToVector3(sector.GetCentralPoint, Camera.main.transform.position.z));
-                    RandomCameraDistances.Add(UnityEngine.Random.Range(CameraMinDistance, CameraMaxDistance));
+                    CameraMovingPoints.Add(new Vector3(Random.Range(-CameraMovingPointsRadius, CameraMovingPointsRadius), Random.Range(-CameraMovingPointsRadius, CameraMovingPointsRadius), staticZCord));
+                    RandomCameraDistances.Add(Random.Range(CameraMinDistance, CameraMaxDistance));
                 }
             }
         }

@@ -22,7 +22,7 @@ namespace Player
         private Vector3 Movement;
         
         [SerializeField]
-        private Hitbox _hitBox;
+        private PlayerHitbox _hitBox;
         [SerializeReference]
         private GameObject[] AnimationAvatars;
         [SerializeField]
