@@ -77,6 +77,8 @@ public class GameSettings : MonoBehaviour
 
         public byte PointsPerSector;
         public byte SectorRadius;
+        public byte UpperWayGatesCount;
+        public byte DownWayGatesCount;
 
         public byte StartingSectorsCreationRadius;
         public float CreepSpawningChance;

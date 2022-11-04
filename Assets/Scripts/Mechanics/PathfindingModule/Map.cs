@@ -8,6 +8,7 @@ public class Map
 {
     public LandscapeMapHolder LandscapeMap = new LandscapeMapHolder();
     public MapGenerator1.SectorMapHolder SectorMap = new MapGenerator1.SectorMapHolder();
+    public List<LevelGate> LevelGates = new List<LevelGate>();
 
 
 

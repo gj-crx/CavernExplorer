@@ -51,7 +51,6 @@ namespace Generation
             UIGenerationProgress = 0;
             GenerationCompleted = false;
 
-            GameSettings.Singleton.unpassableTilemap.ClearAllTiles();
             new Sector(0, 0, CurrentGenSettings.SectorRadius, CurrentGenSettings.PointsPerSector, map);
             foreach (var Player in GameManager.PlayerRelatedCharacters)
             {
@@ -67,6 +66,7 @@ namespace Generation
                 GenerationThread = new Thread(FixedRoomGeneration);
                 GenerationThread.Start();
             }
+            GameSettings.Singleton.unpassableTilemap.ClearAllTiles();
         }
         void ContiniousGeneration()
         {
@@ -134,8 +134,34 @@ namespace Generation
             CheckForUselessTiles();
             CreateBorderWalls();
             FiltrateWallsList();
+            GenerateLevelGates();
             PrepareTilesToSet();
             GameManager.MapGenerator.ToGenerateOrder = true;
+        }
+        private void GenerateLevelGates()
+        {
+            int x = 0;
+            int y = 0;
+            new LevelGate(map.SectorMap[0, 0], map, true);
+
+            for (int i = 0; i < CurrentGenSettings.DownWayGatesCount; i++)
+            {
+                if (GameManager.GenRandom.Next(0, 2) == 1) x = CurrentGenSettings.StartingSectorsCreationRadius;
+                else x = -CurrentGenSettings.StartingSectorsCreationRadius;
+                if (GameManager.GenRandom.Next(0, 2) == 1) y = CurrentGenSettings.StartingSectorsCreationRadius;
+                else y = -CurrentGenSettings.StartingSectorsCreationRadius;
+
+                new LevelGate(map.SectorMap[x, y], map, false);
+            }
+            for (int i = 0; i < CurrentGenSettings.UpperWayGatesCount; i++)
+            {
+                if (GameManager.GenRandom.Next(0, 2) == 1) x = CurrentGenSettings.StartingSectorsCreationRadius;
+                else x = -CurrentGenSettings.StartingSectorsCreationRadius;
+                if (GameManager.GenRandom.Next(0, 2) == 1) y = CurrentGenSettings.StartingSectorsCreationRadius;
+                else y = -CurrentGenSettings.StartingSectorsCreationRadius;
+
+                new LevelGate(map.SectorMap[x, y], map, true);
+            }
         }
         private byte GenerataNeibghourSectors(Sector ReferenceSector)
         {
