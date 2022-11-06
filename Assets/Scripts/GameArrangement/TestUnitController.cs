@@ -31,12 +31,8 @@ public class TestUnitController : MonoBehaviour
         {
             Vector3Int s = new Vector3Int((int)Camera.main.ScreenToWorldPoint(Input.mousePosition).x, (int)Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
             UnityEngine.Debug.Log(GameManager.map.LandscapeMap[(int)s.x, (int)s.y].Land + " " + s.x + " : " + s.y);
-            TileBase currentTile = GameSettings.Singleton.unpassableTilemap.GetTile(s);
+            TileBase currentTile = GameSettings.Singleton.UnpassableTilemap.GetTile(s);
             UnityEngine.Debug.Log(currentTile);
-        }
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            GameManager.tileFormPlacer.ClearUselessTiles();
         }
 
         return;

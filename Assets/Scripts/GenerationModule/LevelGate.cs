@@ -9,45 +9,62 @@ namespace Generation {
     public class LevelGate
     {
         public bool GoingUp = false;
-        public Vector3 Position;
+        public Vector3Int Position;
+
+        public readonly Stack<Vector3Int> neededPassableOffsets = new Stack<Vector3Int>();
+        public readonly Stack<Vector3Int> neededImpassableOffsets = new Stack<Vector3Int>();
 
         public LevelGate(Sector sectorToCreateGate, Map ReferenceMap, bool WayUp)
         {
+            DefineNeededOffsets();
             GoingUp = WayUp;
             Vector3Int RandomPositionInSector = Vector3Int.zero;
             int Attempts = 0;
             while (Attempts < 10000)
             {
                 Attempts++;
-                RandomPositionInSector = new Vector3Int(GameManager.GenRandom.Next(-sectorToCreateGate.RadiusValue, sectorToCreateGate.RadiusValue),
+                RandomPositionInSector = BasicFunctions.ToVector3Int(sectorToCreateGate.GetCentralPoint) + new Vector3Int(GameManager.GenRandom.Next(-sectorToCreateGate.RadiusValue, sectorToCreateGate.RadiusValue),
                     GameManager.GenRandom.Next(-sectorToCreateGate.RadiusValue, sectorToCreateGate.RadiusValue), 0);
 
-                if (ReferenceMap.LandscapeMap[RandomPositionInSector.x, RandomPositionInSector.y].Land == LandType.Impassable && TileHasPassableNeigbhours(RandomPositionInSector, ReferenceMap))
+                if (ValidPositionForLevelGate(RandomPositionInSector, ReferenceMap))
                 {
                     Position = RandomPositionInSector;
                     ReferenceMap.LevelGates.Add(this);
                     break;
                 }
             }
-            Debug.LogError("Not enough attempts");
+            if (Attempts >= 10000) Debug.LogError("Not enough attempts");
+        }
+        private void DefineNeededOffsets()
+        {
+            neededPassableOffsets.Push(new Vector3Int(0, -1, 0));
+            neededPassableOffsets.Push(new Vector3Int(1, -1, 0));
+
+            neededImpassableOffsets.Push(new Vector3Int(1, 1, 0));
+            neededImpassableOffsets.Push(new Vector3Int(0, 1, 0));
+            neededImpassableOffsets.Push(new Vector3Int(1, 0, 0));
+            neededImpassableOffsets.Push(new Vector3Int(0, 0, 0));
         }
 
-        private bool TileHasPassableNeigbhours(Vector3Int tilePosition, Map ReferenceMap)
+        private bool ValidPositionForLevelGate(Vector3Int tilePosition, Map ReferenceMap)
         {
-            for (int y = - 1; y <= 1; y++)
+            foreach (Vector3Int offset in neededImpassableOffsets)
             {
-                for (int x = -1; x <= 1; x++)
+                if (ReferenceMap.LandscapeMap[tilePosition.x + offset.x, tilePosition.y + offset.y] == null
+                    || ReferenceMap.LandscapeMap[tilePosition.x + offset.x, tilePosition.y + offset.y].Land != LandType.Impassable)
                 {
-                    if ((x == 0 || y == 0) && (x != 0 || y != 0))
-                    {
-                        if (ReferenceMap.LandscapeMap[tilePosition.x + x, tilePosition.y + y] != null && ReferenceMap.LandscapeMap[tilePosition.x + x, tilePosition.y + y].Land == LandType.Passable)
-                        {
-                            return true;
-                        }
-                    }
+                    return false;
                 }
             }
-            return false;
+            foreach (Vector3Int offset in neededPassableOffsets)
+            {
+                if (ReferenceMap.LandscapeMap[tilePosition.x + offset.x, tilePosition.y + offset.y] == null 
+                    || ReferenceMap.LandscapeMap[tilePosition.x + offset.x, tilePosition.y + offset.y].Land != LandType.Passable)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

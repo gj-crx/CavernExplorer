@@ -117,7 +117,7 @@ namespace UI.InventoryLogic
         }
         public void StartingItemsInitializer()
         {
-            foreach (var StartingItem in GameSettings.Singleton.startingCharacterAsset.StartingItems)
+            foreach (var StartingItem in GameSettings.Singleton.StartingCharacterAsset.StartingItems)
             {
                 if (StartingItem.UsedSlot == EquipmentSlot.RightHand || StartingItem.UsedSlot == EquipmentSlot.LeftHand)
                 {

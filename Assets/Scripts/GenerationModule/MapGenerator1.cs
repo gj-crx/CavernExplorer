@@ -13,8 +13,6 @@ namespace Generation
         public Thread GenerationThread = null;
 
         public GameSettings.GeneratorSettings CurrentGenSettings;
-        private readonly Map map;
-
         public int CurrentLevelToGenerate = 1;
         /// <summary>
         /// Indicates current progress of generation in UI
@@ -26,10 +24,14 @@ namespace Generation
         public List<Vector3Int> FloorsToSet = new List<Vector3Int>();
         public Stack<Sector> NewlyGeneratedSectors = new Stack<Sector>();
 
+        private readonly Map map;
         private RuleTile[] unpassableTilesArrayToSet;
+        private Tile[] floorTilesArrayToSet;
+        private Tile[] levelGateTilesArrayToSet;
         private Vector3Int[] unpassablePositionsToSet;
         private Vector3Int[] floorPositionsToSet;
-        private Tile[] floorTilesArrayToSet;
+        private Vector3Int[] levelGatePositionsToSet;
+
 
         public bool ToGenerateOrder = false;
 
@@ -66,7 +68,7 @@ namespace Generation
                 GenerationThread = new Thread(FixedRoomGeneration);
                 GenerationThread.Start();
             }
-            GameSettings.Singleton.unpassableTilemap.ClearAllTiles();
+            GameSettings.Singleton.UnpassableTilemap.ClearAllTiles();
         }
         void ContiniousGeneration()
         {
@@ -162,6 +164,29 @@ namespace Generation
 
                 new LevelGate(map.SectorMap[x, y], map, true);
             }
+
+            levelGatePositionsToSet = new Vector3Int[map.LevelGates.Count * 4];
+            levelGateTilesArrayToSet = new Tile[map.LevelGates.Count * 4];
+            int tilesCount = 0;
+            foreach (var gate in map.LevelGates)
+            {
+                int currentTile = 0;
+                foreach (Vector3Int offset in gate.neededImpassableOffsets)
+                {
+                    levelGatePositionsToSet[tilesCount] = gate.Position + offset;
+                    if (gate.GoingUp)
+                    {
+                        levelGateTilesArrayToSet[tilesCount] = GameSettings.Singleton.UpLevelGateTiles[currentTile];
+                    }
+                    else
+                    {
+                        levelGateTilesArrayToSet[tilesCount] = GameSettings.Singleton.DownLevelGateTiles[currentTile];
+                    }
+                    currentTile++;
+                    tilesCount++;
+                }
+            }
+            UIGenerationProgress++;
         }
         private byte GenerataNeibghourSectors(Sector ReferenceSector)
         {
@@ -199,12 +224,13 @@ namespace Generation
             floorTilesArrayToSet = new Tile[floorPositionsToSet.Length];
             for (int i = 0; i < floorTilesArrayToSet.Length; i++) floorTilesArrayToSet[i] = GameSettings.Singleton.FloorTiles[0];
         }
-        public void SpawnAllTiles_MainThread(Tilemap UnpassableTilemap, Tilemap PassableTilemap)
+        public void SpawnAllTiles_MainThread(Tilemap unpassableTilemap, Tilemap passableTilemap, Tilemap levelGateTilemap)
         {
         //    System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
         //    stopwatch.Start();
-            UnpassableTilemap.SetTiles(unpassablePositionsToSet, unpassableTilesArrayToSet);
-            PassableTilemap.SetTiles(floorPositionsToSet, floorTilesArrayToSet);
+            unpassableTilemap.SetTiles(unpassablePositionsToSet, unpassableTilesArrayToSet);
+            passableTilemap.SetTiles(floorPositionsToSet, floorTilesArrayToSet);
+            levelGateTilemap.SetTiles(levelGatePositionsToSet, levelGateTilesArrayToSet);
             GenerationCompleted = true;
             //    stopwatch.Stop();
             //    Debug.Log("took time " + stopwatch.ElapsedMilliseconds);

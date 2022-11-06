@@ -10,7 +10,7 @@ namespace UI
     {
         private Image fillerImage;
         private Text progressText;
-        private int totalSectors = 0;
+        private int totalProgressNeeded = 0;
         private void Start()
         {
             fillerImage = GetComponent<Image>();
@@ -20,17 +20,17 @@ namespace UI
             {
                 for (int x = -Radius; x <= Radius; x++)
                 {
-                    totalSectors++;
+                    totalProgressNeeded++;
                 }
             }
-
+            totalProgressNeeded += 1;
 
         }
         
         void Update()
         {
-            fillerImage.fillAmount = (float)GameManager.MapGenerator.UIGenerationProgress / totalSectors;
-            progressText.text = GameManager.MapGenerator.UIGenerationProgress + " / " + totalSectors;
+            fillerImage.fillAmount = (float)GameManager.MapGenerator.UIGenerationProgress / totalProgressNeeded;
+            progressText.text = GameManager.MapGenerator.UIGenerationProgress + " / " + totalProgressNeeded;
         }
     }
 }

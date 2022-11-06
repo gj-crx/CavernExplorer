@@ -7,18 +7,17 @@ using Generation;
 public class GameSettings : MonoBehaviour
 {
     public GeneratorSettings[] GeneratorSettingsPerLevels;
-    public Tilemap unpassableTilemap;
-    public Tilemap passableTilemap;
-    public Sprite UselessTileSprite;
+    public Tilemap UnpassableTilemap;
+    public Tilemap FloorsTilemap;
+    public Tilemap LevelGatesTilemap;
 
-    public PlayerCharacterStartingAssets startingCharacterAsset;
-
+    public PlayerCharacterStartingAssets StartingCharacterAsset;
     public RuleTile[] WallTiles;
     public Tile[] FloorTiles;
+    public Tile[] UpLevelGateTiles;
+    public Tile[] DownLevelGateTiles;
 
     public float UnitMovementTileSkipTreshhold = 1;
-
-
     public short PathfindingMaxSearchDistance = 250;
 
     public string TileNameToRemove;
@@ -43,7 +42,7 @@ public class GameSettings : MonoBehaviour
 
         if (GameManager.MapGenerator.ToGenerateOrder)
         {
-            GameManager.MapGenerator.SpawnAllTiles_MainThread(unpassableTilemap, passableTilemap);
+            GameManager.MapGenerator.SpawnAllTiles_MainThread(UnpassableTilemap, FloorsTilemap, LevelGatesTilemap);
             GameManager.MapGenerator.ToGenerateOrder = false;
         }
     }

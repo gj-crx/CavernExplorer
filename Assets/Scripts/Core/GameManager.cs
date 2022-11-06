@@ -44,7 +44,7 @@ public static class GameManager
         map = new Map();
         unitSpawner = new UnitSpawner();
         MapGenerator = new MapGenerator1(GameSettings.Singleton.GeneratorSettingsPerLevels[1], map);
-        tileFormPlacer = new TileFormPlacer(GameSettings.Singleton.unpassableTilemap, MapGenerator);
+        tileFormPlacer = new TileFormPlacer(GameSettings.Singleton.UnpassableTilemap, MapGenerator);
         Pathfinding = new NormalPathfinding(map);
 
         for (int i = 0; i < GameSettings.Singleton.GeneratorSettingsPerLevels.Length; i++)

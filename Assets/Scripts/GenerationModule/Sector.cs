@@ -223,13 +223,13 @@ namespace Generation
             {
                 for (int x = -Radius; x <= Radius; x++)
                 {
-                    var currentTile = GameSettings.Singleton.unpassableTilemap.GetTile(new Vector3Int(Center.x + x, Center.y + y, 0));
+                    var currentTile = GameSettings.Singleton.UnpassableTilemap.GetTile(new Vector3Int(Center.x + x, Center.y + y, 0));
 
                     if (currentTile != null)
                     {
                         Vector2Int CurrentTilePosition = new Vector2Int(Center.x + x, Center.y + y);
                         if (ReferenceMap.LandscapeMap[CurrentTilePosition.x, CurrentTilePosition.y].Land != LandType.Impassable)
-                            GameSettings.Singleton.unpassableTilemap.SetTile(BasicFunctions.ToVector3Int(CurrentTilePosition), null);
+                            GameSettings.Singleton.UnpassableTilemap.SetTile(BasicFunctions.ToVector3Int(CurrentTilePosition), null);
                         Debug.Log("Manually removed");
                     }
                 }
