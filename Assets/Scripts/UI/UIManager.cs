@@ -17,6 +17,7 @@ namespace UI
         public GameObject InGameUI;
 
         [Header("Main panels")]
+        public GameObject panel_Options;
         public GameObject panel_HealthBar;
         public GameObject panel_Toolbar;
 
@@ -24,11 +25,10 @@ namespace UI
         [Header("Second elements")]
         public Inventory PlayerInventory;
         public Inventory ExternalInventory = null;
-        [SerializeField]
-        private List<GameObject> DialoguePanels = new List<GameObject>();
+        public List<GameObject> DialoguePanels = new List<GameObject>();
         public GameObject GenerationProgressBar;
 
-        private Dictionary<string, GameObject> dialoguePanelsDictionary = new Dictionary<string, GameObject>();
+        public Dictionary<string, GameObject> dialoguePanelsDictionary = new Dictionary<string, GameObject>();
 
 
         private void Awake()
@@ -52,14 +52,7 @@ namespace UI
             InGameUI.gameObject.SetActive(false);
             
         }
-        public void DialogueActivity(string dialogueName, bool dialogueStatus)
-        {
-            dialoguePanelsDictionary[dialogueName].SetActive(dialogueStatus);
-        }
-        public void CloseAllDialogues()
-        {
-            foreach (var dialogue in DialoguePanels) dialogue.SetActive(false);
-        }
+        
 
     }
 }

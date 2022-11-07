@@ -117,10 +117,6 @@ public static class BasicFunctions
     {
         return ReferenceMap.LandscapeMap[TilePosition.x, TilePosition.y].Land == LandType.Passable || ReferenceMap.LandscapeMap[TilePosition.x, TilePosition.y].Land == LandType.WaterLow;
     }
-    public static Vector3 GetPlayerTransformPositionFromMainthread(Unit MentionedUnit)
-    {
-        return GameManager.PlayerCharactersPositions[GameManager.PlayerRelatedCharacters.IndexOf(MentionedUnit)];
-    }
 
     public static Vector2 AngleToVector2(float degree)
     {

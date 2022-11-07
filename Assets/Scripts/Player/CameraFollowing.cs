@@ -11,9 +11,9 @@ public class CameraFollowing : MonoBehaviour
     }
     void Update()
     {
-        if (GameManager.PlayerRelatedCharacters[0].isActiveAndEnabled)
+        if (GameManager.LocalPlayerHeroUnit.isActiveAndEnabled)
         {
-            transform.position = new Vector3(GameManager.PlayerRelatedCharacters[0].transform.position.x, GameManager.PlayerRelatedCharacters[0].transform.position.y, StaticZCord);
+            transform.position = new Vector3(GameManager.LocalPlayerHeroUnit.transform.position.x, GameManager.LocalPlayerHeroUnit.transform.position.y, StaticZCord);
         }
     }
 }

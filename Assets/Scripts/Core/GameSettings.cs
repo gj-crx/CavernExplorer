@@ -37,7 +37,6 @@ public class GameSettings : MonoBehaviour
     }
     private void Update()
     {
-        GameManager.SetPlayersPositions();
         FPS = 1.0f / Time.deltaTime;
 
         if (GameManager.MapGenerator.ToGenerateOrder)

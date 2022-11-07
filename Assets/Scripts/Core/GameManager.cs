@@ -20,23 +20,12 @@ public static class GameManager
     public static System.Threading.Thread MainThread;
 
     private static UnitController unitController;
-
-
-    public static List<Unit> PlayerRelatedCharacters = new List<Unit>();
-    public static List<Vector3> PlayerCharactersPositions = new List<Vector3>();
     public static Unit LocalPlayerHeroUnit;
 
 
 
     public static bool DebugMode = true;
 
-    public static void SetPlayersPositions()
-    {
-        foreach (var PlayerUnit in PlayerRelatedCharacters)
-        {
-            PlayerCharactersPositions[PlayerRelatedCharacters.IndexOf(PlayerUnit)] = PlayerUnit.transform.position;
-        }
-    }
     public static void InitializeGame()
     {
         Application.targetFrameRate = 60;
@@ -58,12 +47,6 @@ public static class GameManager
 
         unitController = new UnitController();
 
-        AddPlayerCharacter(GameObject.Find("Character").GetComponent<Unit>());
-    }
-    public static void AddPlayerCharacter(Unit Character)
-    {
-        PlayerRelatedCharacters.Add(Character);
-        PlayerCharactersPositions.Add(Character.transform.position);
-        LocalPlayerHeroUnit = Character;
+        LocalPlayerHeroUnit = GameObject.Find("Character").GetComponent<Unit>();
     }
 }

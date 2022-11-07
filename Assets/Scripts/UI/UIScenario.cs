@@ -5,11 +5,19 @@ using UnityEngine;
 namespace UI {
     public class UIScenario : MonoBehaviour
     {
+        [HideInInspector]
+        public static UIScenario Singleton;
+
         public MenuBackgroundScenario backgroundScenario;
         private bool LateInit = true;
         private float NormalCameraDistance;
         [SerializeField]
         private GameObject blackMask;
+
+        private void Awake()
+        {
+            Singleton = this;
+        }
         private void LateUpdate ()
         {
             if (LateInit)
@@ -22,12 +30,26 @@ namespace UI {
                 backgroundScenario.MoveCameraThroughThePoints();
             }
         }
-        public void StartGeneration()
+        public void UIStartGeneration()
         {
             backgroundScenario.isActive = false;
             GameManager.MapGenerator.GenerateMap(GameSettings.Singleton.GeneratorSettingsPerLevels[GameManager.MapGenerator.CurrentLevelToGenerate]);
+            GameManager.LocalPlayerHeroUnit.gameObject.SetActive(false);
+
+            UIManager.Singleton.InGameUI.SetActive(false);
+            UIManager.Singleton.PreGameUI.SetActive(true);
+            UIManager.Singleton.panel_Options.SetActive(false);
             UIManager.Singleton.GenerationProgressBar.SetActive(true);
+
             StartCoroutine(GenerationEndingWaiterCoroutine());
+        }
+        public void DialogueActivity(string dialogueName, bool dialogueStatus)
+        {
+            UIManager.Singleton.dialoguePanelsDictionary[dialogueName].SetActive(dialogueStatus);
+        }
+        public void CloseAllDialogues()
+        {
+            foreach (var dialogue in UIManager.Singleton.DialoguePanels) dialogue.SetActive(false);
         }
         private IEnumerator GenerationEndingWaiterCoroutine()
         {
@@ -40,12 +62,13 @@ namespace UI {
                 }
                 else yield return null;
             }
+            UIManager.Singleton.panel_Options.SetActive(true);
             UIManager.Singleton.GenerationProgressBar.SetActive(false);
             UIManager.Singleton.PreGameUI.SetActive(false);
             UIManager.Singleton.InGameUI.SetActive(true);
             GameManager.LocalPlayerHeroUnit.gameObject.SetActive(true);
-            Camera.main.orthographicSize = NormalCameraDistance;
             blackMask.SetActive(true);
+            Camera.main.orthographicSize = NormalCameraDistance;
         }
         private void MainMenuBackgroundScenario()
         {

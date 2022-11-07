@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,13 +8,16 @@ namespace UI
 {
     public class DialogueOptionButton : MonoBehaviour
     {
+        public delegate void OnOptionSelected();
+        public OnOptionSelected onOptionSelected = null;
+
         void Start()
         {
             GetComponent<Button>().onClick.AddListener(OptionSelected);
         }
         public void OptionSelected()
         {
-
+            onOptionSelected?.Invoke();
             CloseDialoguePanel();   
         }
         private void CloseDialoguePanel()
