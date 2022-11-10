@@ -55,7 +55,6 @@ namespace UI {
         {
             while (GameManager.GameIsRunning)
             {
-                Debug.Log("check");
                 if (GameManager.MapGenerator.GenerationCompleted)
                 {
                     break;

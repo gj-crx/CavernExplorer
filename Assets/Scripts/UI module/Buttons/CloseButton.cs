@@ -5,15 +5,21 @@ using UnityEngine.UI;
 
 namespace UI.Buttons
 {
+    [RequireComponent(typeof(Button))]
     public class CloseButton : MonoBehaviour
     {
+        public bool CloseParent = true;
         private void Start()
         {
-            GetComponent<Button>().onClick.AddListener(CloseParent);
+            GetComponent<Button>().onClick.AddListener(Close);
         }
-        public void CloseParent()
+        public void Close()
         {
-            transform.parent.gameObject.SetActive(false);
+            if (CloseParent)
+            {
+                transform.parent.gameObject.SetActive(false);
+            }
+            else gameObject.SetActive(false);
         }
     }
 }

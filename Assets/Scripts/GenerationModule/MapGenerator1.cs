@@ -226,8 +226,7 @@ namespace Generation
             passableTilemap.SetTiles(floorPositionsToSet, floorTilesArrayToSet);
             levelGateTilemap.SetTiles(levelGatePositionsToSet, levelGateTilesArrayToSet);
             GenerationCompleted = true;
-            Vector2Int randomPoint = map.SectorMap[0, 0].RandomPoint; Debug.Log(randomPoint + " RANDOM POINT");
-            if (CurrentGenSettings.ContiniousGeneration == false) GameManager.LocalPlayerHeroUnit.transform.position = BasicFunctions.ToVector3(randomPoint);
+            if (CurrentGenSettings.ContiniousGeneration == false) GameManager.LocalPlayerHeroUnit.transform.position = BasicFunctions.ToVector3(map.SectorMap[0, 0].RandomPoint);
             //    stopwatch.Stop();
             //    Debug.Log("took time " + stopwatch.ElapsedMilliseconds);
         }

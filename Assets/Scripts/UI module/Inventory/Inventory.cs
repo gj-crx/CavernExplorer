@@ -25,7 +25,10 @@ namespace UI.InventoryLogic
         {
             UIGrid = transform.Find("ItemGrid").gameObject;
             Debug.Log(gameObject.name);
-            SlotsPanel = transform.Find("WeaponsAndArmorPanel").Find("SlotsPanel").gameObject;
+            try
+            {
+                SlotsPanel = transform.Find("WeaponsAndArmorPanel").Find("SlotsPanel").gameObject;
+            } catch { }
 
             for (int i = 0; i < EquipmentSlots.Length; i++)
             {
@@ -45,7 +48,7 @@ namespace UI.InventoryLogic
         }
 
 
-        public void AddItem(Item NewlyAddedItem, bool AddToToolbar = false, bool InstantApply = false)
+        public void CreateItem(Item NewlyAddedItem, bool AddToToolbar = false, bool InstantApply = false)
         {
             GameObject ItemObject = GameObject.Instantiate(PrefabManager.Singleton.ItemPrefab);
             if (AddToToolbar)
@@ -63,10 +66,25 @@ namespace UI.InventoryLogic
 
             if (InstantApply) ApplyItem(ItemObject.GetComponent<ToolbarItem>());
         }
-        public void RemoveItem(ToolbarItem ReferenceItem)
+        public void AddToolbarItem(ToolbarItem itemToAdd, GameObject nearestDrop)
         {
-            DisapplyItem(ReferenceItem);
-            Destroy(ReferenceItem.gameObject);
+            if (nearestDrop == UIManager.Singleton.panel_Toolbar.transform.Find("ItemGrid").gameObject)
+            {
+                itemToAdd.transform.SetParent(UIManager.Singleton.panel_Toolbar.transform.Find("ItemGrid"));
+            }
+            else if (nearestDrop == UIManager.Singleton.PlayerInventory.SlotsPanel)
+            {
+                itemToAdd.transform.SetParent(UIManager.Singleton.PlayerInventory.SlotsPanel.transform);
+                ApplyItem(itemToAdd); //applying equiped armor
+            }
+            else itemToAdd.transform.SetParent(UIGrid.transform);
+            if (CarriedItems.Contains(itemToAdd) == false) CarriedItems.Add(itemToAdd);
+        }
+        public void RemoveItem(ToolbarItem referenceItem)
+        {
+            DisapplyItem(referenceItem);
+            CarriedItems.Remove(referenceItem);
+            referenceItem.transform.SetParent(UIManager.Singleton.transform);
         }
         public void ApplyItem(ToolbarItem ReferenceItem)
         {
@@ -119,20 +137,31 @@ namespace UI.InventoryLogic
                 }
             }
         }
+        public void TransferAllitems()
+        {
+            if (this == UIManager.Singleton.ExternalInventory && UIManager.Singleton.PlayerInventory.isActiveAndEnabled)
+            {
+                foreach (var item in CarriedItems)
+                {
+                    UIManager.Singleton.PlayerInventory.AddToolbarItem(item, UIManager.Singleton.PlayerInventory.UIGrid);
+                }
+            }
+        }
         public void StartingItemsInitializer()
         {
             foreach (var StartingItem in GameSettings.Singleton.StartingCharacterAsset.StartingItems)
             {
                 if (StartingItem.UsedSlot == EquipmentSlot.RightHand || StartingItem.UsedSlot == EquipmentSlot.LeftHand)
                 {
-                    AddItem(StartingItem, true, true);
+                    CreateItem(StartingItem, true, true);
                 }
                 else
                 {
-                    AddItem(StartingItem, false, true);
+                    CreateItem(StartingItem, false, true);
                 }
             }
         }
+
 
         public enum EquipmentSlot : byte
         {

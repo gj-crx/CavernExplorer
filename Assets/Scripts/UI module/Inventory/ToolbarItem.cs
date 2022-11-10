@@ -28,16 +28,22 @@ namespace UI.InventoryLogic
         {
             if (transform.parent != UIManager.Singleton.PlayerInventory.SlotsPanel.transform)
             {
-                ItemStatsIndicator.Singleton.FormStatsPanel(RepresentedItem);
+                if (draggable.BeingDragged == false)
+                {
+                    ItemStatsIndicator.Singleton.gameObject.SetActive(true);
+                    ItemStatsIndicator.Singleton.FormStatsPanel(RepresentedItem);
+                }
             }
-            else UseItem();
+            else
+            { //disapply use
+               ClickDisapply();
+            }
         }
-        public void UseItem()
+        public void ClickDisapply()
         {
             if (draggable != null && draggable.BeingDragged) return;
             if (!IsEquipedArmor)
             {
-                Debug.Log(RepresentedItem.ItemName + " is applied " + RepresentedItem.ItemStats.attackType);
                 UIManager.Singleton.PlayerInventory.ApplyItem(this);
             }
             else
