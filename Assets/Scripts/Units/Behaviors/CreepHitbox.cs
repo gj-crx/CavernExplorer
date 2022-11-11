@@ -17,7 +17,6 @@ namespace Behaviours
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            Debug.Log(collision.gameObject.name);
             if (fighting.ReadyToHit && collision.gameObject.tag == "Player")
             {
                 fighting.ReadyToHit = false;

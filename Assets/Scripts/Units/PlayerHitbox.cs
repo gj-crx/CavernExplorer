@@ -42,7 +42,10 @@ namespace Player
             {
                 collision.gameObject.GetComponent<Unit>().GetDamage(controls.PlayerCharacterUnit.Stats.Damage, controls.PlayerCharacterUnit);
             }
-            Destroy(gameObject); //any collision event destroys bullet
+            if (collision.isTrigger == false)
+            {
+                Destroy(gameObject); //any collision event destroys bullet
+            }
         }
     }
 }

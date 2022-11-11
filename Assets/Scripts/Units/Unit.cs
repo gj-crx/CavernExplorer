@@ -58,13 +58,17 @@ public class Unit : MonoBehaviour
         {
             behavior.Clear();
         }
-        Destroy(gameObject);
+        gameObject.AddComponent<Corpse>().VisualizeDeath(new Vector3(0, 0, 165), new Color(0.5660378f, 0.1735493f, 0.1735493f));
+        gameObject.tag = "Corpse";
+        Destroy(animator);
+        if (GetComponent<Behaviours.Fighting>() != null) Destroy(GetComponent<Behaviours.Fighting>());
+        Destroy(this);
     }
     private void OnKillMethod(Unit KilledUnit)
     {
         if (behavior != null)
         {
-            behavior.BehaviorAction();
+
         }
     }
     private void GetBehavior()
@@ -72,20 +76,6 @@ public class Unit : MonoBehaviour
         if (gameObject.tag == "Creep")
         {
             behavior = new Behaviours.CaveDwellerBehaviour(this);
-        }
-    }
-    private void StartUnitActionsControlling()
-    {
-        if (behavior != null && behavior.HaveExternalOrder == false && behavior.Active)
-        {
-            behavior.StartBehaviourIterations(2000, GameManager.Random.Next(0, 1000));
-        }
-    }
-    public void ControlUnitBehaviour()
-    {
-        if (behavior != null && behavior.HaveExternalOrder == false && behavior.Active)
-        {
-            behavior.StartBehaviourIterations(2000, GameManager.Random.Next(0, 1000));
         }
     }
   

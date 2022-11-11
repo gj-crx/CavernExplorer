@@ -9,8 +9,8 @@ namespace Behaviours
 
     public class CaveDwellerBehaviour : IBehavior
     {
-        private Unit _unit;
-        private Fighting _fighting;
+        private Unit unit;
+        private Fighting fighting;
 
         public bool Active { get; set; } = true;
         public bool HaveExternalOrder { get; set; } = false;
@@ -19,35 +19,32 @@ namespace Behaviours
 
         public CaveDwellerBehaviour(Unit RelatedUnit)
         {
-            _unit = RelatedUnit;
-            _fighting = _unit.gameObject.GetComponent<Fighting>();
+            unit = RelatedUnit;
+            fighting = unit.gameObject.GetComponent<Fighting>();
             possibleTargets.Add(GameManager.LocalPlayerHeroUnit);
 
-        }
-
-        public void BehaviorAction()
-        {
-            throw new System.NotImplementedException();
         }
 
         public void Clear()
         {
             Active = false;
-            _unit = null;
+            unit = null;
         }
 
-        public void StartBehaviourIterations(int ActualDelay, int PreDelay)
+        public void BehaviorInteraction()
         {
-            GetNearestTarget();
+            fighting.CurrentTarget = GetNearestTarget();
+            if (fighting.CurrentTarget != null) unit.unitMovement.GetWayTarget(fighting.CurrentTarget);
+
         }
         private Unit GetNearestTarget()
         {
-            float MinimalDistance = _unit.Stats.VisionRadius;
+            float MinimalDistance = unit.Stats.VisionRadius;
             Unit MinimalDistanceObject = null;
 
             foreach (var CurrentObject in possibleTargets)
             {
-                float CurrentDistance = Vector2.Distance(CurrentObject.LastNonTransformPosition, _unit.LastNonTransformPosition);
+                float CurrentDistance = Vector2.Distance(CurrentObject.LastNonTransformPosition, unit.LastNonTransformPosition);
                 if (CurrentDistance < MinimalDistance)
                 {
                     CurrentDistance = MinimalDistance;

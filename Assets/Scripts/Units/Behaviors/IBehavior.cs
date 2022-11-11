@@ -8,8 +8,7 @@ public interface IBehavior
 {
     bool Active { get; set; }
     bool HaveExternalOrder { get; set; }
-    void StartBehaviourIterations(int ActualDelay, int PreDelay);
-    void BehaviorAction();
+    void BehaviorInteraction();
 
     void Clear();
 }

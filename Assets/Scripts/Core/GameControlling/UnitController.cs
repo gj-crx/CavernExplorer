@@ -25,7 +25,7 @@ namespace Controllers
                 while (unitsToControl.Count > 0)
                 {
                     Unit currentUnit = unitsToControl.Dequeue();
-                    currentUnit.ControlUnitBehaviour();
+                    currentUnit.behavior.BehaviorInteraction();
                     Thread.Sleep(100);
                 }
             }
@@ -36,7 +36,7 @@ namespace Controllers
             unitsToControl = new Queue<Unit>();
             foreach (var unit in GameManager.dataBase.AllUnits)
             {
-                unitsToControl.Enqueue(unit);
+                if (unit.behavior != null) unitsToControl.Enqueue(unit);
             }
         }
     }

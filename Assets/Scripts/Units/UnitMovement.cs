@@ -25,12 +25,12 @@ public class UnitMovement
 
     public void WayMoving()
     {
-        if (Way != null && Way.Length > 1)
+        if (Way != null && Way.Length > 1 && (localWay == null || Way.Length <= localCurrentDistance || localWay[localCurrentDistance] != Way[localCurrentDistance]))
         {
-        //    Debug.Log("new way");
+            Debug.Log("new way");
             localWay = Way;
             Way = null;
-            localCurrentDistance = CurrentDistance;
+            localCurrentDistance = 1;
             CurrentDirection = Vector3.zero;
         }
         if (localWay == null)
@@ -42,12 +42,14 @@ public class UnitMovement
         }
 
         if (CurrentDirection == Vector3.zero) CurrentDirection = GetDirection();
+        else Debug.Log("Got no direction");
 
       //  Debug.Log(CurrentDirection + " new");
 
         unit.transform.eulerAngles = new Vector3(0, 0, 0);
         unit.transform.Translate(CurrentDirection * unit.Stats.MoveSpeed * Time.fixedDeltaTime);
         if (CurrentDirection.x < 0) unit.transform.eulerAngles = new Vector3(0, 180, 0);
+        else Debug.Log("SHIT");
 
         unit.animator.SetBool("Stopped", false);
         unit.animator.SetFloat("XSpeed", CurrentDirection.x);
