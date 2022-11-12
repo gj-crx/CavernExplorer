@@ -28,6 +28,7 @@ namespace Controllers
                     currentUnit.behavior.BehaviorInteraction();
                     Thread.Sleep(100);
                 }
+                Thread.Sleep(100);
             }
             UnitControllingThread = null;
         }

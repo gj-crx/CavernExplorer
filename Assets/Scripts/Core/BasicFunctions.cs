@@ -108,8 +108,7 @@ public static class BasicFunctions
         Vector3[] NewArray = new Vector3[SourceArray.Length];
         for (int i = 0; i < SourceArray.Length; i++)
         {
-            NewArray[i] = ToVector3(SourceArray[i]);
-            NewArray[i] += new Vector3(AddictiveValue, AddictiveValue);
+            NewArray[i] = ToVector3(SourceArray[i]) + new Vector3(AddictiveValue, AddictiveValue);
         }
         return NewArray;
     }

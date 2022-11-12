@@ -35,10 +35,12 @@ public class NormalPathfinding : IPathfinding
     }
     public bool GetWayPath(Unit MovingUnit, Vector3 Target, byte MaximumCorrectionStep = 2)
     {
-        Vector2Int from = Vector3ToVector2Int(MovingUnit.LastNonTransformPosition);
+        Vector2Int from = RoundVector3(MovingUnit.LastNonTransformPosition);
+        Debug.Log(from + " is passable " + PassablePath(from) + " last position " + MovingUnit.LastNonTransformPosition);
         if (PassablePath(from) == false)
         {
             var Result = CorrectPath(from);
+            Debug.Log("from corrected");
             if (Result.Item2 == true) from = Result.Item1; //path resets to correct one
             else return false;
         }
@@ -53,7 +55,8 @@ public class NormalPathfinding : IPathfinding
         bool result = CalculateWay(from, target);
         if (result)
         {
-            MovingUnit.unitMovement.Way = BasicFunctions.ConvertToVector3Array(Way, 0.5f);
+            //   MovingUnit.unitMovement.Way = BasicFunctions.ConvertToVector3Array(Way, 0.5f);
+            MovingUnit.unitMovement.Way = BasicFunctions.ConvertToVector3Array(Way, 0);
             MovingUnit.unitMovement.CurrentDistance = 1;
         }
         return result;
@@ -172,7 +175,7 @@ public class NormalPathfinding : IPathfinding
     {
         return new Vector2Int((int)v.x, (int)v.y);
     }
-    public Vector3 Vector2IntToVector3(Vector2Int v)
+    private Vector3 Vector2IntToVector3(Vector2Int v)
     {
         return new Vector3(v.x, v.y, 0);
     }
@@ -195,6 +198,22 @@ public class NormalPathfinding : IPathfinding
             }
         }
         return Tuple.Create(Vector2Int.zero, false);
+    }
+    private Vector2Int RoundVector3(Vector3 pos)
+    {
+        if (pos.x < 0)
+        {
+            if (pos.x - (int)pos.x < -0.95f) pos.x = (int)pos.x - 1;
+        }
+        else if (pos.x - (int)pos.x > 0.95f) pos.x = (int)pos.x + 1;
+
+        if (pos.y < 0)
+        {
+            if (pos.y - (int)pos.y < -0.95f) pos.y = (int)pos.y - 1;
+        }
+        else if (pos.y - (int)pos.y > 0.95f) pos.y = (int)pos.y + 1;
+
+        return BasicFunctions.ToVector2Int(pos);
     }
 }
 internal class DistanceMapPoint

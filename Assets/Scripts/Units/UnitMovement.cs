@@ -25,7 +25,7 @@ public class UnitMovement
 
     public void WayMoving()
     {
-        if (Way != null && Way.Length > 1 && (localWay == null || Way.Length <= localCurrentDistance || localWay[localCurrentDistance] != Way[localCurrentDistance]))
+        if (Way != null && Way.Length > 1)
         {
             Debug.Log("new way");
             localWay = Way;
@@ -42,9 +42,19 @@ public class UnitMovement
         }
 
         if (CurrentDirection == Vector3.zero) CurrentDirection = GetDirection();
-        else Debug.Log("Got no direction");
+        //double check
+        if (CurrentDirection == Vector3.zero)
+        {
+            localCurrentDistance++;
+            if (localCurrentDistance >= localWay.Length)
+            {
+                localWay = null;
+                return;
+            }
+            else CurrentDirection = GetDirection();
+        }
 
-      //  Debug.Log(CurrentDirection + " new");
+        //  Debug.Log(CurrentDirection + " new");
 
         unit.transform.eulerAngles = new Vector3(0, 0, 0);
         unit.transform.Translate(CurrentDirection * unit.Stats.MoveSpeed * Time.fixedDeltaTime);
