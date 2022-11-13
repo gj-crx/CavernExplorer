@@ -36,11 +36,9 @@ public class NormalPathfinding : IPathfinding
     public bool GetWayPath(Unit MovingUnit, Vector3 Target, byte MaximumCorrectionStep = 2)
     {
         Vector2Int from = RoundVector3(MovingUnit.LastNonTransformPosition);
-        Debug.Log(from + " is passable " + PassablePath(from) + " last position " + MovingUnit.LastNonTransformPosition);
         if (PassablePath(from) == false)
         {
             var Result = CorrectPath(from);
-            Debug.Log("from corrected");
             if (Result.Item2 == true) from = Result.Item1; //path resets to correct one
             else return false;
         }

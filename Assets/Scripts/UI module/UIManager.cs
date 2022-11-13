@@ -20,11 +20,14 @@ namespace UI
         public GameObject panel_Options;
         public GameObject panel_HealthBar;
         public GameObject panel_Toolbar;
+        public GameObject panel_PlayerInventory;
+        public GameObject panel_ExternalInventory;
 
 
         [Header("Second elements")]
-        public Inventory PlayerInventory;
-        public Inventory ExternalInventory = null;
+        public PlayerInventory playerInventory;
+        public ExternalInventory externalInventory = null;
+        public ItemStatsIndicator itemStatsIndicator;
         public List<GameObject> DialoguePanels = new List<GameObject>();
         public GameObject GenerationProgressBar;
 
@@ -52,7 +55,14 @@ namespace UI
             InGameUI.gameObject.SetActive(false);
             
         }
-        
+        private void Start()
+        {
+            foreach (var startingItem in GameSettings.Singleton.StartingCharacterAsset.StartingItems)
+            {
+                playerInventory.CreateItem(startingItem);
+            }
+        }
+
 
     }
 }

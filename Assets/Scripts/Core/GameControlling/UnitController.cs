@@ -25,7 +25,7 @@ namespace Controllers
                 while (unitsToControl.Count > 0)
                 {
                     Unit currentUnit = unitsToControl.Dequeue();
-                    currentUnit.behavior.BehaviorInteraction();
+                    if (currentUnit.behavior != null) currentUnit.behavior.BehaviorInteraction();
                     Thread.Sleep(100);
                 }
                 Thread.Sleep(100);

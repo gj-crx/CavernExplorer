@@ -8,8 +8,6 @@ namespace UI.InventoryLogic
 {
     public class ItemStatsIndicator : MonoBehaviour
     {
-        [HideInInspector]
-        public static ItemStatsIndicator Singleton;
         [SerializeField]
         private Image itemIcon;
         [SerializeField]
@@ -34,11 +32,6 @@ namespace UI.InventoryLogic
         private Text indicator_VisionDistance;
         [SerializeField]
         private Text indicator_AttackRange;
-
-        private void Awake()
-        {
-            Singleton = this;
-        }
 
         public void FormStatsPanel(Item referenceItem)
         {

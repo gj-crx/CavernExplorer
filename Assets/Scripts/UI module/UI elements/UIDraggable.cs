@@ -13,6 +13,8 @@ namespace UI
 
         private List<GameObject> PossibleDropSpots = new List<GameObject>();
 
+        private ToolbarItem toolbarItem;
+
         [HideInInspector]
         public bool BeingDragged = false;
 
@@ -21,10 +23,13 @@ namespace UI
         {
             if (DraggableType == DraggableObjectType.ItemInInventory)
             {
-                PossibleDropSpots.Add(UIManager.Singleton.PlayerInventory.UIGrid);
-                PossibleDropSpots.Add(UIManager.Singleton.ExternalInventory.UIGrid);
+                PossibleDropSpots.Add(UIManager.Singleton.playerInventory.SlotsPanel);
+                PossibleDropSpots.Add(UIManager.Singleton.playerInventory.UIGrid);
+                PossibleDropSpots.Add(UIManager.Singleton.externalInventory.UIGrid);
                 PossibleDropSpots.Add(UIManager.Singleton.panel_Toolbar.transform.Find("ItemGrid").gameObject);
-                PossibleDropSpots.Add(UIManager.Singleton.PlayerInventory.SlotsPanel);
+                
+
+                toolbarItem = GetComponent<ToolbarItem>();
             }
         }
 
@@ -49,14 +54,21 @@ namespace UI
             
             if (DraggableType == DraggableObjectType.ItemInInventory)
             {
-                if (nearestDrop == UIManager.Singleton.ExternalInventory.UIGrid)
+                if (nearestDrop == UIManager.Singleton.playerInventory.SlotsPanel) //dragged to slots panel
                 {
-                    UIManager.Singleton.ExternalInventory.AddToolbarItem(GetComponent<ToolbarItem>(), nearestDrop);
+                    UIManager.Singleton.playerInventory.ApplyItem(toolbarItem);
                 }
-                else 
-                {
-                    UIManager.Singleton.PlayerInventory.AddToolbarItem(GetComponent<ToolbarItem>(), nearestDrop);
+
+                else if (nearestDrop == UIManager.Singleton.playerInventory.UIGrid)
+                { //carried from external inventory to player's one
+                    UIManager.Singleton.externalInventory.MoveItem(toolbarItem, UIManager.Singleton.playerInventory);
                 }
+
+                else if (nearestDrop == UIManager.Singleton.externalInventory.UIGrid)
+                { //carried from player's inventory to external one
+                    UIManager.Singleton.playerInventory.MoveItem(toolbarItem, UIManager.Singleton.externalInventory);
+                }
+
             }
         }
 

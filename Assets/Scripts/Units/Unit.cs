@@ -9,6 +9,7 @@ public class Unit : MonoBehaviour
     public int ID = -1;
     public bool AIControlled = true;
     public UnitStats Stats;
+    public List<Items.Item> ItemsDroppedOnDeath = new List<Items.Item>();
     public UnitMovement unitMovement;
     [HideInInspector]
     public Vector3 LastNonTransformPosition;
@@ -58,10 +59,12 @@ public class Unit : MonoBehaviour
         {
             behavior.Clear();
         }
-        gameObject.AddComponent<Corpse>().VisualizeDeath(new Vector3(0, 0, 165), new Color(0.5660378f, 0.1735493f, 0.1735493f));
+        gameObject.AddComponent<UI.InventoryLogic.Corpse>().InitializeCorpse(new Vector3(0, 0, 165), new Color(0.5660378f, 0.1735493f, 0.1735493f), ItemsDroppedOnDeath);
         gameObject.tag = "Corpse";
         Destroy(animator);
+        if (behavior != null) behavior.Clear();
         if (GetComponent<Behaviours.Fighting>() != null) Destroy(GetComponent<Behaviours.Fighting>());
+        GameManager.dataBase.AllUnits.Remove(this);
         Destroy(this);
     }
     private void OnKillMethod(Unit KilledUnit)

@@ -33,6 +33,8 @@ namespace Behaviours
 
         public void BehaviorInteraction()
         {
+            if (Active == false) return;
+
             fighting.CurrentTarget = GetNearestTarget();
             if (fighting.CurrentTarget != null) unit.unitMovement.GetWayTarget(fighting.CurrentTarget);
 

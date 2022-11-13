@@ -10,6 +10,8 @@ namespace UI.InventoryLogic
     public class ToolbarItem : MonoBehaviour
     {
         public Item RepresentedItem = null;
+        [HideInInspector]
+        public Inventory inventory;
         public bool IsEquipedArmor = false;
 
         private UIDraggable draggable;
@@ -26,12 +28,12 @@ namespace UI.InventoryLogic
 
         public void ShowItemInfo()
         {
-            if (transform.parent != UIManager.Singleton.PlayerInventory.SlotsPanel.transform)
+            if (transform.parent != UIManager.Singleton.playerInventory.SlotsPanel.transform)
             {
                 if (draggable.BeingDragged == false)
                 {
-                    ItemStatsIndicator.Singleton.gameObject.SetActive(true);
-                    ItemStatsIndicator.Singleton.FormStatsPanel(RepresentedItem);
+                    UIManager.Singleton.itemStatsIndicator.gameObject.SetActive(true);
+                    UIManager.Singleton.itemStatsIndicator.FormStatsPanel(RepresentedItem);
                 }
             }
             else
@@ -44,11 +46,11 @@ namespace UI.InventoryLogic
             if (draggable != null && draggable.BeingDragged) return;
             if (!IsEquipedArmor)
             {
-                UIManager.Singleton.PlayerInventory.ApplyItem(this);
+                UIManager.Singleton.playerInventory.ApplyItem(this);
             }
             else
             {
-                if (RepresentedItem != null) UIManager.Singleton.PlayerInventory.DisapplyItem(this);
+                if (RepresentedItem != null) UIManager.Singleton.playerInventory.DisapplyItem(this);
             }
         }
     }
