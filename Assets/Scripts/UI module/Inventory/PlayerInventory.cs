@@ -11,6 +11,7 @@ namespace UI.InventoryLogic
     public class PlayerInventory : Inventory
     {
         public GameObject SlotsPanel;
+        public GameObject toolbarPanel;
         [SerializeField]
         private ToolbarItem[] EquipmentSlots = new ToolbarItem[9];
         [SerializeField]
@@ -27,6 +28,7 @@ namespace UI.InventoryLogic
                 visualizedItems.Remove(movedItem);
             }
         }
+        
 
         public void ApplyItem(ToolbarItem itemToApply)
         {

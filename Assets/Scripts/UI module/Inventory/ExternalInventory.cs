@@ -17,11 +17,12 @@ namespace UI.InventoryLogic {
             if (moveTo.visualizedItems.Contains(movedItem) == false)
             {
                 moveTo.visualizedItems.Add(movedItem);
-                if (LootSource != null) LootSource.CarriedItems[visualizedItems.IndexOf(movedItem)] = null;
+                if (LootSource != null) LootSource.CarriedItems.RemoveAt(visualizedItems.IndexOf(movedItem));
                 visualizedItems.Remove(movedItem);
                 movedItem.inventory = moveTo;
             }
         }
+        
 
         public void TransferAllitems()
         {

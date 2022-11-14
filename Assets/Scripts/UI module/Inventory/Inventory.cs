@@ -29,6 +29,16 @@ namespace UI.InventoryLogic
             visualizedItems.Remove(removedItem);
             GameObject.Destroy(removedItem.gameObject);
         }
+        public void MoveItemToToolbar(ToolbarItem movedItem, PlayerInventory playerInventory)
+        {
+            movedItem.transform.SetParent(playerInventory.toolbarPanel.transform);
+            if (playerInventory.visualizedItems.Contains(movedItem) == false)
+            {
+                playerInventory.visualizedItems.Add(movedItem);
+                movedItem.inventory = playerInventory;
+                visualizedItems.Remove(movedItem);
+            }
+        }
         public abstract void MoveItem(ToolbarItem movedItem, Inventory moveTo);
 
 

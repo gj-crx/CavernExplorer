@@ -59,6 +59,11 @@ namespace UI
                     UIManager.Singleton.playerInventory.ApplyItem(toolbarItem);
                 }
 
+                else if (nearestDrop == UIManager.Singleton.panel_Toolbar.transform.Find("ItemGrid").gameObject)
+                { //carried from any inventory to toolbar panel
+                    toolbarItem.inventory.MoveItemToToolbar(toolbarItem, UIManager.Singleton.playerInventory);
+                }
+
                 else if (nearestDrop == UIManager.Singleton.playerInventory.UIGrid)
                 { //carried from external inventory to player's one
                     UIManager.Singleton.externalInventory.MoveItem(toolbarItem, UIManager.Singleton.playerInventory);

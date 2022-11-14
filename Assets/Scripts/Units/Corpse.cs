@@ -16,10 +16,14 @@ namespace UI.InventoryLogic
         }
         private void OnMouseDown()
         {
-            VisualizeLootInUI();
+            if (Vector3.Distance(GameManager.LocalPlayerHeroUnit.transform.position, transform.position) < 3.5f)
+            {
+                VisualizeLootInUI();
+            }
         }
         private void VisualizeLootInUI()
         {
+            UIManager.Singleton.externalInventory.LootSource = this;
             //removing all items from previous loot source
             Stack<ToolbarItem> allItems = new Stack<ToolbarItem>();
             foreach (var item in UIManager.Singleton.externalInventory.visualizedItems)
