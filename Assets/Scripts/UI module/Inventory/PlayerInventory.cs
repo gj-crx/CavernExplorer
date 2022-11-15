@@ -32,10 +32,10 @@ namespace UI.InventoryLogic
 
         public void ApplyItem(ToolbarItem itemToApply)
         {
-            if (itemToApply.RepresentedItem.UsedSlot != EquipmentSlot.None)
+            if (itemToApply.RepresentedItem.UsedSlot != EquipmentSlot.None && itemToApply.RepresentedItem.UsedSlot != EquipmentSlot.RightHand)
             { //item uses a slot
                 //checking slot before equiping item
-                if (EquipmentSlots[(byte)itemToApply.RepresentedItem.UsedSlot] != null && EquipmentSlots[(byte)itemToApply.RepresentedItem.UsedSlot].RepresentedItem != null)
+                if (EquipmentSlots[(byte)itemToApply.RepresentedItem.UsedSlot] != null && EquipmentSlots[(byte)itemToApply.RepresentedItem.UsedSlot].RepresentedItem.ItemName != "Undefined item")
                 {
                     DisapplyItem(EquipmentSlots[(byte)itemToApply.RepresentedItem.UsedSlot]);
                 }
@@ -44,23 +44,39 @@ namespace UI.InventoryLogic
                 GameObject.Destroy(itemToApply.gameObject);
                 GameManager.LocalPlayerHeroUnit.Stats.CombineStats(itemToApply.RepresentedItem.ItemStats);
             }
-            else
+            else if (itemToApply.RepresentedItem.UsedSlot == EquipmentSlot.RightHand)
             {
-                if (itemToApply.RepresentedItem.SpellCastOnApply is null) SpellCastingSystem.CastSpell(itemToApply.RepresentedItem.SpellCastOnApply);
+                if (EquipmentSlots[(byte)itemToApply.RepresentedItem.UsedSlot].RepresentedItem != null && EquipmentSlots[(byte)itemToApply.RepresentedItem.UsedSlot].RepresentedItem.ItemName != "Undefined item")
+                {
+                    DisapplyItem(EquipmentSlots[(byte)itemToApply.RepresentedItem.UsedSlot]);
+                }
+                itemToApply.transform.SetParent(UIManager.Singleton.panel_Toolbar.transform.Find("ItemGrid"));
+                EquipmentSlots[(byte)itemToApply.RepresentedItem.UsedSlot].RepresentedItem = itemToApply.RepresentedItem;
+                GameManager.LocalPlayerHeroUnit.Stats.CombineStats(itemToApply.RepresentedItem.ItemStats);
             }
+            else if (itemToApply.RepresentedItem.UsedSlot == EquipmentSlot.None)
+            {
+                itemToApply.transform.SetParent(itemToApply.inventory.UIGrid.transform);
+            }
+            if (itemToApply.RepresentedItem.SpellCastOnApply is null == false) SpellCastingSystem.CastSpell(itemToApply.RepresentedItem.SpellCastOnApply);
+
         }
         public void DisapplyItem(ToolbarItem itemToDisapply)
         {
             if (itemToDisapply.RepresentedItem != null)
             {
                 GameManager.LocalPlayerHeroUnit.Stats.SubstactStats(itemToDisapply.RepresentedItem.ItemStats);
-                if (itemToDisapply.RepresentedItem.UsedSlot != EquipmentSlot.None)
+                if (itemToDisapply.RepresentedItem.UsedSlot != EquipmentSlot.None && itemToDisapply.RepresentedItem.UsedSlot != EquipmentSlot.RightHand)
                 {
                     itemToDisapply.transform.Find("Icon").GetComponent<Image>().sprite = EquipmentSlotsBasicIcons[(byte)itemToDisapply.RepresentedItem.UsedSlot];
                     itemToDisapply.transform.Find("Icon").GetComponent<Image>().color = new Color(1, 1, 1, 0.58f);
 
                     CreateItem(itemToDisapply.RepresentedItem);
                     itemToDisapply.RepresentedItem = null;
+                }
+                else if (itemToDisapply.RepresentedItem.UsedSlot == EquipmentSlot.RightHand)
+                {
+                    GameManager.LocalPlayerHeroUnit.Stats.SubstactStats(itemToDisapply.RepresentedItem.ItemStats);
                 }
             }
         }

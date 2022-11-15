@@ -32,16 +32,23 @@ namespace UI.InventoryLogic
             {
                 if (draggable.BeingDragged == false)
                 {
-                    UIManager.Singleton.itemStatsIndicator.gameObject.SetActive(true);
-                    UIManager.Singleton.itemStatsIndicator.FormStatsPanel(RepresentedItem);
+                    if (transform.parent == UIManager.Singleton.panel_Toolbar.transform.Find("ItemGrid"))
+                    {
+                        ClickApply();
+                    }
+                    else
+                    {
+                        UIManager.Singleton.itemStatsIndicator.gameObject.SetActive(true);
+                        UIManager.Singleton.itemStatsIndicator.FormStatsPanel(RepresentedItem);
+                    }
                 }
             }
             else
             { //disapply use
-               ClickDisapply();
+               ClickApply();
             }
         }
-        public void ClickDisapply()
+        public void ClickApply()
         {
             if (draggable != null && draggable.BeingDragged) return;
             if (!IsEquipedArmor)
