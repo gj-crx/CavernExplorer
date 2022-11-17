@@ -48,5 +48,6 @@ public static class GameManager
         unitController = new UnitController();
 
         LocalPlayerHeroUnit = GameObject.Find("Character").GetComponent<Unit>();
+        UI.UIManager.Singleton.InitializeInventory();
     }
 }

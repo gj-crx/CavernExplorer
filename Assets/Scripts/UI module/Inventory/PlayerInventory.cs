@@ -26,6 +26,8 @@ namespace UI.InventoryLogic
                 moveTo.visualizedItems.Add(movedItem);
                 movedItem.inventory = moveTo;
                 visualizedItems.Remove(movedItem);
+
+                moveTo.RecieveItem(movedItem);
             }
         }
         
@@ -35,7 +37,7 @@ namespace UI.InventoryLogic
             if (itemToApply.RepresentedItem.UsedSlot != EquipmentSlot.None && itemToApply.RepresentedItem.UsedSlot != EquipmentSlot.RightHand)
             { //item uses a slot
                 //checking slot before equiping item
-                if (EquipmentSlots[(byte)itemToApply.RepresentedItem.UsedSlot] != null && EquipmentSlots[(byte)itemToApply.RepresentedItem.UsedSlot].RepresentedItem.ItemName != "Undefined item")
+                if (EquipmentSlots[(byte)itemToApply.RepresentedItem.UsedSlot].RepresentedItem != null && EquipmentSlots[(byte)itemToApply.RepresentedItem.UsedSlot].RepresentedItem.ItemName != "Undefined item")
                 {
                     DisapplyItem(EquipmentSlots[(byte)itemToApply.RepresentedItem.UsedSlot]);
                 }
@@ -74,10 +76,6 @@ namespace UI.InventoryLogic
                     CreateItem(itemToDisapply.RepresentedItem);
                     itemToDisapply.RepresentedItem = null;
                 }
-                else if (itemToDisapply.RepresentedItem.UsedSlot == EquipmentSlot.RightHand)
-                {
-                    GameManager.LocalPlayerHeroUnit.Stats.SubstactStats(itemToDisapply.RepresentedItem.ItemStats);
-                }
             }
         }
         public void TransferItemToEquipmentSlot(ToolbarItem itemToTransfer, ToolbarItem equipmentSlot)
@@ -89,6 +87,11 @@ namespace UI.InventoryLogic
             visualizedItems.Remove(itemToTransfer);
             GameObject.Destroy(itemToTransfer);
             visualizedItems.Add(equipmentSlot);
+        }
+
+        public override void RecieveItem(ToolbarItem newItem)
+        {
+
         }
     }
 }

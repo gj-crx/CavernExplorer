@@ -55,11 +55,16 @@ namespace UI
             InGameUI.gameObject.SetActive(false);
             
         }
-        private void Start()
+        public void InitializeInventory()
         {
             foreach (var startingItem in GameSettings.Singleton.StartingCharacterAsset.StartingItems)
             {
-                playerInventory.CreateItem(startingItem);
+                var newToolbarItem = playerInventory.CreateItem(startingItem);
+                if (startingItem.UsedSlot != Inventory.EquipmentSlot.None)
+                {
+                    playerInventory.ApplyItem(newToolbarItem);
+                    if (startingItem.UsedSlot == Inventory.EquipmentSlot.RightHand) playerInventory.MoveItemToToolbar(newToolbarItem, playerInventory);
+                }
             }
         }
 

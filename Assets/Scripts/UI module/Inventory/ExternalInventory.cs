@@ -20,9 +20,15 @@ namespace UI.InventoryLogic {
                 if (LootSource != null) LootSource.CarriedItems.RemoveAt(visualizedItems.IndexOf(movedItem));
                 visualizedItems.Remove(movedItem);
                 movedItem.inventory = moveTo;
+
+                moveTo.RecieveItem(movedItem);
             }
         }
-        
+
+        public override void RecieveItem(ToolbarItem newItem)
+        {
+            if (LootSource != null) LootSource.CarriedItems.Add(newItem.RepresentedItem);
+        }
 
         public void TransferAllitems()
         {

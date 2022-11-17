@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
+using UI.Indicators;
 
 
 public class Unit : MonoBehaviour
@@ -21,6 +22,7 @@ public class Unit : MonoBehaviour
     public delegate void OnKill(Unit killed);
     public OnKill OnKilled;
     public IBehavior behavior;
+    public IHealthBar healthBar;
     public Animator animator;
 
     private Unit _currentTarget;
@@ -32,8 +34,15 @@ public class Unit : MonoBehaviour
     {
         unitMovement = new UnitMovement(this);
         GetBehavior();
-       // StartUnitActionsControlling();
         try { animator = GetComponent<Animator>(); } catch { }
+        if (gameObject.tag == "Creep")
+        {
+            try { healthBar = transform.Find("HealthBar").GetComponent<IHealthBar>(); } catch { }
+        }
+        else if (gameObject.tag == "Player")
+        {
+            UI.UIManager.Singleton.panel_HealthBar.GetComponent<IHealthBar>();
+        }
         GameManager.dataBase.AllUnits.Add(this);
     }
 
@@ -51,6 +60,10 @@ public class Unit : MonoBehaviour
     {
         Stats.CurrentHP -= Damage;
         if (Stats.CurrentHP <= 0) Death();
+        else
+        {
+            if (healthBar != null) healthBar.ShowHealth(Stats.CurrentHP, Stats.MaxHP);
+        }
     }
     public void Death()
     {
@@ -63,6 +76,7 @@ public class Unit : MonoBehaviour
         gameObject.tag = "Corpse";
         Destroy(animator);
         if (behavior != null) behavior.Clear();
+        if (healthBar != null) healthBar.TurnOff();
         if (GetComponent<Behaviours.Fighting>() != null) Destroy(GetComponent<Behaviours.Fighting>());
         GameManager.dataBase.AllUnits.Remove(this);
         Destroy(this);

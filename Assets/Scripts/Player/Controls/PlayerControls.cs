@@ -22,7 +22,7 @@ namespace Player
         private Vector3 Movement;
         
         [SerializeField]
-        private PlayerHitbox _hitBox;
+        private PlayerHitbox hitBox;
         [SerializeReference]
         private GameObject[] AnimationAvatars;
         [SerializeField]
@@ -71,11 +71,11 @@ namespace Player
                 _Animator.SetBool("Stopped", false);
                 LastDirection = Movement.normalized;
                 //correcting hitbox
-                if (LastDirection.x != 0) _hitBox.transform.localPosition = _hitBox.SidePosition;
+                if (Mathf.Abs(LastDirection.x) > Mathf.Abs(LastDirection.y)) hitBox.transform.localPosition = hitBox.SidePosition;
                 else
                 {
-                    if (LastDirection.y > 0) _hitBox.transform.localPosition = _hitBox.UpperPosition;
-                    else if (LastDirection.y < 0) _hitBox.transform.localPosition = _hitBox.DownPosition;
+                    if (LastDirection.y > 0) hitBox.transform.localPosition = hitBox.UpperPosition;
+                    else if (LastDirection.y < 0) hitBox.transform.localPosition = hitBox.DownPosition;
                 }
             }
         }
@@ -118,14 +118,14 @@ namespace Player
 
         private void Hit()
         {
-            _hitBox.gameObject.SetActive(true);
+            hitBox.gameObject.SetActive(true);
             AlreadyHittedTargets.Clear();
         }
         public void EndAttackingState()
         {
             ChangeAvatar(AnimationAvatarType.NoWeapon);
             AttackAnimatinoBeingPlayed = false;
-            _hitBox.gameObject.SetActive(false);
+            hitBox.gameObject.SetActive(false);
         }
 
 

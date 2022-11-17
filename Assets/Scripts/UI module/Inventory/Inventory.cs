@@ -12,7 +12,7 @@ namespace UI.InventoryLogic
         public GameObject UIGrid;
 
 
-        public void CreateItem(Item newItem)
+        public ToolbarItem CreateItem(Item newItem)
         {
             ToolbarItem createdItem = GameObject.Instantiate(PrefabManager.Singleton.ItemPrefab).GetComponent<ToolbarItem>();
             createdItem.transform.SetParent(UIGrid.transform);
@@ -23,6 +23,8 @@ namespace UI.InventoryLogic
 
             createdItem.RepresentedItem = newItem;
             visualizedItems.Add(createdItem);
+
+            return createdItem;
         }
         public void RemoveItem(ToolbarItem removedItem)
         {
@@ -40,6 +42,8 @@ namespace UI.InventoryLogic
             }
         }
         public abstract void MoveItem(ToolbarItem movedItem, Inventory moveTo);
+
+        public abstract void RecieveItem(ToolbarItem newItem);
 
 
         public enum EquipmentSlot : byte

@@ -27,7 +27,6 @@ public class UnitMovement
     {
         if (Way != null && Way.Length > 1)
         {
-            Debug.Log("new way");
             localWay = Way;
             Way = null;
             localCurrentDistance = 1;
@@ -59,7 +58,6 @@ public class UnitMovement
         unit.transform.eulerAngles = new Vector3(0, 0, 0);
         unit.transform.Translate(CurrentDirection * unit.Stats.MoveSpeed * Time.fixedDeltaTime);
         if (CurrentDirection.x < 0) unit.transform.eulerAngles = new Vector3(0, 180, 0);
-        else Debug.Log("SHIT");
 
         unit.animator.SetBool("Stopped", false);
         unit.animator.SetFloat("XSpeed", CurrentDirection.x);

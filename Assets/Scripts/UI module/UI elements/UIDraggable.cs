@@ -55,7 +55,8 @@ namespace UI
             if (DraggableType == DraggableObjectType.ItemInInventory)
             {
                 if (nearestDrop == UIManager.Singleton.playerInventory.SlotsPanel) //dragged to slots panel
-                {
+                { //moved to players inventory and applied
+                    toolbarItem.inventory.MoveItem(toolbarItem, UIManager.Singleton.playerInventory);
                     UIManager.Singleton.playerInventory.ApplyItem(toolbarItem);
                 }
 
@@ -86,7 +87,6 @@ namespace UI
                 if (Variant.activeInHierarchy)
                 {
                     float CurrentDistance = Vector3.Distance(transform.position, Variant.transform.position);
-                    Debug.Log(Variant.name + " " + CurrentDistance);
                     if (CurrentDistance < MinimalDistance)
                     {
                         MinimalDistance = CurrentDistance;
