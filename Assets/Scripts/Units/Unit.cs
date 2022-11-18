@@ -9,19 +9,22 @@ public class Unit : MonoBehaviour
 {
     public int ID = -1;
     public bool AIControlled = true;
-    public UnitStats Stats;
     public List<Items.Item> ItemsDroppedOnDeath = new List<Items.Item>();
     public UnitMovement unitMovement;
+    public UnitStats Stats;
+    [SerializeField]
+    private UnitGraphicPresets graphicPresets;
+
+
+
+
     [HideInInspector]
     public Vector3 LastNonTransformPosition;
-
-
-
-
-
     public delegate void OnKill(Unit killed);
     public OnKill OnKilled;
+    [HideInInspector]
     public IBehavior behavior;
+    [HideInInspector]
     public IHealthBar healthBar;
     public Animator animator;
 
@@ -72,9 +75,11 @@ public class Unit : MonoBehaviour
         {
             behavior.Clear();
         }
-        gameObject.AddComponent<UI.InventoryLogic.Corpse>().InitializeCorpse(new Vector3(0, 0, 165), new Color(0.5660378f, 0.1735493f, 0.1735493f), ItemsDroppedOnDeath);
         gameObject.tag = "Corpse";
+        animator.Rebind();
+        animator.Update(0f);
         Destroy(animator);
+        gameObject.AddComponent<UI.InventoryLogic.Corpse>().InitializeCorpse(new Vector3(0, 0, Random.Range(110, 275)), graphicPresets.DeadColor, ItemsDroppedOnDeath);
         if (behavior != null) behavior.Clear();
         if (healthBar != null) healthBar.TurnOff();
         if (GetComponent<Behaviours.Fighting>() != null) Destroy(GetComponent<Behaviours.Fighting>());
@@ -165,6 +170,11 @@ public class Unit : MonoBehaviour
             AttackRange -= SubstractedStats.AttackRange;
             VisionRadius -= SubstractedStats.VisionRadius;
         }
+    }
+    [System.Serializable]
+    public struct UnitGraphicPresets
+    {
+        public Color DeadColor;
     }
     public enum AttackType : byte
     {

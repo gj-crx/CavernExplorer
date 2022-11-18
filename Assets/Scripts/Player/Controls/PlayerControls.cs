@@ -19,20 +19,19 @@ namespace Player
         public bool AttackAnimatinoBeingPlayed = false;
 
 
-        private Vector3 Movement;
-        
+        private Vector3 movement;
         [SerializeField]
         private PlayerHitbox hitBox;
         [SerializeReference]
-        private GameObject[] AnimationAvatars;
+        private GameObject[] animationAvatars;
         [SerializeField]
-        private GameObject Prefab_Bullet;
+        private GameObject prefab_Bullet;
         [SerializeField]
-        private Vector3 ShootingBulletsOffset = new Vector3(0, 0.4f, 0);
+        private Vector3 shootingBulletsOffset = new Vector3(0, 0.4f, 0);
         [SerializeField]
-        private float ShootingBulletOffsetModifier = 1.2f;
+        private float shootingBulletOffsetModifier = 1.2f;
         [SerializeField]
-        private Animator _Animator = null;
+        private Animator animator = null;
         [SerializeField]
         private VariableJoystick joystick;
 
@@ -43,33 +42,72 @@ namespace Player
 
         private void LateUpdate()
         {
+            MovementInputCheck();
+        }
+
+        void FixedUpdate()
+        { //moving and rotation object
+            if (movement.magnitude > 0)
+            {
+                transform.eulerAngles = new Vector3(0, 0, 0);
+                transform.Translate(movement.normalized * PlayerCharacterUnit.Stats.MoveSpeed * Time.fixedDeltaTime);
+            }
+            if (movement.x > 0) transform.eulerAngles = new Vector3(0, -180, 0);
+        }
+
+        /// <summary>
+        /// Triggered by button script in Unity
+        /// </summary>
+        public void AttackInputCheck()
+        { 
+            if (AttackAnimatinoBeingPlayed == false)
+            {
+                //checking for input to change facing direction of character, but not no actually move it
+                if (GameManager.LocalPlayerHeroUnit.Stats.attackType == Unit.AttackType.Melee)
+                {
+                    animator.SetBool("Attack", true);
+                    ChangeAvatar(CurrentSelectedWeapon);
+                    Hit();
+                }
+                else if (GameManager.LocalPlayerHeroUnit.Stats.attackType == Unit.AttackType.Ranged)
+                {
+                    Vector3 normalizedDirection = NormalizeDirection(LastDirection);
+                    Vector3 BulletPosition = transform.position + shootingBulletsOffset + (normalizedDirection * shootingBulletOffsetModifier);
+                    GameObject.Instantiate(prefab_Bullet, BulletPosition, Quaternion.identity).transform.eulerAngles = new Vector3(0, 0, BasicFunctions.DirectionToAngle(normalizedDirection));
+                    animator.SetBool("Attack", true);
+                    Debug.Log(normalizedDirection);
+                    ChangeAvatar(DirectionToGunAvatar(normalizedDirection));
+                }
+            }
+        }
+        private void MovementInputCheck()
+        {
             if (AttackAnimatinoBeingPlayed == false)
             {
                 if (SystemInfo.deviceType == DeviceType.Handheld || true)
                 {
-                    Movement = Vector3.up * joystick.Vertical + Vector3.right * joystick.Horizontal;
+                    movement = Vector3.up * joystick.Vertical + Vector3.right * joystick.Horizontal;
                 }
                 else
                 {
-                    Movement = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+                    movement = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
                 }
             }
-            else Movement = Vector3.zero;
+            else movement = Vector3.zero;
 
-            
-            _Animator.SetFloat("XSpeed", Movement.x);
-            _Animator.SetFloat("YSpeed", Movement.y);
 
-            if (Movement.magnitude == 0)
+            animator.SetFloat("XSpeed", movement.x);
+            animator.SetFloat("YSpeed", movement.y);
+            if (movement.magnitude == 0)
             { //movement stops
-                _Animator.SetBool("Stopped", true);
-                _Animator.SetFloat("LastDirX", LastDirection.x);
-                _Animator.SetFloat("LastDirY", LastDirection.y);
+                animator.SetBool("Stopped", true);
+                animator.SetFloat("LastDirX", LastDirection.x);
+                animator.SetFloat("LastDirY", LastDirection.y);
             }
             else
             {
-                _Animator.SetBool("Stopped", false);
-                LastDirection = Movement.normalized;
+                animator.SetBool("Stopped", false);
+                LastDirection = movement.normalized;
                 //correcting hitbox
                 if (Mathf.Abs(LastDirection.x) > Mathf.Abs(LastDirection.y)) hitBox.transform.localPosition = hitBox.SidePosition;
                 else
@@ -79,41 +117,10 @@ namespace Player
                 }
             }
         }
-
-        void FixedUpdate()
-        {
-            if (Movement.magnitude > 0)
-            {
-                transform.eulerAngles = new Vector3(0, 0, 0);
-                transform.Translate(Movement.normalized * PlayerCharacterUnit.Stats.MoveSpeed * Time.fixedDeltaTime);
-            }
-            if (Movement.x > 0) transform.eulerAngles = new Vector3(0, -180, 0);
-        }
-
-        public void AttackInputCheck()
-        {
-            if (AttackAnimatinoBeingPlayed == false)
-            {
-                //checking for input to change facing direction of character, but not no actually move it
-                if (GameManager.LocalPlayerHeroUnit.Stats.attackType == Unit.AttackType.Melee)
-                {
-                    _Animator.SetBool("Attack", true);
-                    ChangeAvatar(CurrentSelectedWeapon);
-                    Hit();
-                }
-                else if (GameManager.LocalPlayerHeroUnit.Stats.attackType == Unit.AttackType.Ranged)
-                {
-                    Vector3 BulletPosition = transform.position + ShootingBulletsOffset + (LastDirection * ShootingBulletOffsetModifier);
-                    GameObject.Instantiate(Prefab_Bullet, BulletPosition, Quaternion.identity).transform.eulerAngles = new Vector3(0, 0, BasicFunctions.DirectionToAngle(LastDirection));
-                    _Animator.SetBool("Attack", true);
-                    ChangeAvatar(DirectionToGunAvatar(LastDirection));
-                }
-            }
-        }
         public void ChangeAvatar(AnimationAvatarType NewAvatar)
         {
-            foreach (var Avatar in AnimationAvatars) Avatar.SetActive(false);
-            AnimationAvatars[(int)NewAvatar].SetActive(true);
+            foreach (var Avatar in animationAvatars) Avatar.SetActive(false);
+            animationAvatars[(int)NewAvatar].SetActive(true);
         }
 
         private void Hit()
@@ -126,6 +133,21 @@ namespace Player
             ChangeAvatar(AnimationAvatarType.NoWeapon);
             AttackAnimatinoBeingPlayed = false;
             hitBox.gameObject.SetActive(false);
+        }
+        private Vector3 NormalizeDirection(Vector3 direction)
+        {
+            Vector3 newDirection = Vector3.zero;
+            if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+            {
+                if (direction.x > 0) newDirection.x = 1;
+                else newDirection.x = -1;
+            }
+            else
+            {
+                if (direction.y > 0) newDirection.y = 1;
+                else newDirection.y = -1;
+            }
+            return newDirection;
         }
 
 
