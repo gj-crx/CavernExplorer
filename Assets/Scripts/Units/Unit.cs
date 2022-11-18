@@ -44,7 +44,7 @@ public class Unit : MonoBehaviour
         }
         else if (gameObject.tag == "Player")
         {
-            UI.UIManager.Singleton.panel_HealthBar.GetComponent<IHealthBar>();
+            healthBar = UI.UIManager.Singleton.panel_HealthBar.GetComponent<IHealthBar>();
         }
         GameManager.dataBase.AllUnits.Add(this);
     }
@@ -59,13 +59,13 @@ public class Unit : MonoBehaviour
     }
 
     
-    public void GetDamage(float Damage, Unit Attacker)
+    public void GetDamage(float damage, Unit attacker)
     {
-        Stats.CurrentHP -= Damage;
+        Stats.CurrentHP -= damage;
         if (Stats.CurrentHP <= 0) Death();
         else
         {
-            if (healthBar != null) healthBar.ShowHealth(Stats.CurrentHP, Stats.MaxHP);
+            if (healthBar != null) healthBar.ShowHealth(Stats.CurrentHP, Stats.MaxHP, damage);
         }
     }
     public void Death()

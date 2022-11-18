@@ -15,7 +15,7 @@ namespace UI.Indicators {
         private SpriteRenderer hitPointsBar;
 
 
-        public void ShowHealth(float currentHP, float maxHP)
+        public void ShowHealth(float currentHP, float maxHP, float recievedDamage)
         {
             Debug.Log("health changes");
             hitPointsBar.gameObject.SetActive(currentHP < maxHP);

@@ -22,12 +22,21 @@ namespace UI.Indicators
 
         void Update()
         {
-            ShowHealth(unitToShow.Stats.CurrentHP, unitToShow.Stats.MaxHP);
+            ShowHealth();
         }
-        public void ShowHealth(float currentHP, float maxHP)
+        public void ShowHealth(float currentHP, float maxHP, float recievedDamage)
         {
+            Debug.Log("recieved damage " + recievedDamage);
             FillerImage.fillAmount = currentHP / maxHP;
             HPShowText.text = currentHP + "/" + maxHP;
+
+
+            if (recievedDamage > 1) FadingRedScreenEffect.Singleton.ResetColor();
+        }
+        private void ShowHealth(bool showInternally = true)
+        {
+            FillerImage.fillAmount = unitToShow.Stats.CurrentHP / unitToShow.Stats.MaxHP;
+            HPShowText.text = unitToShow.Stats.CurrentHP + "/" + unitToShow.Stats.MaxHP;
         }
 
         public void TurnOff()
