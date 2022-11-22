@@ -39,6 +39,7 @@ namespace UI.InventoryLogic
             {
                 UIManager.Singleton.externalInventory.CreateItem(item);
             }
+            UIManager.Singleton.panel_PlayerInventory.SetActive(true);
             UIManager.Singleton.panel_ExternalInventory.SetActive(true);
         }
     }

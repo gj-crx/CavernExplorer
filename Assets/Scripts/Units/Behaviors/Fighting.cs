@@ -46,6 +46,10 @@ namespace Behaviours
                 await Task.Delay(CheckIntervalMiliseconds);
             }
         }
+        private void OnDestroy()
+        {
+            if (transform.Find("HitBox") != null) Destroy(transform.Find("HitBox").gameObject);
+        }
 
 
     }

@@ -3,21 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 using UI.Indicators;
+using Items;
 
 
 public class Unit : MonoBehaviour
 {
     public int ID = -1;
     public bool AIControlled = true;
-    public List<Items.Item> ItemsDroppedOnDeath = new List<Items.Item>();
     public UnitMovement unitMovement;
     public UnitStats Stats;
-    [SerializeField]
-    private UnitGraphicPresets graphicPresets;
 
 
-
-
+    [HideInInspector]
+    public List<Item> ItemsDroppedOnDeath = new List<Item>();
     [HideInInspector]
     public Vector3 LastNonTransformPosition;
     public delegate void OnKill(Unit killed);
@@ -27,10 +25,15 @@ public class Unit : MonoBehaviour
     [HideInInspector]
     public IHealthBar healthBar;
     public Animator animator;
-
-    private Unit _currentTarget;
-  //  [HideInInspector]
+    [HideInInspector]
     public bool MovementHalted = false;
+
+    [SerializeField]
+    private UnitGraphicPresets graphicPresets;
+    [SerializeField]
+    private List<PossibleDrop> possibleDropOnDeath = new List<PossibleDrop>();
+    private Unit currentTarget;
+
 
 
     private void Start()
@@ -46,6 +49,7 @@ public class Unit : MonoBehaviour
         {
             healthBar = UI.UIManager.Singleton.panel_HealthBar.GetComponent<IHealthBar>();
         }
+        ItemsDroppedOnDeath = PossibleDrop.GenerateItems(possibleDropOnDeath);
         GameManager.dataBase.AllUnits.Add(this);
     }
 
@@ -103,7 +107,7 @@ public class Unit : MonoBehaviour
   
     private void Chase()
     {
-        Vector3 Direction = _currentTarget.transform.position - transform.position;
+        Vector3 Direction = currentTarget.transform.position - transform.position;
 
         transform.eulerAngles = new Vector3(0, 0, 0);
         animator.SetBool("Stopped", false);

@@ -6,8 +6,8 @@ using Spells;
 
 namespace Items
 {
-    [System.Serializable]
-    public class Item
+    [CreateAssetMenu(fileName = "Item", menuName = "ScriptableObjects/Item", order = 1)]
+    public class Item : ScriptableObject
     {
         public string ItemName = "Undefined item";
         public Sprite Icon;

@@ -73,6 +73,7 @@ namespace UI {
         {
             GameManager.LocalPlayerHeroUnit.gameObject.SetActive(false);
             NormalCameraDistance = Camera.main.orthographicSize;
+            Camera.main.orthographicSize = (backgroundScenario.CameraMinDistance + backgroundScenario.CameraMaxDistance) / 2 + 5;
             backgroundScenario.GetRandomPoints();
             blackMask.SetActive(false);
             backgroundScenario.isActive = true;

@@ -26,7 +26,6 @@ namespace UI.Indicators
         }
         public void ShowHealth(float currentHP, float maxHP, float recievedDamage)
         {
-            Debug.Log("recieved damage " + recievedDamage);
             FillerImage.fillAmount = currentHP / maxHP;
             HPShowText.text = currentHP + "/" + maxHP;
 

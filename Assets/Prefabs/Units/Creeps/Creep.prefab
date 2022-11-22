@@ -275,25 +275,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: -1
   AIControlled: 1
-  ItemsDroppedOnDeath:
-  - ItemName: Basic boots
-    Icon: {fileID: 21300000, guid: ae3208216b9856e408dcff020513465f, type: 3}
-    ItemStats:
-      attackType: 2
-      MaxHP: 25
-      CurrentHP: 0
-      Damage: 0
-      Regeneration: 0
-      MoveSpeed: 0
-      AttackDelay: 0
-      AttackRange: 0
-      VisionRadius: 0
-      CollisionRadius: 0
-    UsedSlot: 3
-    SpellCastOnApply:
-      SpellName: 
-      EffectsOnCast: 
-    Charges: 0
   unitMovement:
     Way: []
     localWay: []
@@ -306,17 +287,21 @@ MonoBehaviour:
     CurrentHP: 400
     Damage: 15
     Regeneration: 1
-    MoveSpeed: 9
+    MoveSpeed: 3
     AttackDelay: 1
     AttackRange: 2.1
-    VisionRadius: 50
+    VisionRadius: 15
     CollisionRadius: 0
-  graphicPresets:
-    DeadColor: {r: 0.3137255, g: 0.14901961, b: 0.14901961, a: 1}
-    IdleAnimation: {fileID: 7400000, guid: b048fab2c8733d649878d827fd6da51e, type: 2}
+  ItemsDroppedOnDeath:
+  - {fileID: 11400000, guid: 0a097321cd149d045820ada4f9f2b986, type: 2}
   LastNonTransformPosition: {x: 0, y: 0, z: 0}
   animator: {fileID: -3682946531640692227}
   MovementHalted: 0
+  graphicPresets:
+    DeadColor: {r: 0.3137255, g: 0.14901961, b: 0.14901961, a: 1}
+  possibleDropOnDeath:
+  - {fileID: 11400000, guid: 90359567ffa15ca48bb17b55a3429ea4, type: 2}
+  - {fileID: 11400000, guid: 94c2e235cfcbcdb4c87d0965d091e9ca, type: 2}
 --- !u!114 &-4444343729125353677
 MonoBehaviour:
   m_ObjectHideFlags: 0

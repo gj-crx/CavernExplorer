@@ -40,7 +40,7 @@ namespace Generation
         }
         private Vector2Int GetRandomPointInSector()
         {
-            return new Vector2Int(GameManager.GenRandom.Next(-Radius, Radius), GameManager.GenRandom.Next(-Radius, Radius)) + Center;
+            return new Vector2Int(GameManager.GenRandom.Next(-Radius + 1, Radius - 1), GameManager.GenRandom.Next(-Radius + 1, Radius - 1)) + Center;
         }
         private Vector2Int GetRandomJointPoint(JointPointCords Side)
         {
