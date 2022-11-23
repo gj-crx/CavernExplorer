@@ -57,12 +57,13 @@ public class UnitMovement
 
         unit.transform.eulerAngles = new Vector3(0, 0, 0);
         unit.transform.Translate(CurrentDirection * unit.Stats.MoveSpeed * Time.fixedDeltaTime);
-        if (CurrentDirection.x < 0) unit.transform.eulerAngles = new Vector3(0, 180, 0);
+        if (CurrentDirection.x < 0) unit.transform.eulerAngles = new Vector3(0, 180, 0); 
 
         unit.animator.SetBool("Stopped", false);
         unit.animator.SetFloat("XSpeed", CurrentDirection.x);
         unit.animator.SetFloat("YSpeed", CurrentDirection.y);
 
+        //correction of direction
         if (CurrentDirection.x > 0 && unit.transform.position.x > localWay[localCurrentDistance].x) 
         {
             CurrentDirection.x = 0;
@@ -83,7 +84,6 @@ public class UnitMovement
             CurrentDirection.y = 0;
             unit.transform.position = new Vector3(unit.transform.position.x, localWay[localCurrentDistance].y, 0); 
         }
-      //  Debug.Log(CurrentDirection);
 
         if (CurrentDirection == Vector3.zero)
         {

@@ -11,10 +11,10 @@ namespace Animation
         // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
         override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            animator.gameObject.GetComponent<Unit>().MovementHalted = true;
-            if (animator.gameObject.tag != "Player")
+            animator.transform.parent.GetComponent<Unit>().MovementHalted = true;
+            if (animator.transform.parent.gameObject.tag != "Player")
             {
-                animator.gameObject.GetComponent<Fighting>().ReadyToHit = true;
+                animator.transform.parent.GetComponent<Fighting>().ReadyToHit = true;
             }
         }
 
@@ -28,10 +28,10 @@ namespace Animation
         override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             animator.SetBool("Attacked", false);
-            animator.gameObject.GetComponent<Unit>().MovementHalted = false;
-            if (animator.gameObject.tag != "Player")
+            animator.transform.parent.GetComponent<Unit>().MovementHalted = false;
+            if (animator.transform.parent.gameObject.tag != "Player")
             {
-                animator.gameObject.GetComponent<Fighting>().ReadyToHit = true;
+                animator.transform.parent.GetComponent<Fighting>().ReadyToHit = true;
             }
         }
 

@@ -42,7 +42,10 @@ namespace Player
 
         private void LateUpdate()
         {
-            MovementInputCheck();
+            if (PlayerCharacterUnit != null)
+            {
+                MovementInputCheck();
+            }
         }
 
         void FixedUpdate()
@@ -75,7 +78,6 @@ namespace Player
                     Vector3 BulletPosition = transform.position + shootingBulletsOffset + (normalizedDirection * shootingBulletOffsetModifier);
                     GameObject.Instantiate(prefab_Bullet, BulletPosition, Quaternion.identity).transform.eulerAngles = new Vector3(0, 0, BasicFunctions.DirectionToAngle(normalizedDirection));
                     animator.SetBool("Attack", true);
-                    Debug.Log(normalizedDirection);
                     ChangeAvatar(DirectionToGunAvatar(normalizedDirection));
                 }
             }

@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Chestplate drop
   m_EditorClassIdentifier: 
   DroppedItem: {fileID: 11400000, guid: 0a097321cd149d045820ada4f9f2b986, type: 2}
-  DropChance: 25
+  DropChance: 0.25

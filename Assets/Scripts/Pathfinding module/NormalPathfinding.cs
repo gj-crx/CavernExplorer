@@ -10,6 +10,7 @@ public class NormalPathfinding : IPathfinding
 
 
     public Map map;
+    private System.Random pathfindingRandom;
     private DistanceMapHolder DistancesMap;
 
 
@@ -32,6 +33,7 @@ public class NormalPathfinding : IPathfinding
     {
         map = m;
         DistancesMap = new DistanceMapHolder();
+        pathfindingRandom = new System.Random();
     }
     public bool GetWayPath(Unit MovingUnit, Vector3 Target, byte MaximumCorrectionStep = 2)
     {
@@ -134,9 +136,11 @@ public class NormalPathfinding : IPathfinding
     {
         short CurrentMinDistance = MaxSearchDistance;
         Vector2Int MinDistancePath = Vector2Int.zero;
-        for (int y = 0; y != -2; y++)
+        int x = 0;
+        int y = 0;
+        for (int yTries = 0; yTries < 3; yTries++)
         {
-            for (int x = 0; x != -2; x++)
+            for (int xTries = 0; xTries < 3; xTries++)
             {
                 //  Debug.Log("path " + new Vector2Int(CurrentPoint.x, CurrentPoint.y) + " distance: " + DistancesMap[CurrentPoint.x, CurrentPoint.y]);
                 if ((x == 0 || y == 0) && (x != 0 || y != 0))
@@ -146,11 +150,10 @@ public class NormalPathfinding : IPathfinding
                     MinDistancePath = new Vector2Int(CurrentPoint.x + x, CurrentPoint.y + y);
                     //  Debug.Log("Minimal distance out of  " + CurrentPoint + " is "  + MinimalDistancePath + " : " + MinimalDistance);
                 }
-                if (x == -1) x = -3;
-                if (x == 1) x = -2;
+                x = GetNextCordToTry(x);
             }
-            if (y == -1) y = -3;
-            if (y == 1) y = -2;
+            x = 0;
+            y = GetNextCordToTry(y);
         }
         return MinDistancePath;
     }
@@ -188,14 +191,33 @@ public class NormalPathfinding : IPathfinding
     }
     private Tuple<Vector2Int, bool> CorrectPath(Vector2Int Path)
     {
-        for (int y = -1; y <= 1; y++)
+        int x = 0;
+        int y = 0;
+        for (int yTries = 0; yTries < 3; yTries++) //trying each cord 3 times (-1, 0, 1) in a semi-random pattern starting from 0
         {
-            for (int x = -1; x <= 1; x++)
+            for (int xTries = 0; xTries < 3; xTries++)
             {
                 if ((x == 0 || y == 0) && PassablePath(Path + new Vector2Int(x, y))) return Tuple.Create(Path + new Vector2Int(x, y), true);
+
+                x = GetNextCordToTry(x);
             }
+            x = 0;
+            y = GetNextCordToTry(y);
         }
+        Debug.LogError("Pathfinding correction error");
         return Tuple.Create(Vector2Int.zero, false);
+    }
+    private int GetNextCordToTry(int currentCord)
+    {
+        if (currentCord == 0)
+        {
+            if (pathfindingRandom.Next(0, 2) == 1) return 1;
+            else return -1;
+        }
+        else if (currentCord == 1) return -1;
+        else if (currentCord == -1) return 1;
+        Debug.LogError("Pathfinding error");
+        return 0;
     }
     private Vector2Int RoundVector3(Vector3 pos)
     {

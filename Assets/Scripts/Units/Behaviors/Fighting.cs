@@ -12,13 +12,11 @@ namespace Behaviours
         public bool ReadyToHit = false;
 
         private Unit ownerUnit;
-        private Animator animator;
 
 
         void Awake()
         {
             ownerUnit = GetComponent<Unit>();
-            try { animator = GetComponent<Animator>(); } catch { }
         }
         private void Start()
         {
@@ -40,7 +38,7 @@ namespace Behaviours
                 if (CurrentTarget != null && Vector3.Distance(transform.position, CurrentTarget.transform.position) < ownerUnit.Stats.AttackRange)
                 {
                     ownerUnit.unitMovement.Way = null;
-                    if (animator != null) animator.SetBool("Attacked", true);
+                    if (ownerUnit.animator != null) ownerUnit.animator.SetBool("Attacked", true);
                    // OwnerUnit.MovementHalted = true;
                 }
                 await Task.Delay(CheckIntervalMiliseconds);

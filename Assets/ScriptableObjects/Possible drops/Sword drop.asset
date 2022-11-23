@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Sword drop
   m_EditorClassIdentifier: 
   DroppedItem: {fileID: 11400000, guid: b81fcf027ab8fcc47a34d8969f7c141f, type: 2}
-  DropChance: 75
+  DropChance: 0.75

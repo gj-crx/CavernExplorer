@@ -32,10 +32,10 @@ namespace UI.InventoryLogic {
 
         public void TransferAllitems()
         {
-            foreach (var item in visualizedItems)
-            {
-                MoveItem(item, UIManager.Singleton.playerInventory);
-            }
+            Stack<ToolbarItem> copyOfItemsList = new Stack<ToolbarItem>();
+            foreach (var item in visualizedItems) copyOfItemsList.Push(item);
+            foreach (var item in copyOfItemsList) MoveItem(item, UIManager.Singleton.playerInventory);
+            visualizedItems.Clear();
         }
     }
 }

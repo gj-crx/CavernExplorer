@@ -40,7 +40,10 @@ public class Unit : MonoBehaviour
     {
         unitMovement = new UnitMovement(this);
         GetBehavior();
-        try { animator = GetComponent<Animator>(); } catch { }
+        if (animator == null)
+        {
+            try { animator = GetComponent<Animator>(); } catch { }
+        }
         if (gameObject.tag == "Creep")
         {
             try { healthBar = transform.Find("HealthBar").GetComponent<IHealthBar>(); } catch { }
@@ -80,14 +83,19 @@ public class Unit : MonoBehaviour
             behavior.Clear();
         }
         gameObject.tag = "Corpse";
-        animator.Rebind();
-        animator.Update(0f);
-        Destroy(animator);
+        if (animator != null)
+        {
+            animator.Rebind();
+            animator.Update(0f);
+            Destroy(animator);
+        }
         gameObject.AddComponent<UI.InventoryLogic.Corpse>().InitializeCorpse(new Vector3(0, 0, Random.Range(110, 275)), graphicPresets.DeadColor, ItemsDroppedOnDeath);
         if (behavior != null) behavior.Clear();
         if (healthBar != null) healthBar.TurnOff();
         if (GetComponent<Behaviours.Fighting>() != null) Destroy(GetComponent<Behaviours.Fighting>());
         GameManager.dataBase.AllUnits.Remove(this);
+
+        if (gameObject.tag == "Player") Player.PlayerControls.Singleton.gameObject.SetActive(false);
         Destroy(this);
     }
     private void OnKillMethod(Unit KilledUnit)
