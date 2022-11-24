@@ -14,6 +14,7 @@ public class Unit : MonoBehaviour
     public UnitStats Stats;
 
 
+    public IBehavior behavior = null;
     [HideInInspector]
     public List<Item> ItemsDroppedOnDeath = new List<Item>();
     [HideInInspector]
@@ -21,13 +22,13 @@ public class Unit : MonoBehaviour
     public delegate void OnKill(Unit killed);
     public OnKill OnKilled;
     [HideInInspector]
-    public IBehavior behavior;
-    [HideInInspector]
     public IHealthBar healthBar;
     public Animator animator;
     [HideInInspector]
     public bool MovementHalted = false;
 
+    [SerializeField]
+    public string behaviorName = "CaveDweller";
     [SerializeField]
     private UnitGraphicPresets graphicPresets;
     [SerializeField]
@@ -107,10 +108,8 @@ public class Unit : MonoBehaviour
     }
     private void GetBehavior()
     {
-        if (gameObject.tag == "Creep")
-        {
-            behavior = new Behaviours.CaveDwellerBehaviour(this);
-        }
+        if (behaviorName == "CaveDweller") behavior = new Behaviours.CaveDwellerBehaviour(this);
+        else if (behaviorName == "Peaceful") behavior = new Behaviours.PeacefulBehavior(this);
     }
   
     private void Chase()

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Generation;
 
 [System.Serializable]
 public class UnitMovement
@@ -128,5 +129,39 @@ public class UnitMovement
             currentTarget = null;
         }
         return Result;
+    }
+    public void RunAway(Vector3 fearSource)
+    {
+        Sector unitSector = GameManager.map.GetUnitSector(unit);
+        Vector3Int delta = BasicFunctions.ToUnitVector(unit.LastNonTransformPosition - fearSource);
+        Vector3 positionToRun = Vector3.zero;
+        if (GameManager.Random.Next(0, 2) == 1 && delta.x != 0)
+        {
+            positionToRun = GetRandomPositionInNeibghourSector(unitSector, delta.x, 0);
+            if (positionToRun == Vector3.zero) positionToRun = GetRandomPositionInNeibghourSector(unitSector, 0, delta.y);
+            if (positionToRun == Vector3.zero)
+            {
+                if (GameManager.Random.Next(0, 2) == 1) positionToRun = GetRandomPositionInNeibghourSector(unitSector, delta.x * -1, 0);
+                else positionToRun = GetRandomPositionInNeibghourSector(unitSector, 0, delta.y * -1);
+            }
+        }
+        else
+        {
+            positionToRun = GetRandomPositionInNeibghourSector(unitSector, 0, delta.y);
+            if (positionToRun == Vector3.zero) positionToRun = GetRandomPositionInNeibghourSector(unitSector, delta.x, 0);
+            if (positionToRun == Vector3.zero)
+            {
+                if (GameManager.Random.Next(0, 2) == 1) positionToRun = GetRandomPositionInNeibghourSector(unitSector, delta.x * -1, 0);
+                else positionToRun = GetRandomPositionInNeibghourSector(unitSector, 0, delta.y * -1);
+            }
+        }
+    }
+    private Vector3 GetRandomPositionInNeibghourSector(Sector unitSector, int x, int y)
+    {
+        if (GameManager.map.SectorMap[unitSector.X + x, unitSector.Y + y] != null)
+        {
+            return BasicFunctions.ToVector3(GameManager.map.SectorMap[unitSector.X + x, unitSector.Y + y].RandomPoint);
+        }
+        else return Vector3.zero;
     }
 }

@@ -159,7 +159,7 @@ namespace Generation
             }
             QueueTilesToSet(ReferenceMap);
             //create positions to spawn units
-            GameManager.unitSpawner.SpawnUnitsInSector(this, GameManager.GenRandom);
+            GameManager.unitSpawner.SpawnUnitsInSector(this, GameManager.GenRandom, GameManager.MapGenerator.CurrentGenSettings.unitSpawningPatterns);
         }
         public void CreateBorderLine(int XPart, int YPart, Map ReferenceMap, byte WallThickness = 2)
         {

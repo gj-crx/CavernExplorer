@@ -30,6 +30,14 @@ public class Map
                 // Debug.Log(Obstacle.position.x + x + " " + Obstacle.position.z + y + " is obstacle by " + Obstacle.UnitName);
             }
     }
+    public Sector GetUnitSector(Unit MentionedUnit)
+    {
+        int SectorRadius = SectorMap[0, 0].RadiusValue;
+        Vector3 UnitPos = MentionedUnit.LastNonTransformPosition;
+        int SectorX = (int)(UnitPos.x / (SectorRadius * 2));
+        int SectorY = (int)(UnitPos.y / (SectorRadius * 2));
+        return SectorMap[SectorX, SectorY];
+    }
 
 
 }

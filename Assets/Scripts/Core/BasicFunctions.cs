@@ -32,7 +32,7 @@ public static class BasicFunctions
         //if x == 0 or y == 0 then return immidiatly, direction is clear
         if (Delta.x == 0 || Delta.y == 0)
         {
-            return NormalizeVector2Int(Delta);
+            return ToUnitVector(Delta);
         }
         //if x == 1 and y == 1 then axis priority decides which x or y to be 0 and returns
         if (XAxisPriority)
@@ -52,7 +52,7 @@ public static class BasicFunctions
         //if x == 0 or y == 0 then return immidiatly, direction is clear
         if (Delta.x == 0 || Delta.y == 0)
         { 
-            return NormalizeVector2Int(Delta); 
+            return ToUnitVector(Delta); 
         }
         //if x == 1 and y == 1 then axis priority decides which x or y to be 0 and returns
         if (XAxisPriority)
@@ -93,7 +93,7 @@ public static class BasicFunctions
         }
         return true;
     }
-    public static Vector2Int NormalizeVector2Int(Vector2Int v)
+    public static Vector2Int ToUnitVector(Vector2Int v)
     {
         if (v.x > 0) v.x = 1;
         if (v.x < 0) v.x = -1;
@@ -102,6 +102,16 @@ public static class BasicFunctions
         if (v.y < 0) v.y = -1;
 
         return v;
+    }
+    public static Vector3Int ToUnitVector(Vector3 v)
+    {
+        if (v.x > 0) v.x = 1;
+        if (v.x < 0) v.x = -1;
+
+        if (v.y > 0) v.y = 1;
+        if (v.y < 0) v.y = -1;
+
+        return ToVector3Int(v);
     }
     public static Vector3[] ConvertToVector3Array(Vector2Int[] SourceArray, float AddictiveValue = 0)
     {

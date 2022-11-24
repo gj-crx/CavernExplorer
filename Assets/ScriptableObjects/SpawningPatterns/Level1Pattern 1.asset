@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c92e60af1090391448454336c7571f6b, type: 3}
+  m_Name: Level1Pattern 1
+  m_EditorClassIdentifier: 
+  possibleUnitsToSpawn:
+  - {fileID: 5000566942055694710, guid: 38173b493cbd7274db69538a550f20f1, type: 3}
+  - {fileID: 7430046623620682384, guid: 9a2ab7c92e11ad0449b9cc10b6b70981, type: 3}
+  estimatedUnitsPerSector: 0100000001000000

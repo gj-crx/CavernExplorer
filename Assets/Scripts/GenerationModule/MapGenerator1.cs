@@ -71,7 +71,7 @@ namespace Generation
         {
             while (GameManager.GameIsRunning)
             {
-                Sector PlayerSector = GetUnitSector(GameManager.LocalPlayerHeroUnit);
+                Sector PlayerSector = map.GetUnitSector(GameManager.LocalPlayerHeroUnit);
                 if (PlayerSector != null)
                 {
                     Debug.Log(PlayerSector.X * PlayerSector.RadiusValue + " " + PlayerSector.Y * PlayerSector.RadiusValue);
@@ -278,13 +278,6 @@ namespace Generation
             return NeibSectors;
         }
 
-        private Sector GetUnitSector(Unit MentionedUnit)
-        {
-            int SectorRadius = map.SectorMap[0, 0].RadiusValue;
-            Vector3 UnitPos = MentionedUnit.LastNonTransformPosition;
-            int SectorX = (int)(UnitPos.x / (SectorRadius * 2));
-            int SectorY = (int)(UnitPos.y / (SectorRadius * 2));
-            return map.SectorMap[SectorX, SectorY];
-        }
+        
     }
 }

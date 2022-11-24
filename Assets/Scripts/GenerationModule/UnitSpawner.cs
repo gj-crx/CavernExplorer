@@ -30,11 +30,15 @@ namespace Generation
             }
         }
 
-        public void SpawnUnitsInSector(Sector ReferenceSector, System.Random random)
+        public void SpawnUnitsInSector(Sector ReferenceSector, System.Random random, UnitSpawningPattern spawningPattern, int spawningDispersionRate = 2)
         {
-            while (random.Next(0, 100) < GameManager.MapGenerator.CurrentGenSettings.CreepSpawningChance)
+            for (int unitToSpawnID = 0; unitToSpawnID < spawningPattern.possibleUnitsToSpawn.Length; unitToSpawnID++)
             {
-               UnitsToSpawn.Push(new Tuple<GameObject, Vector3>(PrefabManager.Singleton.CreepPrefabs[0], BasicFunctions.ToVector3(ReferenceSector.RandomPoint)));
+                for (int i = 0; i < spawningPattern.estimatedUnitsPerSector[unitToSpawnID] * spawningDispersionRate; i++)
+                {
+                    if (random.Next(0, spawningDispersionRate) == 0) 
+                        UnitsToSpawn.Push(new Tuple<GameObject, Vector3>(spawningPattern.possibleUnitsToSpawn[unitToSpawnID], BasicFunctions.ToVector3(ReferenceSector.RandomPoint)));
+                }
             }
         }
     }

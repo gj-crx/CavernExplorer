@@ -11,6 +11,8 @@ namespace Behaviours
         public bool IsHitting = false;
         public bool ReadyToHit = false;
 
+        public List<Unit> possibleTargets = new List<Unit>();
+
         private Unit ownerUnit;
 
 
@@ -27,9 +29,22 @@ namespace Behaviours
             if (ownerUnit == null) Destroy(this);
         }
 
-        private void Hit(Unit target)
+        public float GetNearestTarget()
         {
-            target.GetDamage(ownerUnit.Stats.Damage, ownerUnit);
+            float minimalDistance = ownerUnit.Stats.VisionRadius;
+            Unit minimalDistanceObject = null;
+
+            foreach (var CurrentObject in possibleTargets)
+            {
+                float CurrentDistance = Vector2.Distance(CurrentObject.LastNonTransformPosition, ownerUnit.LastNonTransformPosition);
+                if (CurrentDistance < minimalDistance)
+                {
+                    CurrentDistance = minimalDistance;
+                    minimalDistanceObject = CurrentObject;
+                }
+            }
+            CurrentTarget = minimalDistanceObject;
+            return minimalDistance;
         }
         private async Task HitDistanceCheckAsync(int CheckIntervalMiliseconds)
         {

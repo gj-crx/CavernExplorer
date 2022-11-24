@@ -10,7 +10,7 @@ public class NormalPathfinding : IPathfinding
 
 
     public Map map;
-    private System.Random pathfindingRandom;
+    public System.Random pathfindingRandom;
     private DistanceMapHolder DistancesMap;
 
 

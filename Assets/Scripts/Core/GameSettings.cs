@@ -79,6 +79,6 @@ public class GameSettings : MonoBehaviour
         public byte DownWayGatesCount;
 
         public byte StartingSectorsCreationRadius;
-        public float CreepSpawningChance;
+        public UnitSpawningPattern unitSpawningPatterns;
     }
 }

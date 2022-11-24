@@ -207,6 +207,7 @@ MonoBehaviour:
   LastNonTransformPosition: {x: 0, y: 0, z: 0}
   animator: {fileID: 2447557341127344727}
   MovementHalted: 0
+  behaviorName: CaveDweller
   graphicPresets:
     DeadColor: {r: 0.3137255, g: 0.14901961, b: 0.14901961, a: 1}
   possibleDropOnDeath:
@@ -227,6 +228,7 @@ MonoBehaviour:
   CurrentTarget: {fileID: 0}
   IsHitting: 0
   ReadyToHit: 0
+  possibleTargets: []
 --- !u!50 &1149852340433152351
 Rigidbody2D:
   serializedVersion: 4
