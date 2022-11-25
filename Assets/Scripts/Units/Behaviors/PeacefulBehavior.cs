@@ -17,6 +17,7 @@ namespace Behaviours
             unit = RelatedUnit;
             fighting = unit.gameObject.GetComponent<Fighting>();
             fighting.possibleTargets.Add(GameManager.LocalPlayerHeroUnit);
+            fighting.AggressionEnabled = false;
 
         }
 

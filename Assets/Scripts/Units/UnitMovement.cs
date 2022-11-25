@@ -155,6 +155,7 @@ public class UnitMovement
                 else positionToRun = GetRandomPositionInNeibghourSector(unitSector, 0, delta.y * -1);
             }
         }
+        if (positionToRun != Vector3.zero) GetWayTarget(positionToRun);
     }
     private Vector3 GetRandomPositionInNeibghourSector(Sector unitSector, int x, int y)
     {

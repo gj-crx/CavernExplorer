@@ -8,7 +8,7 @@ namespace Behaviours
     public class Fighting : MonoBehaviour
     {
         public Unit CurrentTarget;
-        public bool IsHitting = false;
+        public bool AggressionEnabled = true;
         public bool ReadyToHit = false;
 
         public List<Unit> possibleTargets = new List<Unit>();
@@ -27,6 +27,11 @@ namespace Behaviours
         private void Update()
         {
             if (ownerUnit == null) Destroy(this);
+            if (ReadyToHit && ownerUnit.Stats.attackType == Unit.AttackType.Ranged)
+            {
+                ReadyToHit = false;
+                Shoot();
+            }
         }
 
         public float GetNearestTarget()
@@ -50,14 +55,18 @@ namespace Behaviours
         {
             while (GameManager.GameIsRunning)
             {
-                if (CurrentTarget != null && Vector3.Distance(transform.position, CurrentTarget.transform.position) < ownerUnit.Stats.AttackRange)
+                if (AggressionEnabled && CurrentTarget != null && Vector3.Distance(transform.position, CurrentTarget.transform.position) < ownerUnit.Stats.AttackRange)
                 {
                     ownerUnit.unitMovement.Way = null;
                     if (ownerUnit.animator != null) ownerUnit.animator.SetBool("Attacked", true);
-                   // OwnerUnit.MovementHalted = true;
+                    // OwnerUnit.MovementHalted = true;
                 }
                 await Task.Delay(CheckIntervalMiliseconds);
             }
+        }
+        private void Shoot()
+        {
+            
         }
         private void OnDestroy()
         {

@@ -7,7 +7,7 @@ namespace Generation {
     public class UnitSpawningPattern : ScriptableObject
     {
         public GameObject[] possibleUnitsToSpawn = new GameObject[1];
-        public int[] estimatedUnitsPerSector = new int[1];
+        public int[] estimatedUnitsPer4Sectors = new int[1];
 
 
     }

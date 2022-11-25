@@ -34,9 +34,9 @@ namespace Generation
         {
             for (int unitToSpawnID = 0; unitToSpawnID < spawningPattern.possibleUnitsToSpawn.Length; unitToSpawnID++)
             {
-                for (int i = 0; i < spawningPattern.estimatedUnitsPerSector[unitToSpawnID] * spawningDispersionRate; i++)
+                for (int i = 0; i < spawningPattern.estimatedUnitsPer4Sectors[unitToSpawnID] * spawningDispersionRate; i++)
                 {
-                    if (random.Next(0, spawningDispersionRate) == 0) 
+                    if (random.Next(0, 4 * spawningDispersionRate) == 0) 
                         UnitsToSpawn.Push(new Tuple<GameObject, Vector3>(spawningPattern.possibleUnitsToSpawn[unitToSpawnID], BasicFunctions.ToVector3(ReferenceSector.RandomPoint)));
                 }
             }

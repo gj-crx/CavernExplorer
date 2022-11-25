@@ -78,7 +78,6 @@ public class Unit : MonoBehaviour
     }
     public void Death()
     {
-        Debug.Log(gameObject.name + " " + ID + " killed");
         if (behavior != null)
         {
             behavior.Clear();

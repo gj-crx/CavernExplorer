@@ -193,8 +193,8 @@ MonoBehaviour:
     CurrentDirection: {x: 0, y: 0, z: 0}
   Stats:
     attackType: 0
-    MaxHP: 400
-    CurrentHP: 400
+    MaxHP: 200
+    CurrentHP: 200
     Damage: 15
     Regeneration: 1
     MoveSpeed: 3
@@ -226,7 +226,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentTarget: {fileID: 0}
-  IsHitting: 0
+  AggressionEnabled: 1
   ReadyToHit: 0
   possibleTargets: []
 --- !u!50 &1149852340433152351
