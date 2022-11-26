@@ -52,7 +52,7 @@ namespace Generation
             ReferenceMap.LandscapeMap[CurrentPoint.x, CurrentPoint.y] = new LandscapePoint(LandType.Passable);
             do
             {
-                CurrentPoint += BasicFunctions.GetDirectionBetween2Points(CurrentPoint, TargetPoint);
+                CurrentPoint += BasicFunctions.GetNormalizedDirectionBetween2Points(CurrentPoint, TargetPoint);
                 ReferenceMap.LandscapeMap[CurrentPoint.x, CurrentPoint.y] = new LandscapePoint(LandType.Passable);
             }
             while (CurrentPoint != TargetPoint);

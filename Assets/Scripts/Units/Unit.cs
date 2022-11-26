@@ -12,6 +12,7 @@ public class Unit : MonoBehaviour
     public bool AIControlled = true;
     public UnitMovement unitMovement;
     public UnitStats Stats;
+    public Shooting shooting = null;
 
 
     public IBehavior behavior = null;

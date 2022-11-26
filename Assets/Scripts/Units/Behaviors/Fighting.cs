@@ -30,7 +30,7 @@ namespace Behaviours
             if (ReadyToHit && ownerUnit.Stats.attackType == Unit.AttackType.Ranged)
             {
                 ReadyToHit = false;
-                Shoot();
+                ownerUnit.shooting.Shoot(transform.position, BasicFunctions.GetDirectionBetween2Points(transform.position, CurrentTarget.transform.position));
             }
         }
 
@@ -64,10 +64,7 @@ namespace Behaviours
                 await Task.Delay(CheckIntervalMiliseconds);
             }
         }
-        private void Shoot()
-        {
-            
-        }
+        
         private void OnDestroy()
         {
             if (transform.Find("HitBox") != null) Destroy(transform.Find("HitBox").gameObject);

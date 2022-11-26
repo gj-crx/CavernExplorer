@@ -9,6 +9,7 @@ namespace Player
     {
         public Unit PlayerCharacterUnit = null;
         public AnimationAvatarType CurrentSelectedWeapon = AnimationAvatarType.SwordAttack;
+        public Shooting shooting;
         public List<Unit> AlreadyHittedTargets = new List<Unit>();
 
         [HideInInspector]
@@ -24,12 +25,6 @@ namespace Player
         private PlayerHitbox hitBox;
         [SerializeReference]
         private GameObject[] animationAvatars;
-        [SerializeField]
-        private GameObject prefab_Bullet;
-        [SerializeField]
-        private Vector3 shootingBulletsOffset = new Vector3(0, 0.4f, 0);
-        [SerializeField]
-        private float shootingBulletOffsetModifier = 1.2f;
         [SerializeField]
         private Animator animator = null;
         [SerializeField]
@@ -74,11 +69,9 @@ namespace Player
                 }
                 else if (GameManager.LocalPlayerHeroUnit.Stats.attackType == Unit.AttackType.Ranged)
                 {
-                    Vector3 normalizedDirection = NormalizeDirection(LastDirection);
-                    Vector3 BulletPosition = transform.position + shootingBulletsOffset + (normalizedDirection * shootingBulletOffsetModifier);
-                    GameObject.Instantiate(prefab_Bullet, BulletPosition, Quaternion.identity).transform.eulerAngles = new Vector3(0, 0, BasicFunctions.DirectionToAngle(normalizedDirection));
+                    shooting.Shoot(PlayerCharacterUnit.transform.position, NormalizeDirection(LastDirection));
                     animator.SetBool("Attack", true);
-                    ChangeAvatar(DirectionToGunAvatar(normalizedDirection));
+                    ChangeAvatar(DirectionToGunAvatar(NormalizeDirection(LastDirection)));
                 }
             }
         }
@@ -136,20 +129,25 @@ namespace Player
             AttackAnimatinoBeingPlayed = false;
             hitBox.gameObject.SetActive(false);
         }
-        private Vector3 NormalizeDirection(Vector3 direction)
+        private Vector3 NormalizeDirection(Vector3 normalizedDirection)
         {
             Vector3 newDirection = Vector3.zero;
-            if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+            if (Mathf.Abs(normalizedDirection.x) > Mathf.Abs(normalizedDirection.y))
             {
-                if (direction.x > 0) newDirection.x = 1;
+                if (normalizedDirection.x > 0) newDirection.x = 1;
                 else newDirection.x = -1;
             }
             else
             {
-                if (direction.y > 0) newDirection.y = 1;
+                if (normalizedDirection.y > 0) newDirection.y = 1;
                 else newDirection.y = -1;
             }
             return newDirection;
+        }
+
+        private void OnDisable()
+        {
+            movement = Vector3.zero;
         }
 
 

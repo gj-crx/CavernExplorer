@@ -25,7 +25,7 @@ public static class BasicFunctions
     {
         return new Vector2Int(v.x, v.y);
     }
-    public static Vector2Int GetDirectionBetween2Points(Vector2Int From, Vector2Int To)
+    public static Vector2Int GetNormalizedDirectionBetween2Points(Vector2Int From, Vector2Int To)
     {
         Vector2Int Delta = To - From;
         bool XAxisPriority = Convert.ToBoolean(GameManager.GenRandom.Next(0, 2));
@@ -45,6 +45,15 @@ public static class BasicFunctions
             if (Delta.y > 0) return new Vector2Int(0, 1);
             else return new Vector2Int(0, -1);
         }
+    }
+    public static Vector3 GetDirectionBetween2Points(Vector3 From, Vector3 To)
+    {
+        Vector3 delta = To - From;
+        float cordSum = Math.Abs(delta.x) + Math.Abs(delta.y);
+        delta.x /= cordSum;
+        delta.y /= cordSum;
+        return delta;
+        
     }
     public static Vector2Int GetDirectionBetween2Points(Vector2Int From, Vector2Int To, bool XAxisPriority)
     { 

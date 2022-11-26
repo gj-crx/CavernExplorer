@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48578b21b7a5338468974b8f6ce47f4d, type: 3}
+  m_Name: BasicShooting 1
+  m_EditorClassIdentifier: 
+  bulletPrefab: {fileID: 2356535765661442275, guid: f135246b6e88316429ad29edd4de9682, type: 3}
+  bulletSpawningOffset: {x: 0, y: 0.33, z: 0}
+  BulletSpeed: 5
+  BulletLifeTime: 3
