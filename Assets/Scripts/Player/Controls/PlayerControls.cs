@@ -75,6 +75,11 @@ namespace Player
                 }
             }
         }
+        public void StopMovement()
+        {
+            movement = Vector3.zero;
+            gameObject.SetActive(false);
+        }
         private void MovementInputCheck()
         {
             if (AttackAnimatinoBeingPlayed == false)
@@ -143,11 +148,6 @@ namespace Player
                 else newDirection.y = -1;
             }
             return newDirection;
-        }
-
-        private void OnDisable()
-        {
-            movement = Vector3.zero;
         }
 
 
