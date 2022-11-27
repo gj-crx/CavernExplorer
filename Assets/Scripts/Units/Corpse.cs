@@ -11,7 +11,14 @@ namespace UI.InventoryLogic
         public void InitializeCorpse(Vector3 deadRotation, Color deadColor, List<Item> loot)
         {
             transform.eulerAngles = deadRotation;
-            transform.GetComponentInChildren<Avatar>().gameObject.GetComponent<SpriteRenderer>().color = deadColor;
+            if (gameObject.tag == "Player")
+            {
+                foreach (var avatarPart in transform.GetComponentInChildren<Avatar>().GetComponentsInChildren<SpriteRenderer>())
+                {
+                    avatarPart.color = deadColor;
+                }
+            }
+            else transform.GetComponentInChildren<Avatar>().gameObject.GetComponent<SpriteRenderer>().color = deadColor;
             CarriedItems = loot;
         }
         private void OnMouseDown()

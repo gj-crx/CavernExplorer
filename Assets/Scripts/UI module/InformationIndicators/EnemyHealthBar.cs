@@ -17,7 +17,6 @@ namespace UI.Indicators {
 
         public void ShowHealth(float currentHP, float maxHP, float recievedDamage)
         {
-            Debug.Log("health changes");
             hitPointsBar.gameObject.SetActive(currentHP < maxHP);
             float percentageHP = currentHP / maxHP;
             float xOffset = (1 - percentageHP) / 2.0f;

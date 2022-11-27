@@ -31,7 +31,7 @@ namespace Animation
             animator.transform.parent.GetComponent<Unit>().MovementHalted = false;
             if (animator.transform.parent.gameObject.tag != "Player")
             {
-                animator.transform.parent.GetComponent<Fighting>().ReadyToHit = true;
+                animator.transform.parent.GetComponent<Fighting>().ReadyToHit = false;
             }
         }
 

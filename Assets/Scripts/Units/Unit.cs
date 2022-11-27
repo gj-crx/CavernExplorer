@@ -94,9 +94,9 @@ public class Unit : MonoBehaviour
         if (behavior != null) behavior.Clear();
         if (healthBar != null) healthBar.TurnOff();
         if (GetComponent<Behaviours.Fighting>() != null) Destroy(GetComponent<Behaviours.Fighting>());
-        GameManager.dataBase.AllUnits.Remove(this);
+        if (gameObject.tag == "Player") Player.PlayerControls.Singleton.enabled = false;
 
-        if (gameObject.tag == "Player") Player.PlayerControls.Singleton.StopMovement();
+        GameManager.dataBase.AllUnits.Remove(this);
         Destroy(this);
     }
     private void OnKillMethod(Unit KilledUnit)

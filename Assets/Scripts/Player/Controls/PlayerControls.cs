@@ -58,7 +58,7 @@ namespace Player
         /// </summary>
         public void AttackInputCheck()
         { 
-            if (AttackAnimatinoBeingPlayed == false)
+            if (AttackAnimatinoBeingPlayed == false && PlayerCharacterUnit != null)
             {
                 //checking for input to change facing direction of character, but not no actually move it
                 if (GameManager.LocalPlayerHeroUnit.Stats.attackType == Unit.AttackType.Melee)
@@ -74,11 +74,6 @@ namespace Player
                     ChangeAvatar(DirectionToGunAvatar(NormalizeDirection(LastDirection)));
                 }
             }
-        }
-        public void StopMovement()
-        {
-            movement = Vector3.zero;
-            gameObject.SetActive(false);
         }
         private void MovementInputCheck()
         {
@@ -148,6 +143,10 @@ namespace Player
                 else newDirection.y = -1;
             }
             return newDirection;
+        }
+        private void OnDisable()
+        {
+            movement = Vector3.zero;
         }
 
 
