@@ -10,6 +10,7 @@ namespace Behaviours
         public Unit CurrentTarget;
         public bool AggressionEnabled = true;
         public bool ReadyToHit = false;
+        public bool ReadyToShoot = false;
 
         public List<Unit> possibleTargets = new List<Unit>();
 
@@ -27,9 +28,9 @@ namespace Behaviours
         private void Update()
         {
             if (ownerUnit == null) Destroy(this);
-            if (ReadyToHit && ownerUnit.Stats.attackType == Unit.AttackType.Ranged)
+            if (ReadyToShoot && ownerUnit.Stats.attackType == Unit.AttackType.Ranged && CurrentTarget != null)
             {
-                ReadyToHit = false;
+                ReadyToShoot = false;
                 ownerUnit.shooting.Shoot(transform.position, BasicFunctions.GetDirectionBetween2Points(transform.position, CurrentTarget.transform.position));
             }
         }
