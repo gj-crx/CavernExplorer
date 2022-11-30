@@ -115,14 +115,8 @@ namespace Generation
             {
                 for (int x = -GenRadius; x <= GenRadius; x++)
                 {
-                    Thread.Sleep(100);
+                    Thread.Sleep(50);
                     Sector newSector = new Sector(x, y, CurrentGenSettings.SectorRadius, CurrentGenSettings.PointsPerSector, map);
-                    //borders check
-                    if (x == -GenRadius) newSector.CreateBorderLine(-1, 0, map);
-                    else if (x == GenRadius) newSector.CreateBorderLine(1, 0, map);
-
-                    if (y == -GenRadius) newSector.CreateBorderLine(0, -1, map);
-                    else if (y == GenRadius) newSector.CreateBorderLine(0, 1, map);
 
                     UIGenerationProgress++;
                 }

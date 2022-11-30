@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Generation
@@ -8,20 +6,29 @@ namespace Generation
     {
         public int X = 0;
         public int Y = 0;
-        private Vector2Int Center;
-        private byte Radius = 50;
+        private Vector2Int center;
+        private byte radius = 50;
         private Vector2Int[] SectorPoints;
         public Vector2Int[] JointPoints = new Vector2Int[4];
-        public byte RadiusValue { get { return Radius; } }
-        public Vector2Int GetCentralPoint { get { return Center; } }
-        public Vector2Int RandomPoint { get { return SectorPoints[GameManager.GenRandom.Next(0, SectorPoints.Length)]; } }
+        public byte RadiusValue { get { return radius; } }
+        public Vector2Int GetCentralPoint { get { return center; } }
+        public Vector2Int RandomPoint { 
+            get { //return non-joint point
+                while (true) 
+                {
+                    bool suitablePoint = true;
+                    Vector2Int randomPoint = SectorPoints[GameManager.GenRandom.Next(0, SectorPoints.Length)];
+                    foreach (var jointPoint in JointPoints) if (jointPoint == randomPoint) suitablePoint = false; //if JointPoints constains this point it's not suitable
+                    if (suitablePoint) return randomPoint;
+                }
+            } }
 
-        public Sector(int X, int Y, byte Radius, byte SectorPointsCount, Map MapToGenerate)
+        public Sector(int X, int Y, byte radius, byte SectorPointsCount, Map MapToGenerate)
         {
             this.X = X;
             this.Y = Y;
-            Center = new Vector2Int(X * (Radius * 2), Y * (Radius * 2));
-            this.Radius = Radius;
+            center = new Vector2Int(X * (radius * 2) + X, Y * (radius * 2) + Y);
+            this.radius = radius;
             SectorPoints = new Vector2Int[SectorPointsCount + 4];
             //creating joint points
             JointPoints[0] = GetRandomJointPoint(JointPointCords.Top);
@@ -40,23 +47,23 @@ namespace Generation
         }
         private Vector2Int GetRandomPointInSector()
         {
-            return new Vector2Int(GameManager.GenRandom.Next(-Radius + 1, Radius - 1), GameManager.GenRandom.Next(-Radius + 1, Radius - 1)) + Center;
+            return new Vector2Int(GameManager.GenRandom.Next(-radius + 1, radius - 1), GameManager.GenRandom.Next(-radius + 1, radius - 1)) + center;
         }
         private Vector2Int GetRandomJointPoint(JointPointCords Side)
         {
-            if (Side.x != 0) return new Vector2Int(Radius * Side.x, GameManager.GenRandom.Next(-Radius + 1, Radius)) + Center;
-            else return new Vector2Int(GameManager.GenRandom.Next(-Radius + 1, Radius), Radius * Side.y) + Center;
+            if (Side.x != 0) return new Vector2Int(radius * Side.x, GameManager.GenRandom.Next(-radius + 1, radius)) + center;
+            else return new Vector2Int(GameManager.GenRandom.Next(-radius + 1, radius), radius * Side.y) + center;
         }
-        private Vector2Int ConnectPoints(Vector2Int CurrentPoint, Vector2Int TargetPoint, Map ReferenceMap)
+        private Vector2Int ConnectPoints(Vector2Int currentPoint, Vector2Int targetPoint, Map referenceMap)
         {
-            ReferenceMap.LandscapeMap[CurrentPoint.x, CurrentPoint.y] = new LandscapePoint(LandType.Passable);
+            referenceMap.LandscapeMap[currentPoint.x, currentPoint.y] = new LandscapePoint(LandType.Passable);
             do
             {
-                CurrentPoint += BasicFunctions.GetNormalizedDirectionBetween2Points(CurrentPoint, TargetPoint);
-                ReferenceMap.LandscapeMap[CurrentPoint.x, CurrentPoint.y] = new LandscapePoint(LandType.Passable);
+                currentPoint += BasicFunctions.GetNormalizedDirectionBetween2Points(currentPoint, targetPoint);
+                referenceMap.LandscapeMap[currentPoint.x, currentPoint.y] = new LandscapePoint(LandType.Passable);
             }
-            while (CurrentPoint != TargetPoint);
-            return CurrentPoint;
+            while (currentPoint != targetPoint);
+            return currentPoint;
         }
         private void CreateRoom(Vector2Int CenterOfRoom, int RoomRadius, Map ReferenceMap)
         {
@@ -119,11 +126,23 @@ namespace Generation
         public void Generate(Map ReferenceMap)
         {
             int n = 0;
-            for (int y = -Radius + n; y <= Radius - n; y++)
+            for (int y = -radius + n; y <= radius - n; y++)
             {
-                for (int x = -Radius + n; x <= Radius - n; x++)
+                for (int x = -radius + n; x <= radius - n; x++)
                 {
-                    Vector3Int CurrentTilePos = new Vector3Int(Center.x + x, Center.y + y, 0);
+                    Vector3Int CurrentTilePos = new Vector3Int(center.x + x, center.y + y, 0);
+                    if (ReferenceMap.LandscapeMap[CurrentTilePos.x, CurrentTilePos.y] != null)
+                    {
+                        if (ReferenceMap.LandscapeMap[CurrentTilePos.x, CurrentTilePos.y].Land == LandType.Impassable)
+                        {
+                            Debug.Log("Overlap impassable");
+                        }
+                        else if (ReferenceMap.LandscapeMap[CurrentTilePos.x, CurrentTilePos.y].Land == LandType.Passable)
+                        {
+                            Debug.Log("Overlap passable");
+                        }
+
+                    }
                     ReferenceMap.LandscapeMap[CurrentTilePos.x, CurrentTilePos.y] = new LandscapePoint(LandType.Impassable);
                 }
             }
@@ -131,14 +150,14 @@ namespace Generation
             //adding joint points to the all points in random order
             for (int i = 0; i < JointPoints.Length; i++)
             {
-                bool Found = false;
-                while (Found == false)
+                bool emptyIndexForPointFound = false;
+                while (emptyIndexForPointFound == false)
                 {
-                    int rnd = GameManager.GenRandom.Next(0, SectorPoints.Length);
-                    if (SectorPoints[rnd] == Vector2Int.zero)
+                    int randomPointIndex = GameManager.GenRandom.Next(0, SectorPoints.Length);
+                    if (SectorPoints[randomPointIndex] == Vector2Int.zero)
                     {
-                        SectorPoints[rnd] = JointPoints[i];
-                        Found = true;
+                        SectorPoints[randomPointIndex] = JointPoints[i];
+                        emptyIndexForPointFound = true;
                         //    Debug.Log("Joint " + i + " assigned to SectorPoint " + rnd);
                     }
                 }
@@ -165,11 +184,11 @@ namespace Generation
         {
             if (XPart != 0)
             {
-                for (int y = -Radius; y <= Radius; y++)
+                for (int y = -radius; y <= radius; y++)
                 {
                     for (byte thickness = 0; thickness < WallThickness; thickness++)
                     {
-                        Vector3Int CurrentTilePos = new Vector3Int(Center.x + Radius * XPart + thickness, Center.y + y, 0);
+                        Vector3Int CurrentTilePos = new Vector3Int(center.x + radius * XPart + thickness, center.y + y, 0);
                         ReferenceMap.LandscapeMap[CurrentTilePos.x, CurrentTilePos.y] = new LandscapePoint(LandType.Impassable);
                         GameManager.MapGenerator.UnpassableToSet.Add(CurrentTilePos);
                     }
@@ -177,11 +196,11 @@ namespace Generation
             }
             else if (YPart != 0)
             {
-                for (int x = -Radius; x <= Radius; x++)
+                for (int x = -radius; x <= radius; x++)
                 {
                     for (byte thickness = 0; thickness < WallThickness; thickness++)
                     {
-                        Vector3Int CurrentTilePos = new Vector3Int(Center.x + x, Center.y + Radius * YPart + thickness, 0);
+                        Vector3Int CurrentTilePos = new Vector3Int(center.x + x, center.y + radius * YPart + thickness, 0);
                         ReferenceMap.LandscapeMap[CurrentTilePos.x, CurrentTilePos.y] = new LandscapePoint(LandType.Impassable);
                         GameManager.MapGenerator.UnpassableToSet.Add(CurrentTilePos);
                     }
@@ -190,44 +209,50 @@ namespace Generation
         }
         public void CheckForUselessTiles(Map ReferenceMap)
         {
-            for (int y = -Radius; y <= Radius; y++)
+            for (int y = -radius; y <= radius; y++)
             {
-                for (int x = -Radius; x <= Radius; x++)
+                for (int x = -radius; x <= radius; x++)
                 {
-                    Vector3Int CurrentTilePosition = new Vector3Int(Center.x + x, Center.y + y, 0);
-                    if (TileIsUseless(new Vector2Int(Center.x + x, Center.y + y), ReferenceMap) && GameManager.MapGenerator.UnpassableToSet.Contains(CurrentTilePosition) == true)
+                    Vector3Int CurrentTilePosition = new Vector3Int(center.x + x, center.y + y, 0);
+                    if (TileIsUseless(BasicFunctions.ToVector2Int(CurrentTilePosition), ReferenceMap) && GameManager.MapGenerator.UnpassableToSet.Contains(CurrentTilePosition) == true)
                     {
                         //Debug.Log("Tile " + CurrentTilePosition + " is added to removal queue");
                         ReferenceMap.LandscapeMap[CurrentTilePosition.x, CurrentTilePosition.y].Land = LandType.Passable;
                         GameManager.MapGenerator.UnpassableToSet.Remove(CurrentTilePosition);
 
                         //and now we also checking neib tiles to removed one
-                        for (int Y = -1; Y <= 1; Y++)
-                            for (int X = -1; X <= 1; X++)
-                            {
-                                Vector3Int NeibTilePosition = CurrentTilePosition + new Vector3Int(X, Y, 0);
-                                if ((X != 0 || Y != 0) && (X == 0 || Y == 0)) //checking only 4 directly connected tiles
-                                    if (GameManager.MapGenerator.UnpassableToSet.Contains(NeibTilePosition) == true && TileIsUseless(BasicFunctions.ToVector2Int(NeibTilePosition), ReferenceMap))
-                                    {
-                                        ReferenceMap.LandscapeMap[NeibTilePosition.x, NeibTilePosition.y].Land = LandType.Passable;
-                                        GameManager.MapGenerator.UnpassableToSet.Remove(NeibTilePosition);
-                                    }
-                            }
+                        FindNeibghourUselessTiles(CurrentTilePosition, ReferenceMap);
                     }
+                }
+            }
+        }
+        private void FindNeibghourUselessTiles(Vector3Int tilePosition, Map ReferenceMap)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                for (int x = -1; x <= 1; x++)
+                {
+                    Vector3Int NeibTilePosition = new Vector3Int(tilePosition.x + x, tilePosition.y + y, 0);
+                    if ((x != 0 || y != 0) && (x == 0 || y == 0)) //checking only 4 directly connected tiles
+                        if (GameManager.MapGenerator.UnpassableToSet.Contains(NeibTilePosition) == true && TileIsUseless(BasicFunctions.ToVector2Int(NeibTilePosition), ReferenceMap))
+                        {
+                            ReferenceMap.LandscapeMap[NeibTilePosition.x, NeibTilePosition.y].Land = LandType.Passable;
+                            GameManager.MapGenerator.UnpassableToSet.Remove(NeibTilePosition);
+                        }
                 }
             }
         }
         public void ManuallyRemoveUselessTiles(Map ReferenceMap, bool PhysicallyRemove)
         {
-            for (int y = -Radius; y <= Radius; y++)
+            for (int y = -radius; y <= radius; y++)
             {
-                for (int x = -Radius; x <= Radius; x++)
+                for (int x = -radius; x <= radius; x++)
                 {
-                    var currentTile = GameSettings.Singleton.UnpassableTilemap.GetTile(new Vector3Int(Center.x + x, Center.y + y, 0));
+                    var currentTile = GameSettings.Singleton.UnpassableTilemap.GetTile(new Vector3Int(center.x + x, center.y + y, 0));
 
                     if (currentTile != null)
                     {
-                        Vector2Int CurrentTilePosition = new Vector2Int(Center.x + x, Center.y + y);
+                        Vector2Int CurrentTilePosition = new Vector2Int(center.x + x, center.y + y);
                         if (ReferenceMap.LandscapeMap[CurrentTilePosition.x, CurrentTilePosition.y].Land != LandType.Impassable)
                             GameSettings.Singleton.UnpassableTilemap.SetTile(BasicFunctions.ToVector3Int(CurrentTilePosition), null);
                         Debug.Log("Manually removed");
@@ -265,11 +290,11 @@ namespace Generation
         }
         private void QueueTilesToSet(Map ReferenceMap)
         {
-            for (int y = -Radius; y <= Radius; y++)
+            for (int y = -radius; y <= radius; y++)
             {
-                for (int x = -Radius; x <= Radius; x++)
+                for (int x = -radius; x <= radius; x++)
                 {
-                    Vector3Int CurrentTilePos = new Vector3Int(Center.x + x, Center.y + y, 0);
+                    Vector3Int CurrentTilePos = new Vector3Int(center.x + x, center.y + y, 0);
                     GameManager.MapGenerator.FloorsToSet.Add(CurrentTilePos);
                     if (ReferenceMap.LandscapeMap[CurrentTilePos.x, CurrentTilePos.y].Land == LandType.Impassable && GameManager.MapGenerator.UnpassableToSet.Contains(CurrentTilePos) == false)
                     {

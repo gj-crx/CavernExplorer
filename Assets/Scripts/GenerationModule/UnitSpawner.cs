@@ -36,8 +36,15 @@ namespace Generation
             {
                 for (int i = 0; i < spawningPattern.estimatedUnitsPer4Sectors[unitToSpawnID] * spawningDispersionRate; i++)
                 {
-                    if (random.Next(0, 4 * spawningDispersionRate) == 0) 
-                        UnitsToSpawn.Push(new Tuple<GameObject, Vector3>(spawningPattern.possibleUnitsToSpawn[unitToSpawnID], BasicFunctions.ToVector3(ReferenceSector.RandomPoint)));
+                    if (random.Next(0, 4 * spawningDispersionRate) == 0)
+                    {
+                        Vector3 positionToSpawn = BasicFunctions.ToVector3(ReferenceSector.RandomPoint);
+                        if (GameManager.map.LandscapeMap[(int)positionToSpawn.x, (int)positionToSpawn.y].Land == LandType.Impassable)
+                        {
+                            Debug.LogError("shit");
+                        }
+                        UnitsToSpawn.Push(new Tuple<GameObject, Vector3>(spawningPattern.possibleUnitsToSpawn[unitToSpawnID], positionToSpawn));
+                    }
                 }
             }
         }
