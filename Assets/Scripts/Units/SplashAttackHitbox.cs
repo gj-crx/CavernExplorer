@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Player
 {
-    public class PlayerHitbox : MonoBehaviour
+    public class SplashAttackHitbox : MonoBehaviour
     {
         private PlayerControls controls;
 

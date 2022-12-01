@@ -4,11 +4,12 @@ using UnityEngine;
 
 namespace Behaviours
 {
-    public class CreepHitbox : MonoBehaviour
+    public class SingleHitbox : MonoBehaviour
     {
         private Unit attackerUnit;
         private Fighting fighting;
-        public bool IsBullet = false;
+        public List<string> TargetsTagsToDamage = new List<string>();
+
         void Start()
         {
             attackerUnit = transform.parent.GetComponent<Unit>();
@@ -18,7 +19,7 @@ namespace Behaviours
 
         private void OnTriggerStay2D(Collider2D collision)
         {
-            if (fighting.ReadyToHit && attackerUnit.Stats.attackType == Unit.AttackType.Melee && collision.gameObject.tag == "Player")
+            if (fighting.ReadyToHit && attackerUnit.Stats.attackType == Unit.AttackType.Melee && TargetsTagsToDamage.Contains(collision.gameObject.tag))
             {
                 fighting.ReadyToHit = false;
                 collision.gameObject.GetComponent<Unit>().GetDamage(attackerUnit.Stats.Damage, attackerUnit);

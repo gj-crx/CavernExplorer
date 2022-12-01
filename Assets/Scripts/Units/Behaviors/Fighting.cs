@@ -31,7 +31,7 @@ namespace Behaviours
             if (ReadyToShoot && ownerUnit.Stats.attackType == Unit.AttackType.Ranged && CurrentTarget != null)
             {
                 ReadyToShoot = false;
-                ownerUnit.shooting.Shoot(transform.position, BasicFunctions.GetDirectionBetween2Points(transform.position, CurrentTarget.transform.position));
+                ownerUnit.shooting.Shoot(ownerUnit, BasicFunctions.GetDirectionBetween2Points(transform.position, CurrentTarget.transform.position));
             }
         }
 

@@ -28,7 +28,7 @@ namespace Animation
         override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             animator.SetBool("Attacked", false);
-            animator.transform.parent.GetComponent<Unit>().MovementHalted = false;
+            if (animator.transform.parent.gameObject.tag != "Corpse") animator.transform.parent.GetComponent<Unit>().MovementHalted = false;
             if (animator.transform.parent.gameObject.tag != "Player")
             {
                 animator.transform.parent.GetComponent<Fighting>().ReadyToHit = false;

@@ -221,6 +221,7 @@ GameObject:
   - component: {fileID: 1407132413917357710}
   - component: {fileID: 6885169571946683904}
   - component: {fileID: 1101107884797502280}
+  - component: {fileID: 7742839242620266366}
   m_Layer: 0
   m_Name: Avatar
   m_TagString: Creep
@@ -327,6 +328,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93b11ae158b6c3a4c98d342783f444b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!111 &7742839242620266366
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3275168235123626060}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 0}
+  m_Animations:
+  - {fileID: 7400000, guid: baaea460162f2cb4db3c3cf8753bb0f3, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &4260374958438669601
 GameObject:
   m_ObjectHideFlags: 0
@@ -423,6 +440,7 @@ MonoBehaviour:
   CurrentTarget: {fileID: 0}
   AggressionEnabled: 1
   ReadyToHit: 0
+  ReadyToShoot: 0
   possibleTargets: []
 --- !u!50 &8182875375011181832
 Rigidbody2D:

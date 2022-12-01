@@ -202,6 +202,7 @@ MonoBehaviour:
     AttackRange: 1.35
     VisionRadius: 15
     CollisionRadius: 0
+  shooting: {fileID: 0}
   ItemsDroppedOnDeath:
   - {fileID: 11400000, guid: 0a097321cd149d045820ada4f9f2b986, type: 2}
   LastNonTransformPosition: {x: 0, y: 0, z: 0}
@@ -228,6 +229,7 @@ MonoBehaviour:
   CurrentTarget: {fileID: 0}
   AggressionEnabled: 1
   ReadyToHit: 0
+  ReadyToShoot: 0
   possibleTargets: []
 --- !u!50 &1149852340433152351
 Rigidbody2D:
@@ -278,6 +280,7 @@ GameObject:
   - component: {fileID: 7925581258040883929}
   - component: {fileID: 2447557341127344727}
   - component: {fileID: 8159848084130692895}
+  - component: {fileID: 4833960428744231062}
   m_Layer: 0
   m_Name: Avatar
   m_TagString: Creep
@@ -384,6 +387,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93b11ae158b6c3a4c98d342783f444b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!111 &4833960428744231062
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5983539496381156379}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 0}
+  m_Animations:
+  - {fileID: 7400000, guid: baaea460162f2cb4db3c3cf8753bb0f3, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &6914609811594700162
 GameObject:
   m_ObjectHideFlags: 0

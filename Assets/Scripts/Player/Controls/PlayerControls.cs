@@ -22,7 +22,7 @@ namespace Player
 
         private Vector3 movement;
         [SerializeField]
-        private PlayerHitbox hitBox;
+        private SplashAttackHitbox hitBox;
         [SerializeReference]
         private GameObject[] animationAvatars;
         [SerializeField]
@@ -69,7 +69,7 @@ namespace Player
                 }
                 else if (GameManager.LocalPlayerHeroUnit.Stats.attackType == Unit.AttackType.Ranged)
                 {
-                    shooting.Shoot(PlayerCharacterUnit.transform.position, NormalizeDirection(LastDirection));
+                    shooting.Shoot(PlayerCharacterUnit, NormalizeDirection(LastDirection));
                     animator.SetBool("Attack", true);
                     ChangeAvatar(DirectionToGunAvatar(NormalizeDirection(LastDirection)));
                 }

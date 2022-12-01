@@ -86,9 +86,7 @@ public class Unit : MonoBehaviour
         gameObject.tag = "Corpse";
         if (animator != null)
         {
-            animator.Rebind();
-            animator.Update(0f);
-            Destroy(animator);
+            animator.Play("Death");
         }
         gameObject.AddComponent<UI.InventoryLogic.Corpse>().InitializeCorpse(new Vector3(0, 0, Random.Range(110, 275)), graphicPresets.DeadColor, ItemsDroppedOnDeath);
         if (behavior != null) behavior.Clear();
