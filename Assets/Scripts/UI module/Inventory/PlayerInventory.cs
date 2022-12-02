@@ -44,7 +44,7 @@ namespace UI.InventoryLogic
                 TransferItemToEquipmentSlot(itemToApply, EquipmentSlots[(byte)itemToApply.RepresentedItem.UsedSlot]);
                 EquipmentSlots[(byte)itemToApply.RepresentedItem.UsedSlot].RepresentedItem = itemToApply.RepresentedItem;
                 GameObject.Destroy(itemToApply.gameObject);
-                GameManager.LocalPlayerHeroUnit.Stats.CombineStats(itemToApply.RepresentedItem.ItemStats);
+                GameManager.playerControls.PlayerCharacterUnit.Stats.CombineStats(itemToApply.RepresentedItem.ItemStats);
             }
             else if (itemToApply.RepresentedItem.UsedSlot == EquipmentSlot.RightHand)
             {
@@ -54,7 +54,7 @@ namespace UI.InventoryLogic
                 }
                 itemToApply.transform.SetParent(UIManager.Singleton.panel_Toolbar.transform.Find("ItemGrid"));
                 EquipmentSlots[(byte)itemToApply.RepresentedItem.UsedSlot].RepresentedItem = itemToApply.RepresentedItem;
-                GameManager.LocalPlayerHeroUnit.Stats.CombineStats(itemToApply.RepresentedItem.ItemStats);
+                GameManager.playerControls.PlayerCharacterUnit.Stats.CombineStats(itemToApply.RepresentedItem.ItemStats);
             }
             else if (itemToApply.RepresentedItem.UsedSlot == EquipmentSlot.None)
             {
@@ -67,7 +67,7 @@ namespace UI.InventoryLogic
         {
             if (itemToDisapply.RepresentedItem != null)
             {
-                GameManager.LocalPlayerHeroUnit.Stats.SubstactStats(itemToDisapply.RepresentedItem.ItemStats);
+                GameManager.playerControls.PlayerCharacterUnit.Stats.SubstactStats(itemToDisapply.RepresentedItem.ItemStats);
                 if (itemToDisapply.RepresentedItem.UsedSlot != EquipmentSlot.None && itemToDisapply.RepresentedItem.UsedSlot != EquipmentSlot.RightHand)
                 {
                     itemToDisapply.transform.Find("Icon").GetComponent<Image>().sprite = EquipmentSlotsBasicIcons[(byte)itemToDisapply.RepresentedItem.UsedSlot];
@@ -92,6 +92,16 @@ namespace UI.InventoryLogic
         public override void RecieveItem(ToolbarItem newItem)
         {
 
+        }
+        public void ClearInventory()
+        {
+            for (int i = 0; i < EquipmentSlots.Length; i++)
+            {
+                if (EquipmentSlots[i] != null)
+                {
+                    DisapplyItem(EquipmentSlots[i]);
+                }
+            }
         }
     }
 }

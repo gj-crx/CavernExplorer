@@ -9,9 +9,9 @@ namespace Player
         // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
         override public void OnStateEnter(Animator _Animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            PlayerControls.Singleton.AttackAnimatinoBeingPlayed = true;
-            _Animator.SetFloat("XSpeed", PlayerControls.Singleton.LastDirection.x);
-            _Animator.SetFloat("YSpeed", PlayerControls.Singleton.LastDirection.y);
+            GameManager.playerControls.AttackAnimatinoBeingPlayed = true;
+            _Animator.SetFloat("XSpeed", GameManager.playerControls.LastDirection.x);
+            _Animator.SetFloat("YSpeed", GameManager.playerControls.LastDirection.y);
         }
 
         // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -23,7 +23,7 @@ namespace Player
         // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
         override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            PlayerControls.Singleton.EndAttackingState();
+            GameManager.playerControls.EndAttackingState();
         }
 
         // OnStateMove is called right after Animator.OnAnimatorMove()

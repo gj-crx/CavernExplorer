@@ -20,7 +20,7 @@ public class GameSettings : MonoBehaviour
     public float UnitMovementTileSkipTreshhold = 1;
     public short PathfindingMaxSearchDistance = 250;
 
-    public string TileNameToRemove;
+    public bool RegenerateMapOrder = false;
     public float FPS = 0;
 
     [HideInInspector]
@@ -43,6 +43,11 @@ public class GameSettings : MonoBehaviour
         {
             GameManager.MapGenerator.SpawnAllTiles_MainThread(UnpassableTilemap, FloorsTilemap, LevelGatesTilemap);
             GameManager.MapGenerator.ToGenerateOrder = false;
+        }
+        if (RegenerateMapOrder)
+        {
+            RegenerateMapOrder = false;
+            GameManager.MapGenerator.GenerateMap(0);
         }
     }
 

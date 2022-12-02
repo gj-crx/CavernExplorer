@@ -14,7 +14,7 @@ namespace UI
         {
             if (gateEntered)
             {
-                if (Vector3.Distance(currentApproachedGate.Position, GameManager.LocalPlayerHeroUnit.LastNonTransformPosition) > 3.5f)
+                if (Vector3.Distance(currentApproachedGate.Position, GameManager.playerControls.PlayerCharacterUnit.LastNonTransformPosition) > 3.5f)
                 {
                     UIScenario.Singleton.CloseAllDialogues();
                     gateEntered = false;
@@ -26,14 +26,14 @@ namespace UI
             if (collision.gameObject.tag == "Player")
             {
                 gateEntered = true;
-                currentApproachedGate = GetLevelGate(GameManager.LocalPlayerHeroUnit.LastNonTransformPosition);
+                currentApproachedGate = GetLevelGate(GameManager.playerControls.PlayerCharacterUnit.LastNonTransformPosition);
                 if (currentApproachedGate.GoingUp)
                 {
-                    UIScenario.Singleton.DialogueActivity("LevelGateUpDialogue", true);
+                    UIManager.Singleton.dialoguePanelsDictionary["LevelGateUpDialogue"].SetActive(true);
                 }
                 else
                 {
-                    UIScenario.Singleton.DialogueActivity("LevelGateDownDialogue", true);
+                    UIManager.Singleton.dialoguePanelsDictionary["LevelGateDownDialogue"].SetActive(true);
                 }
             }
         }

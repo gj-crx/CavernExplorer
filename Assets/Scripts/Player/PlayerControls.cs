@@ -12,8 +12,7 @@ namespace Player
         public Shooting shooting;
         public List<Unit> AlreadyHittedTargets = new List<Unit>();
 
-        [HideInInspector]
-        public static PlayerControls Singleton;
+
         [HideInInspector]
         public Vector3 LastDirection;
         [HideInInspector]
@@ -32,9 +31,8 @@ namespace Player
 
         private void Awake()
         {
-            Singleton = this;
+            GameManager.playerControls = this;
         }
-
         private void LateUpdate()
         {
             if (PlayerCharacterUnit != null)
@@ -61,13 +59,14 @@ namespace Player
             if (AttackAnimatinoBeingPlayed == false && PlayerCharacterUnit != null)
             {
                 //checking for input to change facing direction of character, but not no actually move it
-                if (GameManager.LocalPlayerHeroUnit.Stats.attackType == Unit.AttackType.Melee)
+                if (GameManager.playerControls.PlayerCharacterUnit.Stats.attackType == Unit.AttackType.Melee)
                 {
                     animator.SetBool("Attack", true);
                     ChangeAvatar(CurrentSelectedWeapon);
-                    Hit();
+                    hitBox.gameObject.SetActive(true);
+                    AlreadyHittedTargets.Clear();
                 }
-                else if (GameManager.LocalPlayerHeroUnit.Stats.attackType == Unit.AttackType.Ranged)
+                else if (GameManager.playerControls.PlayerCharacterUnit.Stats.attackType == Unit.AttackType.Ranged)
                 {
                     shooting.Shoot(PlayerCharacterUnit, NormalizeDirection(LastDirection));
                     animator.SetBool("Attack", true);
@@ -118,17 +117,19 @@ namespace Player
             animationAvatars[(int)NewAvatar].SetActive(true);
         }
 
-        private void Hit()
-        {
-            hitBox.gameObject.SetActive(true);
-            AlreadyHittedTargets.Clear();
-        }
         public void EndAttackingState()
         {
             ChangeAvatar(AnimationAvatarType.NoWeapon);
             AttackAnimatinoBeingPlayed = false;
             hitBox.gameObject.SetActive(false);
         }
+
+        public static void RespawnPlayer()
+        {
+            GameManager.playerControls.PlayerCharacterUnit.Stats.CurrentHP = GameManager.playerControls.PlayerCharacterUnit.Stats.MaxHP;
+            GameManager.playerControls.gameObject.SetActive(true);
+        }
+
         private Vector3 NormalizeDirection(Vector3 normalizedDirection)
         {
             Vector3 newDirection = Vector3.zero;
@@ -148,6 +149,7 @@ namespace Player
         {
             movement = Vector3.zero;
         }
+
 
 
         public enum AnimationAvatarType : int

@@ -208,7 +208,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 184022cafd4a63141be49a3ebb512772, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsBullet: 0
+  TargetsTagsToDamage:
+  - Player
 --- !u!1 &3275168235123626060
 GameObject:
   m_ObjectHideFlags: 0

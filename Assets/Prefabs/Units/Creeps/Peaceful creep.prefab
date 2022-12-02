@@ -364,7 +364,6 @@ GameObject:
   - component: {fileID: 5729725532301420863}
   - component: {fileID: 256205197792072113}
   - component: {fileID: 6000162167734152441}
-  - component: {fileID: 6305900539488983091}
   m_Layer: 0
   m_Name: Avatar
   m_TagString: Creep
@@ -471,22 +470,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93b11ae158b6c3a4c98d342783f444b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!111 &6305900539488983091
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8174187608635301885}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 0}
-  m_Animations:
-  - {fileID: 7400000, guid: baaea460162f2cb4db3c3cf8753bb0f3, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!1 &9046854065245566564
 GameObject:
   m_ObjectHideFlags: 0
@@ -611,4 +594,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 184022cafd4a63141be49a3ebb512772, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsBullet: 0
+  TargetsTagsToDamage:
+  - Player

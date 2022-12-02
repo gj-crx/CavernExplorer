@@ -13,7 +13,7 @@ namespace Generation
         public Thread GenerationThread = null;
 
         public GameSettings.GeneratorSettings CurrentGenSettings;
-        public int CurrentLevelToGenerate = 1;
+        public int CurrentLevelToGenerate = 0;
         /// <summary>
         /// Indicates current progress of generation in UI
         /// </summary>
@@ -43,10 +43,11 @@ namespace Generation
             GameSettings.Singleton.StartCoroutine(GameManager.unitSpawner.IterateUnitSpawningQueue());
         }
 
-        public void GenerateMap(GameSettings.GeneratorSettings SettingsToGenerate)
+        public void GenerateMap(int gameLevelAdvance = 1)
         {
-            CurrentGenSettings = SettingsToGenerate;
-            CurrentLevelToGenerate++;
+            CurrentLevelToGenerate += gameLevelAdvance;
+            CurrentGenSettings = GameSettings.Singleton.GeneratorSettingsPerLevels[CurrentLevelToGenerate];
+
             map.LandscapeMap = new LandscapeMapHolder();
             map.SectorMap = new SectorMapHolder();
             NewlyGeneratedSectors = new Stack<Sector>();
@@ -54,9 +55,9 @@ namespace Generation
             UIGenerationProgress = 0;
             GenerationCompleted = false;
 
-            new Sector(0, 0, CurrentGenSettings.SectorRadius, CurrentGenSettings.PointsPerSector, map);
             if (CurrentGenSettings.ContiniousGeneration)
             {
+                new Sector(0, 0, CurrentGenSettings.SectorRadius, CurrentGenSettings.PointsPerSector, map);
                 GenerationThread = new Thread(ContiniousGeneration);
                 GenerationThread.Start();
             }
@@ -65,13 +66,13 @@ namespace Generation
                 GenerationThread = new Thread(FixedRoomGeneration);
                 GenerationThread.Start();
             }
-            GameSettings.Singleton.UnpassableTilemap.ClearAllTiles();
+            ClearMap();
         }
         void ContiniousGeneration()
         {
             while (GameManager.GameIsRunning)
             {
-                Sector PlayerSector = map.GetUnitSector(GameManager.LocalPlayerHeroUnit);
+                Sector PlayerSector = map.GetUnitSector(GameManager.playerControls.PlayerCharacterUnit);
                 if (PlayerSector != null)
                 {
                     Debug.Log(PlayerSector.X * PlayerSector.RadiusValue + " " + PlayerSector.Y * PlayerSector.RadiusValue);
@@ -196,7 +197,7 @@ namespace Generation
             Stack<Vector3Int> ToRemove = new Stack<Vector3Int>();
             foreach (var tile in UnpassableToSet)
             {
-                if (map.LandscapeMap[tile.x, tile.y].Land != LandType.Impassable) ToRemove.Push(tile);
+                if (map.LandscapeMap[tile.x, tile.y].Land != LandType.Impassable) ToRemove.Push(tile); 
             }
             foreach (var tile in ToRemove) UnpassableToSet.Remove(tile);
         }
@@ -220,7 +221,7 @@ namespace Generation
             passableTilemap.SetTiles(floorPositionsToSet, floorTilesArrayToSet);
             levelGateTilemap.SetTiles(levelGatePositionsToSet, levelGateTilesArrayToSet);
             GenerationCompleted = true;
-            if (CurrentGenSettings.ContiniousGeneration == false) GameManager.LocalPlayerHeroUnit.transform.position = BasicFunctions.ToVector3(map.SectorMap[0, 0].RandomPoint);
+            if (CurrentGenSettings.ContiniousGeneration == false) GameManager.playerControls.transform.position = BasicFunctions.ToVector3(map.SectorMap[0, 0].RandomPoint);
             //    stopwatch.Stop();
             //    Debug.Log("took time " + stopwatch.ElapsedMilliseconds);
         }
@@ -238,6 +239,17 @@ namespace Generation
                 if (sector.Y == -GenRadius) sector.CreateBorderLine(0, -1, map);
                 else if (sector.Y == GenRadius) sector.CreateBorderLine(0, 1, map);
             }
+        }
+        public void ClearMap()
+        {
+            GameSettings.Singleton.UnpassableTilemap.ClearAllTiles();
+            GameSettings.Singleton.LevelGatesTilemap.ClearAllTiles();
+            map.LevelGates.Clear();
+            foreach (var unit in GameManager.dataBase.AllUnits)
+            {
+                if (unit.tag != "Player") GameObject.Destroy(unit.gameObject);
+            }
+            GameManager.dataBase.AllUnits.Clear();
         }
         
 

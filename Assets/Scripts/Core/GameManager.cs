@@ -20,7 +20,7 @@ public static class GameManager
     public static System.Threading.Thread MainThread;
 
     private static UnitController unitController;
-    public static Unit LocalPlayerHeroUnit;
+    public static Player.PlayerControls playerControls;
 
 
 
@@ -47,7 +47,6 @@ public static class GameManager
 
         unitController = new UnitController();
 
-        LocalPlayerHeroUnit = GameObject.Find("Character").GetComponent<Unit>();
         UI.UIManager.Singleton.InitializeInventory();
     }
 }

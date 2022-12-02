@@ -40,9 +40,9 @@ namespace Vision {
         {
             while (GameManager.GameIsRunning)
             {
-                if (GameManager.LocalPlayerHeroUnit != null)
+                if (GameManager.playerControls != null)
                 {
-                    transform.position = GameManager.LocalPlayerHeroUnit.transform.position + Offset;
+                    transform.position = GameManager.playerControls.transform.position + Offset;
 
                     float AngleIncrement = AngleOfSight / (RaysCount - 1);
                     float CurrentAngle = 0;

@@ -8,22 +8,21 @@ namespace UI.InventoryLogic
     public class Corpse : MonoBehaviour
     {
         public List<Item> CarriedItems = new List<Item>();
-        public void InitializeCorpse(Vector3 deadRotation, Color deadColor, List<Item> loot)
+        public void InitializeCorpse(List<Item> loot)
         {
-            transform.eulerAngles = deadRotation;
             if (gameObject.tag == "Player")
             {
                 foreach (var avatarPart in transform.GetComponentInChildren<Avatar>().GetComponentsInChildren<SpriteRenderer>())
                 {
-                    avatarPart.color = deadColor;
+                //    avatarPart.color = deadColor;
                 }
             }
-            else transform.GetComponentInChildren<Avatar>().gameObject.GetComponent<SpriteRenderer>().color = deadColor;
+           // else transform.GetComponentInChildren<Avatar>().gameObject.GetComponent<SpriteRenderer>().color = deadColor;
             CarriedItems = loot;
         }
         private void OnMouseDown()
         {
-            if (Vector3.Distance(GameManager.LocalPlayerHeroUnit.transform.position, transform.position) < 3.5f)
+            if (Vector3.Distance(GameManager.playerControls.transform.position, transform.position) < 3.5f)
             {
                 VisualizeLootInUI();
             }

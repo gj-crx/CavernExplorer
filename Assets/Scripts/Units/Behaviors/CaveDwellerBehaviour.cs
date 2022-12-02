@@ -19,7 +19,7 @@ namespace Behaviours
         {
             unit = RelatedUnit;
             fighting = unit.gameObject.GetComponent<Fighting>();
-            fighting.possibleTargets.Add(GameManager.LocalPlayerHeroUnit);
+            fighting.possibleTargets.Add(GameManager.playerControls.PlayerCharacterUnit);
 
         }
 

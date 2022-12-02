@@ -173,7 +173,7 @@ namespace Generation
             Vector2Int CurrentPoint = SectorPoints[0];
             for (int i = 1; i < SectorPoints.Length; i++)
             {
-                CreateRoom(SectorPoints[i], 2, ReferenceMap); //clearing a bit of space at each point
+               // CreateRoom(SectorPoints[i], 2, ReferenceMap); //clearing a bit of space at each point
                 CurrentPoint = ConnectPoints(CurrentPoint, SectorPoints[i], ReferenceMap);
             }
             QueueTilesToSet(ReferenceMap);

@@ -79,23 +79,31 @@ public class Unit : MonoBehaviour
     }
     public void Death()
     {
-        if (behavior != null)
+        if (gameObject.tag == "Player")
         {
-            behavior.Clear();
+            UI.UIManager.Singleton.dialoguePanelsDictionary["DeathPanel"].SetActive(true);
+            gameObject.SetActive(false);
         }
-        gameObject.tag = "Corpse";
-        if (animator != null)
+        else
         {
-            animator.Play("Death");
-        }
-        gameObject.AddComponent<UI.InventoryLogic.Corpse>().InitializeCorpse(new Vector3(0, 0, Random.Range(110, 275)), graphicPresets.DeadColor, ItemsDroppedOnDeath);
-        if (behavior != null) behavior.Clear();
-        if (healthBar != null) healthBar.TurnOff();
-        if (GetComponent<Behaviours.Fighting>() != null) Destroy(GetComponent<Behaviours.Fighting>());
-        if (gameObject.tag == "Player") Player.PlayerControls.Singleton.enabled = false;
+            if (behavior != null)
+            {
+                behavior.Clear();
+            }
+            gameObject.tag = "Corpse";
+            if (animator != null)
+            {
+                animator.Play("Death");
+            }
+            gameObject.AddComponent<UI.InventoryLogic.Corpse>().InitializeCorpse(ItemsDroppedOnDeath);
+            if (behavior != null) behavior.Clear();
+            if (healthBar != null) healthBar.TurnOff();
+            if (GetComponent<Behaviours.Fighting>() != null) Destroy(GetComponent<Behaviours.Fighting>());
 
-        GameManager.dataBase.AllUnits.Remove(this);
-        Destroy(this);
+
+            GameManager.dataBase.AllUnits.Remove(this);
+            Destroy(this);
+        }
     }
     private void OnKillMethod(Unit KilledUnit)
     {
