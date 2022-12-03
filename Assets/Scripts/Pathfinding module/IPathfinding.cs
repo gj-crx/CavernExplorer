@@ -4,6 +4,6 @@ using UnityEngine;
 
     public interface IPathfinding
     {
-        bool GetWayPath(Unit MovingUnit, Vector3 Target, byte MaximumCorrectionStep);
-        bool GetPathBetweenPoints(Vector3 From, Vector3 Target);
+        bool GetWayPath(Unit MovingUnit, Vector3 Target, byte bodySize, byte MaximumCorrectionStep);
+        bool GetPathBetweenPoints(Vector3 From, Vector3 Target, byte bodySize);
     }

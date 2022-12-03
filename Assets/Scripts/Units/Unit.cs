@@ -10,6 +10,7 @@ public class Unit : MonoBehaviour
 {
     public int ID = -1;
     public bool AIControlled = true;
+    public byte BodySize = 0;
     public UnitMovement unitMovement;
     public UnitStats Stats;
     public Shooting shooting = null;

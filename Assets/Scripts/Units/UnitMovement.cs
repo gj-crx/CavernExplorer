@@ -123,7 +123,7 @@ public class UnitMovement
             Debug.Log("Attempting to move unit with 0 movespeed");
         }
         CurrentDistance = 1;
-        bool Result = GameManager.Pathfinding.GetWayPath(unit, Target, 2);
+        bool Result = GameManager.Pathfinding.GetWayPath(unit, Target, unit.BodySize, 2);
         if (Result == false) Way = null;
         return Result;
     }
@@ -134,7 +134,7 @@ public class UnitMovement
             Debug.Log("Attempting to move unit with 0 movespeed");
         }
         CurrentDistance = 1;
-        bool Result = GameManager.Pathfinding.GetWayPath(unit, TargetUnit.LastNonTransformPosition, 2);
+        bool Result = GameManager.Pathfinding.GetWayPath(unit, TargetUnit.LastNonTransformPosition, unit.BodySize, 2);
         if (Result) currentTarget = TargetUnit;
         else
         {
