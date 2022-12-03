@@ -35,9 +35,13 @@ public class UnitMovement
         }
         if (localWay == null)
         {
-            unit.animator.SetFloat("XSpeed", 0);
-            unit.animator.SetFloat("YSpeed", 0);
-            unit.animator.SetBool("Stopped", true);
+            if (currentTarget == null)
+            {
+                unit.animator.SetFloat("XSpeed", 0);
+                unit.animator.SetFloat("YSpeed", 0);
+                unit.animator.SetBool("Stopped", true);
+            }
+            else BlindChase(currentTarget);
             return;
         }
 
@@ -102,6 +106,15 @@ public class UnitMovement
         if (Delta.y < 0) Delta.y = -1;
         return Delta;
     }
+    private Vector3 GetDirection(Vector3 target)
+    {
+        Vector3 Delta = target - unit.transform.position;
+        if (Delta.x > 0) Delta.x = 1;
+        if (Delta.x < 0) Delta.x = -1;
+        if (Delta.y > 0) Delta.y = 1;
+        if (Delta.y < 0) Delta.y = -1;
+        return Delta;
+    }
 
     public bool GetWayTarget(Vector3 Target)
     {
@@ -130,6 +143,15 @@ public class UnitMovement
         }
         return Result;
     }
+
+    public void BlindChase(Unit chaseTarget)
+    {
+        unit.transform.eulerAngles = new Vector3(0, 0, 0);
+        Vector3 direction = GetDirection(chaseTarget.transform.position);
+        unit.transform.Translate(direction * unit.Stats.MoveSpeed * Time.fixedDeltaTime);
+        if (direction.x < 0) unit.transform.eulerAngles = new Vector3(0, 180, 0);
+    }
+
     public void RunAway(Vector3 fearSource)
     {
         Sector unitSector = GameManager.map.GetUnitSector(unit);
@@ -157,6 +179,7 @@ public class UnitMovement
         }
         if (positionToRun != Vector3.zero) GetWayTarget(positionToRun);
     }
+
     private Vector3 GetRandomPositionInNeibghourSector(Sector unitSector, int x, int y)
     {
         if (GameManager.map.SectorMap[unitSector.X + x, unitSector.Y + y] != null)
