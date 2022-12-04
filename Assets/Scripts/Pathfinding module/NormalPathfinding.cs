@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
 
 //namespace
 //{
@@ -10,32 +11,31 @@ public class NormalPathfinding : IPathfinding
 
 
     public Map map;
-    public System.Random pathfindingRandom;
-    private DistanceMapHolder DistancesMap;
+    public System.Random PathfindingRandom;
 
+    private DistanceMapHolder distancesMap;
+    private BodyType currentBodyType = null;
+    private short currentDistance = 0;
+    private Vector2Int[] way = null;
 
-    short CurrentDistance = 0;
-    Vector2Int[] Way = null;
-
-    Stack<Vector2Int>[] ToCheck;
-    short MaxSearchDistance = 150;
-
-    bool BoolCurrentStackTurn = false;
-    int CurrentStackTurn
+    private Stack<Vector2Int>[] toCheck;
+    private short maxSearchDistance = 150;
+    private bool boolCurrentStackTurn = false;
+    private int currentStackTurn
     {
         get
         {
-            return BoolToInt(BoolCurrentStackTurn);
+            return BoolToInt(boolCurrentStackTurn);
         }
     }
 
     public NormalPathfinding(Map m)
     {
         map = m;
-        DistancesMap = new DistanceMapHolder();
-        pathfindingRandom = new System.Random();
+        distancesMap = new DistanceMapHolder();
+        PathfindingRandom = new System.Random();
     }
-    public bool GetWayPath(Unit MovingUnit, Vector3 Target, byte bodySize, byte MaximumCorrectionStep = 2)
+    public bool GetWayPath(Unit MovingUnit, Vector3 Target, BodyType bodyType, byte MaximumCorrectionStep = 2)
     {
         Vector2Int from = RoundVector3(MovingUnit.LastNonTransformPosition);
         if (PassablePath(from) == false)
@@ -52,16 +52,16 @@ public class NormalPathfinding : IPathfinding
             else return false;
         }
 
-        bool result = CalculateWay(from, target, bodySize);
+        bool result = CalculateWay(from, target, bodyType);
         if (result)
         {
             //   MovingUnit.unitMovement.Way = BasicFunctions.ConvertToVector3Array(Way, 0.5f);
-            MovingUnit.unitMovement.Way = BasicFunctions.ConvertToVector3Array(Way, 0);
+            MovingUnit.unitMovement.Way = BasicFunctions.ConvertToVector3Array(way, 0);
             MovingUnit.unitMovement.CurrentDistance = 1;
         }
         return result;
     }
-    public bool GetPathBetweenPoints(Vector3 From, Vector3 Target, byte bodySize)
+    public bool GetPathBetweenPoints(Vector3 From, Vector3 Target, BodyType bodyType)
     {
         Vector2Int from = Vector3ToVector2Int(Target);
         if (PassablePath(from) == false)
@@ -77,31 +77,32 @@ public class NormalPathfinding : IPathfinding
             if (Result.Item2 == true) target = Result.Item1; //path resets to correct one
             else return false;
         }
-        return CalculateWay(from, target, bodySize);
+        return CalculateWay(from, target, bodyType);
     }
 
-    private bool CalculateWay(Vector2Int From, Vector2Int Target, byte bodySize)
+    private bool CalculateWay(Vector2Int From, Vector2Int Target, BodyType bodyType)
     {
-        DistancesMap = new DistanceMapHolder();
-        CurrentDistance = 0;
-        ToCheck = new Stack<Vector2Int>[2];
-        ToCheck[0] = new Stack<Vector2Int>();
-        ToCheck[1] = new Stack<Vector2Int>();
-        BoolCurrentStackTurn = false;
-        ToCheck[CurrentStackTurn].Push(From);
+        currentBodyType = bodyType;
+        distancesMap = new DistanceMapHolder();
+        currentDistance = 0;
+        toCheck = new Stack<Vector2Int>[2];
+        toCheck[0] = new Stack<Vector2Int>();
+        toCheck[1] = new Stack<Vector2Int>();
+        boolCurrentStackTurn = false;
+        toCheck[currentStackTurn].Push(From);
 
         bool found = false;
-        while (found == false && CurrentDistance < MaxSearchDistance)
+        while (found == false && currentDistance < maxSearchDistance)
         {
-            found = IterateToCheckList(Target, bodySize);
+            found = IterateToCheckList(Target);
         }
        // Debug.Log(found + " distance " + CurrentDistance + " out of " + MaxSearchDistance);
         RestoreWay(Target, From);
         return found;
     }
-    private bool IterateToCheckList(Vector2Int Target, byte bodySize)
+    private bool IterateToCheckList(Vector2Int Target)
     {
-        foreach (var CurrentPoint in ToCheck[CurrentStackTurn])
+        foreach (var CurrentPoint in toCheck[currentStackTurn])
         {
             if (CurrentPoint == Target)
             { //Target is found
@@ -109,32 +110,32 @@ public class NormalPathfinding : IPathfinding
             }
             else
             {
-                DistancesMap[CurrentPoint.x, CurrentPoint.y] = new DistanceMapPoint(CurrentDistance); //setting this point to distance map
-                GetNeighbours(CurrentPoint, BoolToInt(!BoolCurrentStackTurn), bodySize); //adding neighbour patches to next stack
+                distancesMap[CurrentPoint.x, CurrentPoint.y] = new DistanceMapPoint(currentDistance); //setting this point to distance map
+                GetNeighbours(CurrentPoint, BoolToInt(!boolCurrentStackTurn)); //adding neighbour patches to next stack
             }
         }
-        ToCheck[CurrentStackTurn].Clear();
-        CurrentDistance++;
-        BoolCurrentStackTurn = !BoolCurrentStackTurn;
+        toCheck[currentStackTurn].Clear();
+        currentDistance++;
+        boolCurrentStackTurn = !boolCurrentStackTurn;
         return false;
     }
-    private void GetNeighbours(Vector2Int Point, int StackToAdd, byte bodySize)
+    private void GetNeighbours(Vector2Int Point, int StackToAdd)
     {
         for (int y = -1; y <= 1; y++)
         {
             for (int x = -1; x <= 1; x++)
             {
                 Vector2Int current = new Vector2Int(Point.x + x, Point.y + y);
-                if ((x == 0 || y == 0) && (x != 0 || y != 0) && ValidPath(current, bodySize))
+                if ((x == 0 || y == 0) && (x != 0 || y != 0) && ValidPath(current))
                 {
-                    ToCheck[StackToAdd].Push(current);
+                    toCheck[StackToAdd].Push(current);
                 }
             }
         }
     }
     private Vector2Int GetPartOfReturningWay(Vector2Int CurrentPoint)
     {
-        short CurrentMinDistance = MaxSearchDistance;
+        short CurrentMinDistance = maxSearchDistance;
         Vector2Int MinDistancePath = Vector2Int.zero;
         int x = 0;
         int y = 0;
@@ -144,9 +145,9 @@ public class NormalPathfinding : IPathfinding
             {
                 //  Debug.Log("path " + new Vector2Int(CurrentPoint.x, CurrentPoint.y) + " distance: " + DistancesMap[CurrentPoint.x, CurrentPoint.y]);
                 if ((x == 0 || y == 0) && (x != 0 || y != 0))
-                if (DistancesMap[CurrentPoint.x + x, CurrentPoint.y + y] != null && DistancesMap[CurrentPoint.x + x, CurrentPoint.y + y].Distance < CurrentMinDistance)
+                if (distancesMap[CurrentPoint.x + x, CurrentPoint.y + y] != null && distancesMap[CurrentPoint.x + x, CurrentPoint.y + y].Distance < CurrentMinDistance)
                 {
-                    CurrentMinDistance = DistancesMap[CurrentPoint.x + x, CurrentPoint.y + y].Distance;
+                    CurrentMinDistance = distancesMap[CurrentPoint.x + x, CurrentPoint.y + y].Distance;
                     MinDistancePath = new Vector2Int(CurrentPoint.x + x, CurrentPoint.y + y);
                     //  Debug.Log("Minimal distance out of  " + CurrentPoint + " is "  + MinimalDistancePath + " : " + MinimalDistance);
                 }
@@ -159,12 +160,12 @@ public class NormalPathfinding : IPathfinding
     }
     private void RestoreWay(Vector2Int SearchStartingPosition, Vector2Int SearchEndingPosition)
     {
-        Way = new Vector2Int[CurrentDistance + 1];
-        Way[CurrentDistance] = SearchStartingPosition;
-        Way[0] = SearchEndingPosition;
-        for (int i = CurrentDistance - 1; i >= 1; i--)
+        way = new Vector2Int[currentDistance + 1];
+        way[currentDistance] = SearchStartingPosition;
+        way[0] = SearchEndingPosition;
+        for (int i = currentDistance - 1; i >= 1; i--)
         {
-            Way[i] = GetPartOfReturningWay(Way[i + 1]);
+            way[i] = GetPartOfReturningWay(way[i + 1]);
         }
     }
     private int BoolToInt(bool b)
@@ -177,18 +178,9 @@ public class NormalPathfinding : IPathfinding
         return new Vector2Int((int)v.x, (int)v.y);
     }
 
-    private bool ValidPath(Vector2Int PathToCheck, byte bodySize)
+    private bool ValidPath(Vector2Int PathToCheck)
     {
-        if (bodySize == 0) return PassablePath(PathToCheck) && ToCheck[0].Contains(PathToCheck) == false && ToCheck[1].Contains(PathToCheck) == false && DistancesMap[PathToCheck.x, PathToCheck.y] == null;
-        Debug.Log("big body calculations");
-        for (int y = -bodySize; y <= bodySize; y++)
-        {
-            for (int x = -bodySize; x <= bodySize; x++)
-            {
-                if (PassablePath(PathToCheck + new Vector2Int(x, y)) == false) return false;
-            }
-        }
-        return ToCheck[0].Contains(PathToCheck) == false && ToCheck[1].Contains(PathToCheck) == false && DistancesMap[PathToCheck.x, PathToCheck.y] == null;
+        return currentBodyType.CheckBodyForm(PathToCheck, PassablePath) && toCheck[0].Contains(PathToCheck) == false && toCheck[1].Contains(PathToCheck) == false && distancesMap[PathToCheck.x, PathToCheck.y] == null;
     }
     private bool PassablePath(Vector2Int PathToCheck)
     {
@@ -217,7 +209,7 @@ public class NormalPathfinding : IPathfinding
     {
         if (currentCord == 0)
         {
-            if (pathfindingRandom.Next(0, 2) == 1) return 1;
+            if (PathfindingRandom.Next(0, 2) == 1) return 1;
             else return -1;
         }
         else if (currentCord == 1) return -1;

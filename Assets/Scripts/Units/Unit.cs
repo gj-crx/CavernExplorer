@@ -4,13 +4,16 @@ using UnityEngine;
 using System.Threading.Tasks;
 using UI.Indicators;
 using Items;
+using Pathfinding;
 
 
 public class Unit : MonoBehaviour
 {
     public int ID = -1;
     public bool AIControlled = true;
-    public byte BodySize = 0;
+    public BodyType bodyType;
+    [SerializeField]
+    private BodyTypeName bodyTypeName = BodyTypeName.Normal;
     public UnitMovement unitMovement;
     public UnitStats Stats;
     public Shooting shooting = null;
@@ -42,6 +45,7 @@ public class Unit : MonoBehaviour
     private void Start()
     {
         unitMovement = new UnitMovement(this);
+        GetBodyType();
         GetBehavior();
         if (animator == null)
         {
@@ -117,6 +121,12 @@ public class Unit : MonoBehaviour
     {
         if (behaviorName == "CaveDweller") behavior = new Behaviours.CaveDwellerBehaviour(this);
         else if (behaviorName == "Peaceful") behavior = new Behaviours.PeacefulBehavior(this);
+    }
+    private void GetBodyType()
+    {
+        if (bodyTypeName == BodyTypeName.Normal) bodyType = new Body1X();
+        else if (bodyTypeName == BodyTypeName.X4) bodyType = new Body4X();
+        else if (bodyTypeName == BodyTypeName.X9) bodyType = new Body9X();
     }
   
     private void Chase()
@@ -199,5 +209,12 @@ public class Unit : MonoBehaviour
         Melee = 0,
         Ranged = 1,
         None = 2
+    }
+    public enum BodyTypeName : byte
+    {
+        Normal = 0,
+        X2 = 1,
+        X4 = 2,
+        X9 = 3
     }
 }
