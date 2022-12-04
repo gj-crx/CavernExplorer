@@ -125,6 +125,7 @@ public class Unit : MonoBehaviour
     private void GetBodyType()
     {
         if (bodyTypeName == BodyTypeName.Normal) bodyType = new Body1X();
+        else if (bodyTypeName == BodyTypeName.X2Top) bodyType = new Body2X();
         else if (bodyTypeName == BodyTypeName.X4) bodyType = new Body4X();
         else if (bodyTypeName == BodyTypeName.X9) bodyType = new Body9X();
     }
@@ -213,7 +214,7 @@ public class Unit : MonoBehaviour
     public enum BodyTypeName : byte
     {
         Normal = 0,
-        X2 = 1,
+        X2Top = 1,
         X4 = 2,
         X9 = 3
     }

@@ -27,8 +27,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 586337151370155609}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0.27, z: 0}
+  m_LocalScale: {x: 1.167817, y: 1.35, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3853143831089651847}
@@ -315,7 +315,7 @@ Transform:
   m_GameObject: {fileID: 3853143831089651865}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3.53676, y: 3.53676, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8969620968698620425}
@@ -337,8 +337,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.019244468, y: -0.017073484}
-  m_Size: {x: 0.43176448, y: 0.7447226}
+  m_Offset: {x: -0.026776478, y: 0.23336554}
+  m_Size: {x: 0.49202046, y: 0.97444916}
   m_Direction: 0
 --- !u!50 &1271637637653329956
 Rigidbody2D:
@@ -375,7 +375,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: -1
   AIControlled: 1
-  bodyTypeName: 2
+  bodyTypeName: 1
   unitMovement:
     Way: []
     localWay: []
@@ -571,7 +571,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6846985825768070707}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.45, z: 0}
+  m_LocalPosition: {x: 0, y: 0.846, z: 0}
   m_LocalScale: {x: 0.7142857, y: 0.11428571, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
