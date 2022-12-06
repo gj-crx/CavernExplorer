@@ -397,6 +397,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: -1
   AIControlled: 1
+  bodyTypeName: 0
   unitMovement:
     Way: []
     localWay: []
@@ -406,10 +407,10 @@ MonoBehaviour:
   Stats:
     attackType: 1
     MaxHP: 200
-    CurrentHP: 200
+    CurrentHP: 80
     Damage: 15
     Regeneration: 1
-    MoveSpeed: 3
+    MoveSpeed: 2
     AttackDelay: 1
     AttackRange: 6
     VisionRadius: 15

@@ -27,24 +27,41 @@ public static class BasicFunctions
     }
     public static Vector2Int GetNormalizedDirectionBetween2Points(Vector2Int From, Vector2Int To)
     {
-        Vector2Int Delta = To - From;
+        Vector2Int delta = To - From;
         bool XAxisPriority = Convert.ToBoolean(GameManager.GenRandom.Next(0, 2));
         //if x == 0 or y == 0 then return immidiatly, direction is clear
-        if (Delta.x == 0 || Delta.y == 0)
+        if (delta.x == 0 || delta.y == 0)
         {
-            return ToUnitVector(Delta);
+            return ToUnitVector(delta);
         }
         //if x == 1 and y == 1 then axis priority decides which x or y to be 0 and returns
         if (XAxisPriority)
         {
-            if (Delta.x > 0) return new Vector2Int(1, 0);
+            if (delta.x > 0) return new Vector2Int(1, 0);
             else return new Vector2Int(-1, 0);
         }
         else
         {
-            if (Delta.y > 0) return new Vector2Int(0, 1);
+            if (delta.y > 0) return new Vector2Int(0, 1);
             else return new Vector2Int(0, -1);
         }
+    }
+    public static Vector2Int GetRandomizedDirection(Vector2Int From, Vector2Int To)
+    {
+        Vector2Int randomizedDirection = To - From;
+        if (Mathf.Abs(randomizedDirection.x) > 0)
+        {
+            randomizedDirection.x = 0;
+            if (GameManager.GenRandom.Next(0, 2) == 1) randomizedDirection.y = 1;
+            else randomizedDirection.y = -1;
+        }
+        else
+        {
+            randomizedDirection.y = 0;
+            if (GameManager.GenRandom.Next(0, 2) == 1) randomizedDirection.x = 1;
+            else randomizedDirection.x = -1;
+        }
+        return randomizedDirection;
     }
     public static Vector3 GetDirectionBetween2Points(Vector3 From, Vector3 To)
     {

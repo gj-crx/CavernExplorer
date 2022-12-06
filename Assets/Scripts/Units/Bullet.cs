@@ -32,7 +32,7 @@ public class Bullet : MonoBehaviour
     }
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.isTrigger) return;
+        if (collision.isTrigger || collision.gameObject == ownerUnit.gameObject) return;
         if (ownerUnit.gameObject.tag == "Player" && collision.gameObject.tag == "Creep")
         {
             collision.gameObject.GetComponent<Unit>().GetDamage(Damage, ownerUnit);
@@ -41,6 +41,7 @@ public class Bullet : MonoBehaviour
         {
             collision.gameObject.GetComponent<Unit>().GetDamage(Damage, ownerUnit);
         }
+        Debug.Log(collision.gameObject.name);
         Destroy(gameObject);
     }
 

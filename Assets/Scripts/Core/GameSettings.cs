@@ -84,6 +84,14 @@ public class GameSettings : MonoBehaviour
         public byte DownWayGatesCount;
 
         public byte StartingSectorsCreationRadius;
+
+        public float LinkDirectionRandomizationChance;
+        public byte LinkNormalWidth;
+        public int LinkWidthRandomAdjustment;
+
+        public Color unwalkableLayerColor;
+        public Color floorLayerColor;
+
         public UnitSpawningPattern unitSpawningPatterns;
     }
 }

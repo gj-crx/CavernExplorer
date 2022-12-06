@@ -54,13 +54,31 @@ namespace Generation
             if (Side.x != 0) return new Vector2Int(radius * Side.x, GameManager.GenRandom.Next(-radius + 1, radius)) + center;
             else return new Vector2Int(GameManager.GenRandom.Next(-radius + 1, radius), radius * Side.y) + center;
         }
-        private Vector2Int ConnectPoints(Vector2Int currentPoint, Vector2Int targetPoint, Map referenceMap)
+        private Vector2Int ConnectPoints(Vector2Int currentPoint, Vector2Int targetPoint, Map referenceMap, float directionRandomizeChance = 0.2f)
         {
-            referenceMap.LandscapeMap[currentPoint.x, currentPoint.y] = new LandscapePoint(LandType.Passable);
+            for (int width = 0; width < GameManager.MapGenerator.CurrentGenSettings.LinkNormalWidth; width++)
+            {
+                referenceMap.LandscapeMap[currentPoint.x + width, currentPoint.y] = new LandscapePoint(LandType.Passable);
+                referenceMap.LandscapeMap[currentPoint.x, currentPoint.y + width] = new LandscapePoint(LandType.Passable);
+            }
             do
             {
-                currentPoint += BasicFunctions.GetNormalizedDirectionBetween2Points(currentPoint, targetPoint);
-                referenceMap.LandscapeMap[currentPoint.x, currentPoint.y] = new LandscapePoint(LandType.Passable);
+                Vector2Int currentDirection;
+                if (GameManager.GenRandom.NextDouble() < directionRandomizeChance)
+                {
+                    currentDirection = BasicFunctions.GetRandomizedDirection(currentPoint, targetPoint);
+                }
+                else
+                {
+                    currentDirection = BasicFunctions.GetNormalizedDirectionBetween2Points(currentPoint, targetPoint);
+                }
+                currentPoint += currentDirection;
+                int randomAdjustment = GameManager.GenRandom.Next(0, GameManager.MapGenerator.CurrentGenSettings.LinkWidthRandomAdjustment + 1);
+                for (int width = 0; width < GameManager.MapGenerator.CurrentGenSettings.LinkNormalWidth + randomAdjustment; width++)
+                {
+                    if (Mathf.Abs(currentDirection.x) > 0) referenceMap.LandscapeMap[currentPoint.x, currentPoint.y + width] = new LandscapePoint(LandType.Passable);
+                    else referenceMap.LandscapeMap[currentPoint.x + width, currentPoint.y] = new LandscapePoint(LandType.Passable);
+                }
             }
             while (currentPoint != targetPoint);
             return currentPoint;
@@ -174,13 +192,13 @@ namespace Generation
             for (int i = 1; i < SectorPoints.Length; i++)
             {
                // CreateRoom(SectorPoints[i], 2, ReferenceMap); //clearing a bit of space at each point
-                CurrentPoint = ConnectPoints(CurrentPoint, SectorPoints[i], ReferenceMap);
+                CurrentPoint = ConnectPoints(CurrentPoint, SectorPoints[i], ReferenceMap, GameManager.MapGenerator.CurrentGenSettings.LinkDirectionRandomizationChance);
             }
             QueueTilesToSet(ReferenceMap);
             //create positions to spawn units
             GameManager.unitSpawner.SpawnUnitsInSector(this, GameManager.GenRandom, GameManager.MapGenerator.CurrentGenSettings.unitSpawningPatterns);
         }
-        public void CreateBorderLine(int XPart, int YPart, Map ReferenceMap, byte WallThickness = 2)
+        public void CreateBorderLine(int XPart, int YPart, Map ReferenceMap, byte WallThickness = 3)
         {
             if (XPart != 0)
             {

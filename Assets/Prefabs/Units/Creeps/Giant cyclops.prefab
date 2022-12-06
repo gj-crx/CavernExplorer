@@ -383,14 +383,14 @@ MonoBehaviour:
     currentTarget: {fileID: 0}
     CurrentDirection: {x: 0, y: 0, z: 0}
   Stats:
-    attackType: 0
+    attackType: 1
     MaxHP: 300
     CurrentHP: 300
     Damage: 50
     Regeneration: 3
     MoveSpeed: 3
     AttackDelay: 2
-    AttackRange: 2.2
+    AttackRange: 8
     VisionRadius: 15
     CollisionRadius: 0
   shooting: {fileID: 11400000, guid: 2cbab4db301e15145848e132a648aadb, type: 2}
@@ -447,8 +447,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4574997597510442303}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0996, y: -0.0237, z: 0}
-  m_LocalScale: {x: 0.44954845, y: 0.77003276, z: 0.75}
+  m_LocalPosition: {x: 0.127, y: 0.2483, z: 0}
+  m_LocalScale: {x: 0.44954845, y: 1.0254526, z: 0.75}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3853143831089651847}

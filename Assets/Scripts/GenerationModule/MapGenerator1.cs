@@ -48,6 +48,10 @@ namespace Generation
             CurrentLevelToGenerate += gameLevelAdvance;
             CurrentGenSettings = GameSettings.Singleton.GeneratorSettingsPerLevels[CurrentLevelToGenerate];
 
+            GameSettings.Singleton.UnpassableTilemap.color = CurrentGenSettings.unwalkableLayerColor;
+            GameSettings.Singleton.LevelGatesTilemap.color = CurrentGenSettings.unwalkableLayerColor;
+            GameSettings.Singleton.FloorsTilemap.color = CurrentGenSettings.floorLayerColor;
+
             map.LandscapeMap = new LandscapeMapHolder();
             map.SectorMap = new SectorMapHolder();
             NewlyGeneratedSectors = new Stack<Sector>();
