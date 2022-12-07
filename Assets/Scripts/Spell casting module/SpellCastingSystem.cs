@@ -6,23 +6,15 @@ namespace Spells
 {
     public static class SpellCastingSystem
     {
-        public static bool CastSpell(Spell spellToCast)
+        public static bool CastSpell(Spell spellToCast, Spell.CastingTarget target, Unit casterUnit = null)
         {
-            //...
+            if (casterUnit == null) casterUnit = GameManager.playerControls.PlayerCharacterUnit;
+            foreach (Spell.Effect effect in spellToCast.EffectsOnCast) effect.CastEffect(target, casterUnit);
 
             return true;
         }
 
 
 
-        public enum SpellEffect : byte
-        {
-            None = 0,
-            HPRestoration = 1,
-            MovespeedBonus = 2,
-            Slow = 3,
-            Damage = 4,
-            FireballCast = 5
-        }
     }
 }

@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48578b21b7a5338468974b8f6ce47f4d, type: 3}
   m_Name: BasicShooting 1
   m_EditorClassIdentifier: 
+  projectileStats:
+    Damage: 25
+    Speed: 8
+    LifeTime: 3.5
   bulletPrefab: {fileID: 2356535765661442275, guid: f135246b6e88316429ad29edd4de9682, type: 3}
   bulletSpawningOffset: {x: 0, y: 0.33, z: 0}
-  BulletSpeed: 5
-  BulletLifeTime: 3
+  bulletInitialDistance: 1

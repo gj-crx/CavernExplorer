@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e1bf44fc103cb14ca30422981192c0f, type: 3}
+  m_Name: Spell_HealingPotion
+  m_EditorClassIdentifier: 
+  SpellName: Healing potion
+  Method: 0
+  EffectsOnCast:
+  - Type: 0
+    HitPointsChange: -80
+    HitRadius: 0
+    SpellTargetTag: Player
+    AffectedStats:
+      attackType: 0
+      MaxHP: 0
+      CurrentHP: 0
+      Damage: 0
+      Regeneration: 0
+      MoveSpeed: 0
+      AttackDelay: 0
+      AttackRange: 0
+      VisionRadius: 0
+      CollisionRadius: 0
+    effectProjectilePrefab: {fileID: 0}

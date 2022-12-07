@@ -20,6 +20,10 @@ namespace Items
         public sbyte Charges = -1;
 
 
-
+        public void ChargeUsed(ToolbarItem itemRepresentation)
+        {
+            Charges -= 1;
+            if (Charges <= 0) itemRepresentation.inventory.RemoveItem(itemRepresentation);
+        }
     }
 }

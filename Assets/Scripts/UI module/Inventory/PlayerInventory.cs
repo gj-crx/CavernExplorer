@@ -60,7 +60,19 @@ namespace UI.InventoryLogic
             {
                 itemToApply.transform.SetParent(itemToApply.inventory.UIGrid.transform);
             }
-            if (itemToApply.RepresentedItem.SpellCastOnApply is null == false) SpellCastingSystem.CastSpell(itemToApply.RepresentedItem.SpellCastOnApply);
+            //spells
+            if (itemToApply.RepresentedItem.SpellCastOnApply != null)
+            {
+                if (itemToApply.RepresentedItem.SpellCastOnApply.Method == Spell.CastingMethod.Selfcasted)
+                {
+                    SpellCastingSystem.CastSpell(itemToApply.RepresentedItem.SpellCastOnApply, new Spell.CastingTarget(GameManager.playerControls.PlayerCharacterUnit));
+                    itemToApply.RepresentedItem.ChargeUsed(itemToApply);
+                }
+                else
+                { //inputing target of spell cast
+
+                }
+            }
 
         }
         public void DisapplyItem(ToolbarItem itemToDisapply)
