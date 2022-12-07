@@ -406,7 +406,7 @@ MonoBehaviour:
     CurrentDirection: {x: 0, y: 0, z: 0}
   Stats:
     attackType: 1
-    MaxHP: 200
+    MaxHP: 80
     CurrentHP: 80
     Damage: 15
     Regeneration: 1

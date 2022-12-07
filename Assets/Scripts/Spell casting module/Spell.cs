@@ -66,6 +66,7 @@ namespace Spells {
 
             private void HitTargetedUnit(Unit target, Unit casterUnit)
             {
+                Debug.Log(target.name + " is hitted by an effect");
                 target.GetDamage(HitPointsChange, casterUnit);
                 target.Stats.CombineStats(AffectedStats);
             }

@@ -47,7 +47,7 @@ namespace UI.InventoryLogic
                 GameManager.playerControls.PlayerCharacterUnit.Stats.CombineStats(itemToApply.RepresentedItem.ItemStats);
             }
             else if (itemToApply.RepresentedItem.UsedSlot == EquipmentSlot.RightHand)
-            {
+            { //weapons
                 if (EquipmentSlots[(byte)itemToApply.RepresentedItem.UsedSlot].RepresentedItem != null && EquipmentSlots[(byte)itemToApply.RepresentedItem.UsedSlot].RepresentedItem.ItemName != "Undefined item")
                 {
                     DisapplyItem(EquipmentSlots[(byte)itemToApply.RepresentedItem.UsedSlot]);
@@ -58,7 +58,7 @@ namespace UI.InventoryLogic
             }
             else if (itemToApply.RepresentedItem.UsedSlot == EquipmentSlot.None)
             {
-                itemToApply.transform.SetParent(itemToApply.inventory.UIGrid.transform);
+          //      itemToApply.transform.SetParent(itemToApply.inventory.UIGrid.transform);
             }
             //spells
             if (itemToApply.RepresentedItem.SpellCastOnApply != null)
@@ -70,7 +70,7 @@ namespace UI.InventoryLogic
                 }
                 else
                 { //inputing target of spell cast
-
+                    SpellCastingSystem.PrepareSpellToCast(itemToApply.RepresentedItem.SpellCastOnApply, new Spell.CastingTarget(GameManager.playerControls.PlayerCharacterUnit));
                 }
             }
 
