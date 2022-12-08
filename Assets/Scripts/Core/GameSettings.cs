@@ -26,7 +26,6 @@ public class GameSettings : MonoBehaviour
     [HideInInspector]
     public static GameSettings Singleton;
 
-
     private void Awake()
     {
         Singleton = this;

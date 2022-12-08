@@ -1,8 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Spells {
+namespace Spells
+{
     [CreateAssetMenu(fileName = "Spell", menuName = "ScriptableObjects/Spell", order = 0)]
     public class Spell : ScriptableObject
     {
@@ -29,6 +29,8 @@ namespace Spells {
 
             [SerializeField]
             private GameObject effectProjectilePrefab;
+            [SerializeField]
+            private GameObject lightningEffectPrefab;
 
             public void CastEffect(CastingTarget target, Unit casterUnit)
             {
@@ -61,6 +63,15 @@ namespace Spells {
                         HitTargetedUnit(casterUnit, casterUnit);
                     }
                     //---
+                }
+                //visualizing lightning effect if it is not null
+                if (lightningEffectPrefab != null)
+                {
+                    var lightningEffect = GameObject.Instantiate(lightningEffectPrefab, casterUnit.transform.position, Quaternion.identity).GetComponent<DigitalRuby.LightningBolt.LightningBoltScript>();
+                    lightningEffect.StartObject = casterUnit.gameObject;
+                    if (target.MethodName == CastingMethod.TargetedOnUnitInstant) lightningEffect.EndObject = target.UnitTarget.gameObject;
+                    else if (target.MethodName == CastingMethod.TargetedAtPointInstant) lightningEffect.EndPosition = target.PointOfTarget;
+                    else lightningEffect.EndObject = casterUnit.gameObject;
                 }
             }
 

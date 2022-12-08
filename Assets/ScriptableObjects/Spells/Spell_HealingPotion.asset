@@ -20,7 +20,7 @@ MonoBehaviour:
     HitRadius: 0
     SpellTargetTag: Player
     AffectedStats:
-      attackType: 0
+      attackType: 2
       MaxHP: 0
       CurrentHP: 0
       Damage: 0
@@ -31,3 +31,4 @@ MonoBehaviour:
       VisionRadius: 0
       CollisionRadius: 0
     effectProjectilePrefab: {fileID: 0}
+    lightningEffectPrefab: {fileID: 0}
