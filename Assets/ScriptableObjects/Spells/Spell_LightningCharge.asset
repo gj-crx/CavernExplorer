@@ -13,19 +13,23 @@ MonoBehaviour:
   m_Name: Spell_LightningCharge
   m_EditorClassIdentifier: 
   SpellName: Lightning strike
+  ManaCost: 10
   Method: 1
   EffectsOnCast:
   - Type: 0
     HitPointsChange: 50
     HitRadius: 0
+    EffectDuration: 1.5
     SpellTargetTag: Creep
     AffectedStats:
       attackType: 2
       MaxHP: 0
+      MaxMana: 0
       CurrentHP: 0
+      CurrentMana: 0
       Damage: 0
       Regeneration: 0
-      MoveSpeed: 0
+      MoveSpeed: -10
       AttackDelay: 0
       AttackRange: 0
       VisionRadius: 0

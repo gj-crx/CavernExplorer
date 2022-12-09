@@ -39,8 +39,7 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private List<PossibleDrop> possibleDropOnDeath = new List<PossibleDrop>();
     private Unit currentTarget;
-
-
+    private List<AppliedEffect> appliedEffects = new List<AppliedEffect>();
 
     private void Start()
     {
@@ -66,10 +65,11 @@ public class Unit : MonoBehaviour
     private void Update()
     {
         LastNonTransformPosition = transform.position;
+        CalculateEffects();
     }
     private void FixedUpdate()
     {
-        if (AIControlled && MovementHalted == false) unitMovement.WayMoving();
+        if (AIControlled && MovementHalted == false && Stats.MoveSpeed > 0) unitMovement.WayMoving();
     }
 
     
@@ -110,6 +110,27 @@ public class Unit : MonoBehaviour
             Destroy(this);
         }
     }
+    public void ApplyEffect(UnitStats effectStats, float duration)
+    {
+        appliedEffects.Add(new AppliedEffect(effectStats, duration));
+        Stats.CombineStats(effectStats);
+    }
+    private void CalculateEffects()
+    {
+        Stack<AppliedEffect> effectsToDelete = new Stack<AppliedEffect>();
+        for (int i = 0; i < appliedEffects.Count; i++)
+        {
+            appliedEffects[i].TimeLeft -= Time.deltaTime;
+            if (appliedEffects[i].TimeLeft <= 0)
+            {
+                Stats.SubstactStats(appliedEffects[i].EffectStats);
+                effectsToDelete.Push(appliedEffects[i]);
+            }
+        }
+        foreach (var toDelete in effectsToDelete) appliedEffects.Remove(toDelete);
+        effectsToDelete.Clear();
+    }
+
     private void OnKillMethod(Unit KilledUnit)
     {
         if (behavior != null)
@@ -128,19 +149,6 @@ public class Unit : MonoBehaviour
         else if (bodyTypeName == BodyTypeName.X2Top) bodyType = new Body2X();
         else if (bodyTypeName == BodyTypeName.X4) bodyType = new Body4X();
         else if (bodyTypeName == BodyTypeName.X9) bodyType = new Body9X();
-    }
-  
-    private void Chase()
-    {
-        Vector3 Direction = currentTarget.transform.position - transform.position;
-
-        transform.eulerAngles = new Vector3(0, 0, 0);
-        animator.SetBool("Stopped", false);
-        animator.SetFloat("XSpeed", Direction.x);
-        animator.SetFloat("YSpeed", Direction.y);
-
-        transform.Translate(Direction.normalized * Stats.MoveSpeed * Time.fixedDeltaTime);
-        if (Direction.x < 0) transform.eulerAngles = new Vector3(0, -180, 0);
     }
     public enum UnitClass : byte
     {
@@ -163,7 +171,9 @@ public class Unit : MonoBehaviour
         public AttackType attackType;
 
         public float MaxHP;
+        public float MaxMana;
         public float CurrentHP;
+        public float CurrentMana;
         public float Damage;
         public float Regeneration;
         public float MoveSpeed;
@@ -178,7 +188,9 @@ public class Unit : MonoBehaviour
             if (AdditionalStats.attackType != AttackType.None) attackType = AdditionalStats.attackType;
 
             MaxHP += AdditionalStats.MaxHP;
+            MaxMana += AdditionalStats.MaxMana;
             CurrentHP += AdditionalStats.CurrentHP;
+            CurrentMana += AdditionalStats.CurrentMana;
             Damage += AdditionalStats.Damage;
             Regeneration += AdditionalStats.Regeneration;
             MoveSpeed += AdditionalStats.MoveSpeed;
@@ -191,7 +203,9 @@ public class Unit : MonoBehaviour
             if (SubstractedStats.attackType != AttackType.None) attackType = AttackType.Melee;
 
             MaxHP -= SubstractedStats.MaxHP;
+            MaxMana -= SubstractedStats.MaxMana;
             CurrentHP -= SubstractedStats.CurrentHP;
+            CurrentMana -= SubstractedStats.CurrentMana;
             Damage -= SubstractedStats.Damage;
             Regeneration -= SubstractedStats.Regeneration;
             MoveSpeed -= SubstractedStats.MoveSpeed;
@@ -200,6 +214,18 @@ public class Unit : MonoBehaviour
             VisionRadius -= SubstractedStats.VisionRadius;
         }
     }
+
+    private class AppliedEffect
+    {
+        public UnitStats EffectStats;
+        public float TimeLeft = 2;
+        public AppliedEffect(UnitStats stats, float duration)
+        {
+            EffectStats = stats;
+            TimeLeft = duration;
+        }
+    }
+
     [System.Serializable]
     public struct UnitGraphicPresets
     {

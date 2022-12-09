@@ -118,10 +118,8 @@ public class UnitMovement
 
     public bool GetWayTarget(Vector3 Target)
     {
-        if (unit.Stats.MoveSpeed == 0)
-        {
-            Debug.Log("Attempting to move unit with 0 movespeed");
-        }
+        if (unit.Stats.MoveSpeed <= 0) return false;
+
         CurrentDistance = 1;
         bool Result = GameManager.Pathfinding.GetWayPath(unit, Target, unit.bodyType, 2);
         if (Result == false) Way = null;

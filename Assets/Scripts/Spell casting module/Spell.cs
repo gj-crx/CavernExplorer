@@ -7,6 +7,7 @@ namespace Spells
     public class Spell : ScriptableObject
     {
         public string SpellName = "Lightning strike";
+        public float ManaCost = 10;
 
         public CastingMethod Method;
         public List<Effect> EffectsOnCast;
@@ -22,6 +23,7 @@ namespace Spells
 
             public float HitPointsChange = 0;
             public float HitRadius = 0;
+            public float EffectDuration = 10;
             public string SpellTargetTag;
 
             public Unit.UnitStats AffectedStats;
@@ -79,7 +81,7 @@ namespace Spells
             {
                 Debug.Log(target.name + " is hitted by an effect");
                 target.GetDamage(HitPointsChange, casterUnit);
-                target.Stats.CombineStats(AffectedStats);
+                target.ApplyEffect(AffectedStats, EffectDuration);
             }
 
             public enum EffectType : byte

@@ -24,12 +24,13 @@ namespace UI
         public GameObject panel_ExternalInventory;
 
 
-        [Header("Second elements")]
+        [Header("Secondary elements")]
         public PlayerInventory playerInventory;
         public ExternalInventory externalInventory = null;
         public ItemStatsIndicator itemStatsIndicator;
         public List<GameObject> DialoguePanels = new List<GameObject>();
         public GameObject GenerationProgressBar;
+        public UnityEngine.UI.Text MinorErrorText;
 
         public Dictionary<string, GameObject> dialoguePanelsDictionary = new Dictionary<string, GameObject>();
 

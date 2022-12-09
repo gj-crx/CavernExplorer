@@ -57,6 +57,11 @@ namespace UI {
         {
             foreach (var dialogue in UIManager.Singleton.DialoguePanels) dialogue.SetActive(false);
         }
+        public void ShowMinorError(string errorText)
+        {
+            UIManager.Singleton.MinorErrorText.gameObject.SetActive(true);
+            UIManager.Singleton.MinorErrorText.text = errorText;
+        }
         private IEnumerator GenerationEndingWaiterCoroutine()
         {
             while (GameManager.GameIsRunning)
