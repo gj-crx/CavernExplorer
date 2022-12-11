@@ -142,12 +142,14 @@ public class Unit : MonoBehaviour
     {
         if (behaviorName == "CaveDweller") behavior = new Behaviours.CaveDwellerBehaviour(this);
         else if (behaviorName == "Peaceful") behavior = new Behaviours.PeacefulBehavior(this);
+        else if (behaviorName == "ProvokedHunter") behavior = new Behaviours.ProvokedHunterBehavior(this);
     }
     private void GetBodyType()
     {
         if (bodyTypeName == BodyTypeName.Normal) bodyType = new Body1X();
         else if (bodyTypeName == BodyTypeName.X2Top) bodyType = new Body2X();
         else if (bodyTypeName == BodyTypeName.X4) bodyType = new Body4X();
+        else if (bodyTypeName == BodyTypeName.X6) bodyType = new Body6X();
         else if (bodyTypeName == BodyTypeName.X9) bodyType = new Body9X();
     }
     public enum UnitClass : byte
@@ -172,8 +174,15 @@ public class Unit : MonoBehaviour
 
         public float MaxHP;
         public float MaxMana;
-        public float CurrentHP;
-        public float CurrentMana;
+        public float CurrentHP 
+        { get { return currentHP; } 
+          set { currentHP = value; }
+        }
+        public float CurrentMana
+        {
+            get { return currentMana; }
+            set { currentMana = value; }
+        }
         public float Damage;
         public float Regeneration;
         public float MoveSpeed;
@@ -182,6 +191,11 @@ public class Unit : MonoBehaviour
         public float VisionRadius;
 
         public byte CollisionRadius;
+
+        [SerializeField]
+        private float currentHP;
+        [SerializeField]
+        private float currentMana;
 
         public void CombineStats(UnitStats AdditionalStats)
         {
@@ -242,6 +256,7 @@ public class Unit : MonoBehaviour
         Normal = 0,
         X2Top = 1,
         X4 = 2,
-        X9 = 3
+        X6 = 3,
+        X9 = 4
     }
 }

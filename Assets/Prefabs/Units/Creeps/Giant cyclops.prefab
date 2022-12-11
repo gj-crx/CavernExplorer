@@ -385,7 +385,7 @@ MonoBehaviour:
   Stats:
     attackType: 1
     MaxHP: 300
-    CurrentHP: 300
+    MaxMana: 0
     Damage: 50
     Regeneration: 3
     MoveSpeed: 3
@@ -393,6 +393,8 @@ MonoBehaviour:
     AttackRange: 8
     VisionRadius: 15
     CollisionRadius: 0
+    currentHP: 300
+    currentMana: 0
   shooting: {fileID: 11400000, guid: 2cbab4db301e15145848e132a648aadb, type: 2}
   ItemsDroppedOnDeath: []
   LastNonTransformPosition: {x: 0, y: 0, z: 0}

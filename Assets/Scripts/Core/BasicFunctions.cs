@@ -46,6 +46,14 @@ public static class BasicFunctions
             else return new Vector2Int(0, -1);
         }
     }
+    public static Vector2Int NormalizeVector2Int(Vector2Int referenceVector)
+    {
+        if (referenceVector.x > 0) referenceVector.x = 1;
+        if (referenceVector.y > 0) referenceVector.y = 1;
+        if (referenceVector.x < 0) referenceVector.x = -1;
+        if (referenceVector.y < 0) referenceVector.y = -1;
+        return referenceVector;
+    }
     public static Vector2Int GetRandomizedDirection(Vector2Int From, Vector2Int To)
     {
         Vector2Int randomizedDirection = To - From;

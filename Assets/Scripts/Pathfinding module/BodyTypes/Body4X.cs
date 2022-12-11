@@ -7,9 +7,9 @@ namespace Pathfinding
 {
     public class Body4X : BodyType
     {
-        public byte BodySize
+        public byte BodyRadius
         {
-            get { return 4; }
+            get { return 1; }
         }
 
         public bool CheckBodyForm(Vector2Int positionToCheck, Func<Vector2Int, bool> passablePathChecking)

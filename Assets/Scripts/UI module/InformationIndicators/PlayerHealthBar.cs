@@ -8,39 +8,61 @@ namespace UI.Indicators
 {
     public class PlayerHealthBar : MonoBehaviour, IHealthBar
     {
+        public float UpdateInterval = 0.7f;
         private Text HPShowText;
-        private Image FillerImage;
+        private Text ManaShowText;
+        private Image HPFillerImage;
+        private Image ManaFillerImage;
 
         [SerializeField]
         private Unit unitToShow;
 
         private void Awake()
         {
-            FillerImage = transform.Find("Bar").Find("Filler").GetComponent<Image>();
+            HPFillerImage = transform.Find("Bar").Find("Filler").GetComponent<Image>();
             HPShowText = transform.Find("Bar").Find("Filler").Find("Text").GetComponent<Text>();
+
+            ManaFillerImage = transform.Find("ManaBar").Find("Filler").GetComponent<Image>();
+        }
+        void Start()
+        {
+            StartCoroutine(UpdateStatsCoroutine());
         }
 
-        void Update()
-        {
-            ShowHealth();
-        }
+
         public void ShowHealth(float currentHP, float maxHP, float recievedDamage)
         {
-            FillerImage.fillAmount = currentHP / maxHP;
+            HPFillerImage.fillAmount = currentHP / maxHP;
             HPShowText.text = currentHP + "/" + maxHP;
 
 
             if (recievedDamage > 1) FadingRedScreenEffect.Singleton.ResetColor();
         }
-        private void ShowHealth(bool showInternally = true)
+        public void ShowMana(float currentMana, float maxMana, float consumedMana)
         {
-            FillerImage.fillAmount = unitToShow.Stats.CurrentHP / unitToShow.Stats.MaxHP;
-            HPShowText.text = unitToShow.Stats.CurrentHP + "/" + unitToShow.Stats.MaxHP;
+            throw new System.NotImplementedException();
+        }
+        private IEnumerator UpdateStatsCoroutine()
+        {
+            while (unitToShow != null)
+            {
+                if (unitToShow.gameObject.activeInHierarchy)
+                {
+                    HPFillerImage.fillAmount = unitToShow.Stats.CurrentHP / unitToShow.Stats.MaxHP;
+                    HPShowText.text = unitToShow.Stats.CurrentHP + "/" + unitToShow.Stats.MaxHP;
+
+                    ManaFillerImage.fillAmount = unitToShow.Stats.CurrentMana / unitToShow.Stats.MaxMana;
+                    if (ManaShowText != null) ManaShowText.text = unitToShow.Stats.CurrentMana + "/" + unitToShow.Stats.MaxMana;
+                }
+                yield return new WaitForSeconds(UpdateInterval);
+            }
         }
 
         public void TurnOff()
         {
 
         }
+
+        
     }
 }

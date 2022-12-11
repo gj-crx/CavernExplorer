@@ -22,7 +22,7 @@ namespace Spells
             }
             else
             {
-                UIScenario.Singleton.ShowMinorError("Not enough mana to cast");
+                UIScenario.Singleton.ShowMinorError("Not enough mana to cast a spell");
                 return false;
             }
         }

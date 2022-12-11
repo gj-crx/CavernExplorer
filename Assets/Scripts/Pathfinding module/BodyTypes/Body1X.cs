@@ -7,7 +7,7 @@ namespace Pathfinding
 {
     public class Body1X : BodyType
     {
-        public byte BodySize
+        public byte BodyRadius
         {
             get { return 1; }
         }

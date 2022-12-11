@@ -24,6 +24,11 @@ namespace UI.Indicators {
             hitPointsBar.transform.localPosition = new Vector3(xOffset * -1, hitPointsBar.transform.localPosition.y, hitPointsBar.transform.localPosition.z);
         }
 
+        public void ShowMana(float currentMana, float maxMana, float consumedMana)
+        {
+            
+        }
+
         public void TurnOff()
         {
             gameObject.SetActive(false);
