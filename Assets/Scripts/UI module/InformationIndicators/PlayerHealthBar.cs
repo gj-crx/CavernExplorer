@@ -33,14 +33,15 @@ namespace UI.Indicators
         public void ShowHealth(float currentHP, float maxHP, float recievedDamage)
         {
             HPFillerImage.fillAmount = currentHP / maxHP;
-            HPShowText.text = currentHP + "/" + maxHP;
+            HPShowText.text = UITextFormatter.FormateFloat(currentHP, 0) + "/" + maxHP;
 
 
             if (recievedDamage > 1) FadingRedScreenEffect.Singleton.ResetColor();
         }
         public void ShowMana(float currentMana, float maxMana, float consumedMana)
         {
-            throw new System.NotImplementedException();
+            ManaFillerImage.fillAmount = unitToShow.Stats.CurrentMana / unitToShow.Stats.MaxMana;
+            if (ManaShowText != null) ManaShowText.text = unitToShow.Stats.CurrentMana + "/" + unitToShow.Stats.MaxMana;
         }
         private IEnumerator UpdateStatsCoroutine()
         {
@@ -48,11 +49,8 @@ namespace UI.Indicators
             {
                 if (unitToShow.gameObject.activeInHierarchy)
                 {
-                    HPFillerImage.fillAmount = unitToShow.Stats.CurrentHP / unitToShow.Stats.MaxHP;
-                    HPShowText.text = unitToShow.Stats.CurrentHP + "/" + unitToShow.Stats.MaxHP;
-
-                    ManaFillerImage.fillAmount = unitToShow.Stats.CurrentMana / unitToShow.Stats.MaxMana;
-                    if (ManaShowText != null) ManaShowText.text = unitToShow.Stats.CurrentMana + "/" + unitToShow.Stats.MaxMana;
+                    ShowHealth(unitToShow.Stats.CurrentHP, unitToShow.Stats.MaxHP, 0);
+                    ShowMana(unitToShow.Stats.CurrentMana, unitToShow.Stats.MaxMana, 0);
                 }
                 yield return new WaitForSeconds(UpdateInterval);
             }

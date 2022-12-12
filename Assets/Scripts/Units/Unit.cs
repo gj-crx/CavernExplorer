@@ -66,6 +66,7 @@ public class Unit : MonoBehaviour
     {
         LastNonTransformPosition = transform.position;
         CalculateEffects();
+        Regeneration();
     }
     private void FixedUpdate()
     {
@@ -130,6 +131,11 @@ public class Unit : MonoBehaviour
         foreach (var toDelete in effectsToDelete) appliedEffects.Remove(toDelete);
         effectsToDelete.Clear();
     }
+    private void Regeneration()
+    {
+        if (Stats.CurrentHP < Stats.MaxHP) Stats.CurrentHP += Stats.Regeneration * Time.deltaTime;
+        if (Stats.CurrentMana < Stats.MaxMana) Stats.CurrentMana += Stats.ManaRegeneration * Time.deltaTime;
+    }
 
     private void OnKillMethod(Unit KilledUnit)
     {
@@ -185,6 +191,7 @@ public class Unit : MonoBehaviour
         }
         public float Damage;
         public float Regeneration;
+        public float ManaRegeneration;
         public float MoveSpeed;
         public float AttackDelay;
         public float AttackRange;
@@ -207,6 +214,7 @@ public class Unit : MonoBehaviour
             CurrentMana += AdditionalStats.CurrentMana;
             Damage += AdditionalStats.Damage;
             Regeneration += AdditionalStats.Regeneration;
+            ManaRegeneration += AdditionalStats.ManaRegeneration;
             MoveSpeed += AdditionalStats.MoveSpeed;
             AttackDelay += AdditionalStats.AttackDelay;
             AttackRange += AdditionalStats.AttackRange;
@@ -222,6 +230,7 @@ public class Unit : MonoBehaviour
             CurrentMana -= SubstractedStats.CurrentMana;
             Damage -= SubstractedStats.Damage;
             Regeneration -= SubstractedStats.Regeneration;
+            ManaRegeneration -= SubstractedStats.ManaRegeneration;
             MoveSpeed -= SubstractedStats.MoveSpeed;
             AttackDelay -= SubstractedStats.AttackDelay;
             AttackRange -= SubstractedStats.AttackRange;

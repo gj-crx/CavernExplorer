@@ -31,6 +31,10 @@ namespace UI
 
                 toolbarItem = GetComponent<ToolbarItem>();
             }
+            if (DraggableType == DraggableObjectType.ItemInShopOverlay)
+            {
+
+            }
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -99,7 +103,8 @@ namespace UI
 
         public enum DraggableObjectType : byte
         {
-            ItemInInventory = 0
+            ItemInInventory = 0,
+            ItemInShopOverlay = 1
         }
     }
 }

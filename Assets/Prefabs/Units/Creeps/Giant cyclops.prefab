@@ -388,6 +388,7 @@ MonoBehaviour:
     MaxMana: 0
     Damage: 50
     Regeneration: 3
+    ManaRegeneration: 0
     MoveSpeed: 3
     AttackDelay: 2
     AttackRange: 8
@@ -395,7 +396,7 @@ MonoBehaviour:
     CollisionRadius: 0
     currentHP: 300
     currentMana: 0
-  shooting: {fileID: 11400000, guid: 2cbab4db301e15145848e132a648aadb, type: 2}
+  shooting: {fileID: 11400000, guid: 4ced1cf62d401c44084288cba670a900, type: 2}
   ItemsDroppedOnDeath: []
   LastNonTransformPosition: {x: 0, y: 0, z: 0}
   animator: {fileID: 5710571458473090726}

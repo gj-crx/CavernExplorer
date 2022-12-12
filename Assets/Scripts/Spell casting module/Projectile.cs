@@ -9,16 +9,16 @@ public class Projectile : MonoBehaviour
     private Unit ownerUnit;
     private ProjectileStats stats;
 
-    [SerializeField]
-    private float preDeploymentDelay = 0.2f;
+
     [SerializeField]
     private Rigidbody2D rigidbody;
     private Spell.Effect effectOnImpact = null;
-    private bool collisionActive = false;
+    private bool collisionActive = true;
+    [SerializeField]
+    private UnityEngine.Animator animator;
     void Start()
     {
-        StartCoroutine(BulletTimeDeathCoroutine());
-        StartCoroutine(PreDeploymentTimer());
+        StartCoroutine(BulletLifeTimerCoroutine());
     }
     public void SetProjectileValues(ProjectileStats stats, Unit shootingUnit, Spell.Effect effectOnImpact = null)
     {
@@ -31,15 +31,15 @@ public class Projectile : MonoBehaviour
         float rotationZCord = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f, 0f, rotationZCord - 90);
     }
-    IEnumerator BulletTimeDeathCoroutine()
+    IEnumerator BulletLifeTimerCoroutine()
     {
         yield return new WaitForSeconds(stats.LifeTime);
-        Destroy(gameObject);
+        if (collisionActive) Destroy(gameObject);
     }
-    IEnumerator PreDeploymentTimer()
+    IEnumerator ExplosionTimerCoroutine()
     {
-        yield return new WaitForSeconds(preDeploymentDelay);
-        collisionActive = true;
+        yield return new WaitForSeconds(1);
+        Destroy(gameObject);
     }
     private void FixedUpdate()
     {
@@ -50,7 +50,10 @@ public class Projectile : MonoBehaviour
         if (collision.isTrigger || collisionActive == false || collision.gameObject == ownerUnit.gameObject) return;
 
         Hit(collision);
-        Destroy(gameObject);
+        animator.Play("Explode");
+        collisionActive = false;
+        StartCoroutine(ExplosionTimerCoroutine());
+        stats.Speed = 0;
     }
     private void Hit(Collider2D collision)
     {

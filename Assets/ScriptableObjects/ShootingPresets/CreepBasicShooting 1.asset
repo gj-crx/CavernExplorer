@@ -18,4 +18,4 @@ MonoBehaviour:
     LifeTime: 3.5
   bulletPrefab: {fileID: 2356535765661442275, guid: 3c58a49d9fb60b645abd807c56fed1ca, type: 3}
   bulletSpawningOffset: {x: 0, y: 0.33, z: 0}
-  bulletInitialDistance: 1
+  bulletInitialDistance: 0.25
