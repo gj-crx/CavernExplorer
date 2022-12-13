@@ -12,5 +12,6 @@ namespace Items
         public float BuyingMargin = 1.2f;
         public float SellingMarging = 1.0f;
 
+
     }
 }

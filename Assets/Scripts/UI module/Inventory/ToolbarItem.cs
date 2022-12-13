@@ -60,5 +60,18 @@ namespace UI.InventoryLogic
                 if (RepresentedItem != null) UIManager.Singleton.playerInventory.DisapplyItem(this);
             }
         }
+        private void OnTransformParentChanged()
+        {
+            if (inventory == null)
+            {
+                GameObject price = null;
+                try
+                {
+                    price = transform.Find("Price").gameObject;
+                }
+                catch { }
+                if (price != null) Destroy(price);
+            }
+        }
     }
 }

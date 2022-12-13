@@ -13,20 +13,23 @@ MonoBehaviour:
   m_Name: Basic sword
   m_EditorClassIdentifier: 
   ItemName: Basic sword
+  ItemDescription: no description
+  Cost: 0
   Icon: {fileID: 21300000, guid: c60f7cf1ed80f5840ac51195ae687e71, type: 3}
   ItemStats:
     attackType: 0
     MaxHP: 0
-    CurrentHP: 0
+    MaxMana: 0
     Damage: 10
     Regeneration: 0
+    ManaRegeneration: 0
     MoveSpeed: 0
     AttackDelay: 0
     AttackRange: 0
     VisionRadius: 0
     CollisionRadius: 0
+    currentHP: 0
+    currentMana: 0
   UsedSlot: 7
-  SpellCastOnApply:
-    SpellName: Lightning strike
-    EffectsOnCast: 
+  SpellCastOnApply: {fileID: 0}
   Charges: -1

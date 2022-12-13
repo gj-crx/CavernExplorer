@@ -10,6 +10,8 @@ namespace Items
     public class Item : ScriptableObject
     {
         public string ItemName = "Undefined item";
+        public string ItemDescription = "no description";
+        public int Cost = 10;
         public Sprite Icon;
         public Unit.UnitStats ItemStats;
         public Inventory.EquipmentSlot UsedSlot;

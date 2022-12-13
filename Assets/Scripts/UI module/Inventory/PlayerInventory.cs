@@ -103,7 +103,17 @@ namespace UI.InventoryLogic
 
         public override void RecieveItem(ToolbarItem newItem)
         {
-
+            
+        }
+        public void GetItemFromOtherSource(ToolbarItem newItem)
+        {
+            newItem.transform.SetParent(UIGrid.transform);
+            if (visualizedItems.Contains(newItem) == false)
+            {
+                visualizedItems.Add(newItem);
+                newItem.inventory = this;
+                visualizedItems.Remove(newItem);
+            }
         }
         public void ClearInventory()
         {

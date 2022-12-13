@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32aebda8366fcd540b138ab8aec05fa3, type: 3}
+  m_Name: Regular shop
+  m_EditorClassIdentifier: 
+  ShopName: Lidl
+  ItemsBeingSold:
+  - {fileID: 11400000, guid: 0a097321cd149d045820ada4f9f2b986, type: 2}
+  - {fileID: 11400000, guid: 029356855a6a4e94a92ba7d7b835f926, type: 2}
+  - {fileID: 11400000, guid: 3bf3b18df04abc74f85b9c1f47b0a5bc, type: 2}
+  - {fileID: 11400000, guid: 2fc0df7ff57de0a44885c7530eadf788, type: 2}
+  BuyingMargin: 1.2
+  SellingMarging: 1

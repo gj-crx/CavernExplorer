@@ -25,11 +25,10 @@ namespace UI
         public static string FormateFloat(float valueToFormate, int NumbersAfterPoint)
         {
             int pointIndex = valueToFormate.ToString().IndexOf(',');
-            Debug.Log(pointIndex + " out of " + valueToFormate.ToString().Length);
             if (pointIndex == -1)
             {
                 pointIndex = valueToFormate.ToString().Length;
-                NumbersAfterPoint = 1;
+                NumbersAfterPoint = 0;
             }
             return valueToFormate.ToString().Substring(0, pointIndex + NumbersAfterPoint);
         }

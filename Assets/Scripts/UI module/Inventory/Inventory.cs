@@ -8,6 +8,14 @@ namespace UI.InventoryLogic
 {
     public abstract class Inventory
     {
+        /// <summary>
+        /// stored in silver, 100 silver = 1 gold
+        /// </summary>
+        public int Money { get { return money; }
+            set { money = value;
+                Debug.Log("Money change " + money);
+            } }
+        private int money = 0;
         public List<ToolbarItem> visualizedItems = new List<ToolbarItem>();
         public GameObject UIGrid;
 

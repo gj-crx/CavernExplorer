@@ -15,6 +15,7 @@ namespace UI
         [Header("UIs")]
         public GameObject PreGameUI;
         public GameObject InGameUI;
+        public GameObject TownInteractionsUI;
 
         [Header("Main panels")]
         public GameObject panel_Options;
@@ -22,6 +23,7 @@ namespace UI
         public GameObject panel_Toolbar;
         public GameObject panel_PlayerInventory;
         public GameObject panel_ExternalInventory;
+        public GameObject panel_ShopItemsGrid;
 
 
         [Header("Secondary elements")]

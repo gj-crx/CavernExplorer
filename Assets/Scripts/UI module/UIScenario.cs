@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Player;
+using Items;
 
 namespace UI {
     public class UIScenario : MonoBehaviour
@@ -14,7 +15,8 @@ namespace UI {
         private float NormalCameraDistance;
         [SerializeField]
         private GameObject blackMask;
-
+        [SerializeField]
+        private Shop[] shops;
         private void Awake()
         {
             Singleton = this;
@@ -45,6 +47,10 @@ namespace UI {
             PlayerControls.RespawnPlayer();
 
             StartCoroutine(GenerationEndingWaiterCoroutine());
+        }
+        public void ButtonSetShop(int ShopID)
+        {
+            InventoryLogic.UIShopOverlay.CurrentShop = shops[ShopID];
         }
         public void ExitToMenu() //activated by in game buttons
         {
