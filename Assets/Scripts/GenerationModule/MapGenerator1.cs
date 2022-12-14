@@ -13,7 +13,7 @@ namespace Generation
         public Thread GenerationThread = null;
 
         public GameSettings.GeneratorSettings CurrentGenSettings;
-        public int CurrentLevelToGenerate = 0;
+        public int CurrentLevelToGenerate = 1;
         /// <summary>
         /// Indicates current progress of generation in UI
         /// </summary>

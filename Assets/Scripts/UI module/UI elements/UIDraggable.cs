@@ -81,7 +81,7 @@ namespace UI
                             UIManager.Singleton.playerInventory.GetItemFromOtherSource(toolbarItem);
                             transform.SetParent(UIManager.Singleton.playerInventory.UIGrid.transform);
                         }
-                        else transform.SetParent(UIManager.Singleton.playerInventory.UIGrid.transform); //putting item back to shop
+                        else transform.SetParent(UIManager.Singleton.panel_ShopItemsGrid.transform); //putting item back to shop
                     }
                     else UIManager.Singleton.externalInventory.MoveItem(toolbarItem, UIManager.Singleton.playerInventory); //transfering item from external inventory to player's one
                 }
@@ -120,6 +120,11 @@ namespace UI
                 }
             }
             return MinimalDistanceObject;
+        }
+        private void TransferItemBackToShop(Transform shopUIGrid)
+        {
+            toolbarItem.GenerateItemInfo();
+            transform.SetParent(shopUIGrid);
         }
 
         public enum DraggableObjectType : byte

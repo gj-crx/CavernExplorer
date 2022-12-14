@@ -19,6 +19,7 @@ namespace UI
 
         [Header("Main panels")]
         public GameObject panel_Options;
+        public GameObject panel_IndicatorsAndControls;
         public GameObject panel_HealthBar;
         public GameObject panel_Toolbar;
         public GameObject panel_PlayerInventory;

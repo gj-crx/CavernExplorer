@@ -32,6 +32,7 @@ namespace UI.Indicators
 
         public void ShowHealth(float currentHP, float maxHP, float recievedDamage)
         {
+            if (gameObject.activeInHierarchy == false) return;
             HPFillerImage.fillAmount = currentHP / maxHP;
             HPShowText.text = UITextFormatter.FormateFloat(currentHP, 0) + "/" + maxHP;
 

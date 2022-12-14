@@ -13,8 +13,11 @@ namespace UI.InventoryLogic
         [HideInInspector]
         public Inventory inventory;
         public bool IsEquipedArmor = false;
+        public GameObject ItemInfo;
 
         private UIDraggable draggable;
+        [SerializeField]
+        private GameObject itemInfoPrefab;
 
         private void Start()
         {
@@ -60,17 +63,19 @@ namespace UI.InventoryLogic
                 if (RepresentedItem != null) UIManager.Singleton.playerInventory.DisapplyItem(this);
             }
         }
+        public void GenerateItemInfo()
+        {
+            ItemInfo = Instantiate(itemInfoPrefab);
+            ItemInfo.transform.SetParent(transform);
+            ItemInfo.transform.Find("ItemName").GetComponent<Text>().text = RepresentedItem.ItemName;
+            ItemInfo.transform.Find("ItemDescription").GetComponent<Text>().text = RepresentedItem.ItemDescription;
+            ItemInfo.transform.Find("Price").GetComponent<Text>().text = RepresentedItem.Cost + " silver";
+        }
         private void OnTransformParentChanged()
         {
             if (inventory == null)
             {
-                GameObject price = null;
-                try
-                {
-                    price = transform.Find("Price").gameObject;
-                }
-                catch { }
-                if (price != null) Destroy(price);
+                if (ItemInfo != null) Destroy(ItemInfo);
             }
         }
     }

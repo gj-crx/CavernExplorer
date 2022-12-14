@@ -33,7 +33,13 @@ namespace UI {
                 backgroundScenario.MoveCameraThroughThePoints();
             }
         }
-        public void UIStartGeneration(int gameLevelAdvance) //activated by in game buttons
+        public void ButtonStartGame()
+        { //entry point of the game
+            UIManager.Singleton.PreGameUI.SetActive(false);
+            UIManager.Singleton.InGameUI.SetActive(false);
+            UIManager.Singleton.TownInteractionsUI.SetActive(true);
+        }
+        public void ButtonStartGeneration(int gameLevelAdvance) //activated by in game buttons
         {
             backgroundScenario.isActive = false;
             GameManager.MapGenerator.GenerateMap(gameLevelAdvance);

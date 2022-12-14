@@ -12,10 +12,24 @@ namespace UI.InventoryLogic
     {
         public GameObject SlotsPanel;
         public GameObject toolbarPanel;
+        public Text MoneyChangedAnimation = null;
         [SerializeField]
         private ToolbarItem[] EquipmentSlots = new ToolbarItem[9];
         [SerializeField]
         private Sprite[] EquipmentSlotsBasicIcons = new Sprite[9];
+
+        public override int Money
+        {
+            get { return money; }
+            set
+            {
+                int difference = value - money;
+                money = value;
+                MoneyChangedAnimation.gameObject.SetActive(true);
+                MoneyChangedAnimation.text = "+" + difference.ToString();
+
+            }
+        }
 
 
         public override void MoveItem(ToolbarItem movedItem, Inventory moveTo)
@@ -68,7 +82,7 @@ namespace UI.InventoryLogic
                     SpellCastingSystem.CastSpell(itemToApply.RepresentedItem.SpellCastOnApply, new Spell.CastingTarget(GameManager.playerControls.PlayerCharacterUnit));
                     itemToApply.RepresentedItem.ChargeUsed(itemToApply);
                 }
-                else
+                else if (UIManager.Singleton.panel_IndicatorsAndControls.activeInHierarchy)
                 { //inputing target of spell cast
                     SpellCastingSystem.PrepareSpellToCast(itemToApply.RepresentedItem.SpellCastOnApply, new Spell.CastingTarget(GameManager.playerControls.PlayerCharacterUnit));
                 }
