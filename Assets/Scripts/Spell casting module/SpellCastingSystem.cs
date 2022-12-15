@@ -12,10 +12,10 @@ namespace Spells
 
         public static bool CastSpell(Spell spellToCast, Spell.CastingTarget target, Unit casterUnit = null)
         {
+            if (casterUnit == null) casterUnit = GameManager.playerControls.PlayerCharacterUnit;
             if (CheckSpellRequirements(spellToCast, casterUnit))
             {
                 casterUnit.Stats.CurrentMana -= spellToCast.ManaCost;
-                if (casterUnit == null) casterUnit = GameManager.playerControls.PlayerCharacterUnit;
                 foreach (Spell.Effect effect in spellToCast.EffectsOnCast) effect.CastEffect(target, casterUnit);
 
                 return true;

@@ -57,7 +57,7 @@ namespace UI
             {
                 if (nearestDrop == UIManager.Singleton.playerInventory.SlotsPanel) //dragged to slots panel
                 { //moved to players inventory and applied
-                    if (toolbarItem.inventory == null) transform.SetParent(UIManager.Singleton.playerInventory.UIGrid.transform); //putting item back to shop
+                    if (toolbarItem.inventory == null) TransferItemBackToShop(UIManager.Singleton.panel_ShopItemsGrid.transform); //putting item back to shop
                     else
                     {
                         toolbarItem.inventory.MoveItem(toolbarItem, UIManager.Singleton.playerInventory);
@@ -67,7 +67,7 @@ namespace UI
 
                 else if (nearestDrop == UIManager.Singleton.panel_Toolbar.transform.Find("ItemGrid").gameObject)
                 { //carried from any inventory to toolbar panel
-                    if (toolbarItem.inventory == null) transform.SetParent(UIManager.Singleton.playerInventory.UIGrid.transform); //putting item back to shop
+                    if (toolbarItem.inventory == null) TransferItemBackToShop(UIManager.Singleton.panel_ShopItemsGrid.transform); //putting item back to shop
                     else toolbarItem.inventory.MoveItemToToolbar(toolbarItem, UIManager.Singleton.playerInventory);
                 }
 
@@ -81,7 +81,7 @@ namespace UI
                             UIManager.Singleton.playerInventory.GetItemFromOtherSource(toolbarItem);
                             transform.SetParent(UIManager.Singleton.playerInventory.UIGrid.transform);
                         }
-                        else transform.SetParent(UIManager.Singleton.panel_ShopItemsGrid.transform); //putting item back to shop
+                        else TransferItemBackToShop(UIManager.Singleton.panel_ShopItemsGrid.transform); //putting item back to shop
                     }
                     else UIManager.Singleton.externalInventory.MoveItem(toolbarItem, UIManager.Singleton.playerInventory); //transfering item from external inventory to player's one
                 }
@@ -97,7 +97,7 @@ namespace UI
                         UIManager.Singleton.playerInventory.Money += (int)(toolbarItem.RepresentedItem.Cost * UIShopOverlay.CurrentShop.BuyingMargin);
                         Destroy(gameObject);
                     }
-                    else transform.SetParent(nearestDrop.transform);
+                    else TransferItemBackToShop(UIManager.Singleton.panel_ShopItemsGrid.transform); //putting item back to shop
                 }
 
             }
@@ -123,8 +123,8 @@ namespace UI
         }
         private void TransferItemBackToShop(Transform shopUIGrid)
         {
-            toolbarItem.GenerateItemInfo();
             transform.SetParent(shopUIGrid);
+            toolbarItem.GenerateItemInfo();
         }
 
         public enum DraggableObjectType : byte

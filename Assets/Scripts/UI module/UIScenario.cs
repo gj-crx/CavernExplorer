@@ -57,6 +57,7 @@ namespace UI {
         public void ButtonSetShop(int ShopID)
         {
             InventoryLogic.UIShopOverlay.CurrentShop = shops[ShopID];
+            InventoryLogic.UIShopOverlay.GenerateItemsGrid();
         }
         public void ExitToMenu() //activated by in game buttons
         {

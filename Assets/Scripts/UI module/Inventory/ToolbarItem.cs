@@ -13,12 +13,19 @@ namespace UI.InventoryLogic
         [HideInInspector]
         public Inventory inventory;
         public bool IsEquipedArmor = false;
-        public GameObject ItemInfo;
 
+        private GameObject itemInfo;
         private UIDraggable draggable;
-        [SerializeField]
-        private GameObject itemInfoPrefab;
 
+        private void Awake()
+        {
+            try
+            {
+                itemInfo = transform.Find("ItemInfo").gameObject;
+                itemInfo.SetActive(false);
+            }
+            catch { }
+        }
         private void Start()
         {
             try
@@ -65,17 +72,16 @@ namespace UI.InventoryLogic
         }
         public void GenerateItemInfo()
         {
-            ItemInfo = Instantiate(itemInfoPrefab);
-            ItemInfo.transform.SetParent(transform);
-            ItemInfo.transform.Find("ItemName").GetComponent<Text>().text = RepresentedItem.ItemName;
-            ItemInfo.transform.Find("ItemDescription").GetComponent<Text>().text = RepresentedItem.ItemDescription;
-            ItemInfo.transform.Find("Price").GetComponent<Text>().text = RepresentedItem.Cost + " silver";
+            itemInfo.SetActive(true);
+            itemInfo.transform.Find("ItemName").GetComponent<Text>().text = RepresentedItem.ItemName;
+            itemInfo.transform.Find("ItemDescription").GetComponent<Text>().text = RepresentedItem.ItemDescription;
+            itemInfo.transform.Find("Price").GetComponent<Text>().text = RepresentedItem.Cost + " silver";
         }
         private void OnTransformParentChanged()
         {
             if (inventory == null)
             {
-                if (ItemInfo != null) Destroy(ItemInfo);
+                if (itemInfo != null) itemInfo.SetActive(false);
             }
         }
     }
