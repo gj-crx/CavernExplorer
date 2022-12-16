@@ -9,7 +9,6 @@ namespace Items
     {
         public string ShopName = "Lidl";
         public List<Item> ItemsBeingSold;
-        public float BuyingMargin = 1.2f;
         public float SellingMarging = 1.0f;
 
 

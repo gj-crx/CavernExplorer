@@ -18,5 +18,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 029356855a6a4e94a92ba7d7b835f926, type: 2}
   - {fileID: 11400000, guid: 3bf3b18df04abc74f85b9c1f47b0a5bc, type: 2}
   - {fileID: 11400000, guid: 2fc0df7ff57de0a44885c7530eadf788, type: 2}
-  BuyingMargin: 1.2
-  SellingMarging: 1
+  SellingMarging: 0.8

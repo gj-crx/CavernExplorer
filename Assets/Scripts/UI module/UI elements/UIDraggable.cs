@@ -94,8 +94,8 @@ namespace UI
                 {
                     if (toolbarItem.inventory == UIManager.Singleton.playerInventory)
                     { //selling item from players inventory to shop
-                        UIManager.Singleton.playerInventory.Money += (int)(toolbarItem.RepresentedItem.Cost * UIShopOverlay.CurrentShop.BuyingMargin);
-                        Destroy(gameObject);
+                        UIManager.Singleton.playerInventory.DisapplyItem(toolbarItem);
+                        UIShopOverlay.SellItem(toolbarItem);
                     }
                     else TransferItemBackToShop(UIManager.Singleton.panel_ShopItemsGrid.transform); //putting item back to shop
                 }

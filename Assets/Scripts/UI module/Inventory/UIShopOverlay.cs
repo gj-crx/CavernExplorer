@@ -24,12 +24,22 @@ namespace UI.InventoryLogic
         }
         public static bool BuyItem(Item itemToBuy)
         {
-            if (UIManager.Singleton.playerInventory.Money >= itemToBuy.Cost * CurrentShop.SellingMarging)
+            if (UIManager.Singleton.playerInventory.Money >= itemToBuy.Cost)
             {
-                UIManager.Singleton.playerInventory.Money -= (int)(itemToBuy.Cost * CurrentShop.SellingMarging);
+                UIManager.Singleton.playerInventory.Money -= (int)(itemToBuy.Cost);
                 return true;
             }
+            else
+            {
+                UIManager.Singleton.MinorErrorText2.gameObject.SetActive(true);
+                UIManager.Singleton.MinorErrorText2.text = "Not enough money to buy an item";
+            }
             return false;
+        }
+        public static void SellItem(ToolbarItem itemToSell)
+        {
+            UIManager.Singleton.playerInventory.Money += (int)(itemToSell.RepresentedItem.Cost * UIShopOverlay.CurrentShop.SellingMarging);
+            GameObject.Destroy(itemToSell.gameObject);
         }
         private static void RemoveAllItems()
         {

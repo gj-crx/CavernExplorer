@@ -34,6 +34,7 @@ namespace UI
         public List<GameObject> DialoguePanels = new List<GameObject>();
         public GameObject GenerationProgressBar;
         public UnityEngine.UI.Text MinorErrorText;
+        public UnityEngine.UI.Text MinorErrorText2;
 
         public Dictionary<string, GameObject> dialoguePanelsDictionary = new Dictionary<string, GameObject>();
 

@@ -17,6 +17,10 @@ namespace UI.InventoryLogic
         private ToolbarItem[] EquipmentSlots = new ToolbarItem[9];
         [SerializeField]
         private Sprite[] EquipmentSlotsBasicIcons = new Sprite[9];
+        [SerializeField]
+        private Text moneySilver;
+        [SerializeField]
+        private Text moneyGold;
 
         public override int Money
         {
@@ -25,6 +29,10 @@ namespace UI.InventoryLogic
             {
                 int difference = value - money;
                 money = value;
+
+                moneyGold.text = UITextFormatter.CutOffNumericalPart(moneyGold.text) + (Money / 100).ToString();
+                moneySilver.text = UITextFormatter.CutOffNumericalPart(moneySilver.text) + Money.ToString();
+
                 MoneyChangedAnimation.gameObject.SetActive(true);
                 MoneyChangedAnimation.text = "+" + difference.ToString();
 

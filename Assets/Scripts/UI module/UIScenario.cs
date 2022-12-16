@@ -42,17 +42,26 @@ namespace UI {
         public void ButtonStartGeneration(int gameLevelAdvance) //activated by in game buttons
         {
             backgroundScenario.isActive = false;
-            GameManager.MapGenerator.GenerateMap(gameLevelAdvance);
-            GameManager.playerControls.gameObject.SetActive(false);
+            if (GameManager.MapGenerator.CurrentLevelToGenerate + gameLevelAdvance >= GameSettings.Singleton.GeneratorSettingsPerLevels.Length) //&& finalBossDefeated
+            { //game is completed
+                UIManager.Singleton.MinorErrorText2.text = "Current state of game is completed";
+                //ShowEndScreen();
+                return;
+            }
+            else
+            {
+                GameManager.MapGenerator.GenerateMap(gameLevelAdvance);
+                GameManager.playerControls.gameObject.SetActive(false);
 
-            UIManager.Singleton.InGameUI.SetActive(false);
-            UIManager.Singleton.PreGameUI.SetActive(true);
-            UIManager.Singleton.panel_Options.SetActive(false);
-            UIManager.Singleton.GenerationProgressBar.SetActive(true);
+                UIManager.Singleton.InGameUI.SetActive(false);
+                UIManager.Singleton.PreGameUI.SetActive(true);
+                UIManager.Singleton.panel_Options.SetActive(false);
+                UIManager.Singleton.GenerationProgressBar.SetActive(true);
 
-            PlayerControls.RespawnPlayer();
+                PlayerControls.RespawnPlayer();
 
-            StartCoroutine(GenerationEndingWaiterCoroutine());
+                StartCoroutine(GenerationEndingWaiterCoroutine());
+            }
         }
         public void ButtonSetShop(int ShopID)
         {
@@ -62,8 +71,9 @@ namespace UI {
         public void ExitToMenu() //activated by in game buttons
         {
             GameManager.playerControls.gameObject.SetActive(false);
-            GameManager.MapGenerator.ClearMap();
+           // GameManager.MapGenerator.ClearMap();
             UIManager.Singleton.InGameUI.SetActive(false);
+            UIManager.Singleton.TownInteractionsUI.SetActive(false);
             UIManager.Singleton.PreGameUI.SetActive(true);
         }
         public void CloseAllDialogues()

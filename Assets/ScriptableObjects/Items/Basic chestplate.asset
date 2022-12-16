@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ItemName: Basic chestplate
   ItemDescription: "\u0444\u0443\u0442\u0431\u043E\u043B\u043A\u0430 \u0438\u043C\u043F\u0435\u0440\u0430\u0442\u043E\u0440\u0430"
-  Cost: 10
+  Cost: 14
   Icon: {fileID: 21300000, guid: 41f927d1a0d01d74b8f392dc9d00a066, type: 3}
   ItemStats:
     attackType: 2
