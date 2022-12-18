@@ -41,6 +41,10 @@ public class Unit : MonoBehaviour
     private Unit currentTarget;
     private List<AppliedEffect> appliedEffects = new List<AppliedEffect>();
 
+    private void Awake()
+    {
+        LastNonTransformPosition = transform.position;
+    }
     private void Start()
     {
         unitMovement = new UnitMovement(this);
@@ -149,6 +153,8 @@ public class Unit : MonoBehaviour
         if (behaviorName == "CaveDweller") behavior = new Behaviours.CaveDwellerBehaviour(this);
         else if (behaviorName == "Peaceful") behavior = new Behaviours.PeacefulBehavior(this);
         else if (behaviorName == "ProvokedHunter") behavior = new Behaviours.ProvokedHunterBehavior(this);
+        else if (behaviorName == "BlindRoamer") behavior = new Behaviours.BlindRoamerBehavior(this);
+        else if (behaviorName == "BigCaveDweller") behavior = new Behaviours.BigCaveDwellerBehavior(this);
     }
     private void GetBodyType()
     {

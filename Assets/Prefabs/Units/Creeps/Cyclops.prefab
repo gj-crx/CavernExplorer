@@ -114,7 +114,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 5
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
@@ -137,6 +137,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: -1
   AIControlled: 1
+  bodyTypeName: 0
   unitMovement:
     Way: []
     localWay: []
@@ -146,20 +147,23 @@ MonoBehaviour:
   Stats:
     attackType: 1
     MaxHP: 300
-    CurrentHP: 300
+    MaxMana: 0
     Damage: 50
     Regeneration: 3
+    ManaRegeneration: 0
     MoveSpeed: 3
     AttackDelay: 2
     AttackRange: 5
     VisionRadius: 15
     CollisionRadius: 0
+    currentHP: 0
+    currentMana: 0
   shooting: {fileID: 11400000, guid: 2cbab4db301e15145848e132a648aadb, type: 2}
   ItemsDroppedOnDeath: []
   LastNonTransformPosition: {x: 0, y: 0, z: 0}
   animator: {fileID: 4278425109958059898}
   MovementHalted: 0
-  behaviorName: CaveDweller
+  behaviorName: BigCaveDweller
   graphicPresets:
     DeadColor: {r: 1, g: 1, b: 1, a: 0}
   possibleDropOnDeath:

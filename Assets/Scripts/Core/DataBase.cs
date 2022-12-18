@@ -9,6 +9,7 @@ using UnityEngine;
 public class DataBase 
 {
     public List<Unit> AllUnits = new List<Unit>();
+    public Stack<UI.InventoryLogic.Corpse> Corpses = new Stack<UI.InventoryLogic.Corpse>();
 
 
 

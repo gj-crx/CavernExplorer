@@ -14,12 +14,16 @@ namespace Behaviours
         public bool Active { get; set; } = true;
         public bool HaveExternalOrder { get; set; } = false;
 
+        [SerializeField]
+        private Vector3 basePosition;
+
 
         public ProvokedHunterBehavior(Unit RelatedUnit)
         {
             unit = RelatedUnit;
             fighting = unit.gameObject.GetComponent<Fighting>();
             fighting.possibleTargets.Add(GameManager.playerControls.PlayerCharacterUnit);
+            basePosition = RelatedUnit.LastNonTransformPosition;
 
         }
 

@@ -47,7 +47,7 @@ public class Projectile : MonoBehaviour
     }
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.isTrigger || collisionActive == false || collision.gameObject == ownerUnit.gameObject) return;
+        if (collision.isTrigger || collisionActive == false || (ownerUnit != null && collision.gameObject == ownerUnit.gameObject)) return;
 
         Hit(collision);
         animator.Play("Explode");

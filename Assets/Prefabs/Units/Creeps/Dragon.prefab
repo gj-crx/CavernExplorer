@@ -163,6 +163,7 @@ MonoBehaviour:
     MaxMana: 0
     Damage: 15
     Regeneration: 1
+    ManaRegeneration: 0
     MoveSpeed: 3
     AttackDelay: 1
     AttackRange: 2
@@ -176,7 +177,7 @@ MonoBehaviour:
   LastNonTransformPosition: {x: -1.6599994, y: -22, z: 0}
   animator: {fileID: 4574840498433035371}
   MovementHalted: 0
-  behaviorName: CaveDweller
+  behaviorName: BigCaveDweller
   graphicPresets:
     DeadColor: {r: 0.3137255, g: 0.14901961, b: 0.14901961, a: 1}
   possibleDropOnDeath:
@@ -211,7 +212,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 25
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0

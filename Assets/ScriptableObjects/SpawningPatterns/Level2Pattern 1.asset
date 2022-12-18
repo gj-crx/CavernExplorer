@@ -15,4 +15,6 @@ MonoBehaviour:
   possibleUnitsToSpawn:
   - {fileID: 5000566942055694710, guid: 38173b493cbd7274db69538a550f20f1, type: 3}
   - {fileID: 7430046623620682384, guid: 9a2ab7c92e11ad0449b9cc10b6b70981, type: 3}
-  estimatedUnitsPer4Sectors: 0200000002000000
+  - {fileID: 4335201669219283906, guid: 7ef0a330a66cebf4f9893148274c06c0, type: 3}
+  - {fileID: 8115688703766148360, guid: 9d031062b32f9674aae19afbd63ce434, type: 3}
+  estimatedUnitsPer4Sectors: 02000000020000000100000002000000

@@ -8,6 +8,15 @@ namespace UI.InventoryLogic
     public class Corpse : MonoBehaviour
     {
         public List<Item> CarriedItems = new List<Item>();
+        [SerializeField]
+        private List<PossibleDrop> possibleDrop;
+
+        private void Start()
+        {
+            if (possibleDrop != null) CarriedItems = PossibleDrop.GenerateItems(possibleDrop);
+            GameManager.dataBase.Corpses.Push(this);
+        }
+
         public void InitializeCorpse(List<Item> loot)
         {
             if (gameObject.tag == "Player")
@@ -47,6 +56,11 @@ namespace UI.InventoryLogic
             }
             UIManager.Singleton.panel_PlayerInventory.SetActive(true);
             UIManager.Singleton.panel_ExternalInventory.SetActive(true);
+        }
+
+        private void GenerateLoot()
+        {
+
         }
     }
 }

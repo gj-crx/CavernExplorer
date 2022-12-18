@@ -155,7 +155,7 @@ public class UnitMovement
         Sector unitSector = GameManager.map.GetUnitSector(unit);
         Vector3Int delta = BasicFunctions.ToUnitVector(unit.LastNonTransformPosition - fearSource);
         Vector3 positionToRun = Vector3.zero;
-        if (GameManager.Random.Next(0, 2) == 1 && delta.x != 0)
+        if (delta.x != 0)
         {
             positionToRun = GetRandomPositionInNeibghourSector(unitSector, delta.x, 0);
             if (positionToRun == Vector3.zero) positionToRun = GetRandomPositionInNeibghourSector(unitSector, 0, delta.y);
@@ -176,6 +176,11 @@ public class UnitMovement
             }
         }
         if (positionToRun != Vector3.zero) GetWayTarget(positionToRun);
+    }
+
+    public void Roam()
+    {
+        if (localWay == null) GetWayTarget(BasicFunctions.ToVector3(Map.GetRandomSector().RandomPoint));
     }
 
     private Vector3 GetRandomPositionInNeibghourSector(Sector unitSector, int x, int y)

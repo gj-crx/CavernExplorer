@@ -254,6 +254,10 @@ namespace Generation
                 if (unit.tag != "Player") GameObject.Destroy(unit.gameObject);
             }
             GameManager.dataBase.AllUnits.Clear();
+            foreach (var corpse in GameManager.dataBase.Corpses)
+            {
+                GameObject.Destroy(corpse.gameObject);
+            }
         }
         
 

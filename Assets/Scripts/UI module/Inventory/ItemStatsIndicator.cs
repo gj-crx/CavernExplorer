@@ -40,6 +40,9 @@ namespace UI.InventoryLogic
             indicator_ItemName.text = referenceItem.ItemName;
             indicator_ItemClass.text = referenceItem.UsedSlot.ToString();
 
+            indicator_GoldCost.text = UITextFormatter.CutOffNumericalPart(indicator_GoldCost.text) + (referenceItem.Cost / 100).ToString();
+            indicator_SilverCost.text = UITextFormatter.CutOffNumericalPart(indicator_SilverCost.text) + referenceItem.Cost.ToString();
+
             indicator_Damage.transform.parent.gameObject.SetActive(referenceItem.ItemStats.Damage != 0);
             indicator_HP.transform.parent.gameObject.SetActive(referenceItem.ItemStats.MaxHP != 0);
             indicator_Regeneration.transform.parent.gameObject.SetActive(referenceItem.ItemStats.Regeneration != 0);

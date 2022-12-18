@@ -38,6 +38,10 @@ public class Map
         int SectorY = (int)(UnitPos.y / (SectorRadius * 2));
         return SectorMap[SectorX, SectorY];
     }
+    public static Sector GetRandomSector()
+    {
+        return GameManager.MapGenerator.NewlyGeneratedSectors.ToArray()[GameManager.GenRandom.Next(0, GameManager.MapGenerator.NewlyGeneratedSectors.Count)];
+    }
 
 
 }
