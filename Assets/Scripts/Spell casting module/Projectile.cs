@@ -50,10 +50,14 @@ public class Projectile : MonoBehaviour
         if (collision.isTrigger || collisionActive == false || (ownerUnit != null && collision.gameObject == ownerUnit.gameObject)) return;
 
         Hit(collision);
-        animator.Play("Explode");
-        collisionActive = false;
-        StartCoroutine(ExplosionTimerCoroutine());
-        stats.Speed = 0;
+        if (animator != null)
+        {
+            animator.Play("Explode");
+            collisionActive = false;
+            StartCoroutine(ExplosionTimerCoroutine());
+            stats.Speed = 0;
+        }
+        else Destroy(gameObject);
     }
     private void Hit(Collider2D collision)
     {

@@ -488,7 +488,7 @@ MonoBehaviour:
     CollisionRadius: 0
     currentHP: 400
     currentMana: 0
-  shooting: {fileID: 11400000, guid: 2cbab4db301e15145848e132a648aadb, type: 2}
+  shooting: {fileID: 11400000, guid: 97daecd52e0dbd248b25d638d47b4735, type: 2}
   ItemsDroppedOnDeath:
   - {fileID: 11400000, guid: 0a097321cd149d045820ada4f9f2b986, type: 2}
   LastNonTransformPosition: {x: 0, y: 0, z: 0}
