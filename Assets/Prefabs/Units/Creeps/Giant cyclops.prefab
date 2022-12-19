@@ -405,7 +405,9 @@ MonoBehaviour:
   graphicPresets:
     DeadColor: {r: 1, g: 1, b: 1, a: 0}
   possibleDropOnDeath:
-  - {fileID: 11400000, guid: 90359567ffa15ca48bb17b55a3429ea4, type: 2}
+  - {fileID: 11400000, guid: 94c2e235cfcbcdb4c87d0965d091e9ca, type: 2}
+  - {fileID: 11400000, guid: 57728186cee95f749be0812b1485bf2b, type: 2}
+  - {fileID: 11400000, guid: 38e42373efbea6248bdb2357a9730f29, type: 2}
 --- !u!114 &9202914100367974094
 MonoBehaviour:
   m_ObjectHideFlags: 0

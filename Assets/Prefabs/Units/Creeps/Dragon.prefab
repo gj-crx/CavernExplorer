@@ -161,8 +161,8 @@ MonoBehaviour:
     attackType: 0
     MaxHP: 1000
     MaxMana: 0
-    Damage: 15
-    Regeneration: 1
+    Damage: 75
+    Regeneration: 15
     ManaRegeneration: 0
     MoveSpeed: 3
     AttackDelay: 1
@@ -183,6 +183,9 @@ MonoBehaviour:
   possibleDropOnDeath:
   - {fileID: 11400000, guid: 90359567ffa15ca48bb17b55a3429ea4, type: 2}
   - {fileID: 11400000, guid: 94c2e235cfcbcdb4c87d0965d091e9ca, type: 2}
+  - {fileID: 11400000, guid: e102acd5b81056f41b61ab6e2ac0e8a8, type: 2}
+  - {fileID: 11400000, guid: 83c6f411294fcd24f9a7da5cc4887c18, type: 2}
+  - {fileID: 11400000, guid: 57728186cee95f749be0812b1485bf2b, type: 2}
 --- !u!114 &-7031803772413031232
 MonoBehaviour:
   m_ObjectHideFlags: 0

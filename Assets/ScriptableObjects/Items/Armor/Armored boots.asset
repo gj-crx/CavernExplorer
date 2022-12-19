@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78d98a8af0da3844380859e0c22f24be, type: 3}
+  m_Name: Armored boots
+  m_EditorClassIdentifier: 
+  ItemName: Armored boots
+  ItemDescription: Protects your legs but doesn't provides any comfort
+  Cost: 20
+  Icon: {fileID: 21300000, guid: 16c1bab30244e46438e1968dda34bd70, type: 3}
+  ItemStats:
+    attackType: 2
+    MaxHP: 30
+    MaxMana: 0
+    Damage: 0
+    Regeneration: 0
+    ManaRegeneration: 0
+    MoveSpeed: 0
+    AttackDelay: 0
+    AttackRange: 0
+    VisionRadius: 0
+    CollisionRadius: 0
+    currentHP: 0
+    currentMana: 0
+  UsedSlot: 3
+  SpellCastOnApply: {fileID: 0}
+  Charges: -1

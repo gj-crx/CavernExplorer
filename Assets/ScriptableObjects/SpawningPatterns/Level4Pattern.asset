@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c92e60af1090391448454336c7571f6b, type: 3}
+  m_Name: Level4Pattern
+  m_EditorClassIdentifier: 
+  possibleUnitsToSpawn:
+  - {fileID: 8700700506899586625, guid: 251d23c3b6f3f2747b9c22d0a0ea6e47, type: 3}
+  - {fileID: 4574840497339869671, guid: 32dc65df9bd07f94c9ad06a6dbbf090e, type: 3}
+  - {fileID: 4335201669219283906, guid: 7ef0a330a66cebf4f9893148274c06c0, type: 3}
+  - {fileID: 8115688703766148360, guid: 9d031062b32f9674aae19afbd63ce434, type: 3}
+  estimatedUnitsPer4Sectors: 03000000030000000500000006000000

@@ -282,6 +282,7 @@ MonoBehaviour:
     MaxMana: 0
     Damage: 15
     Regeneration: 1
+    ManaRegeneration: 0
     MoveSpeed: 2
     AttackDelay: 1
     AttackRange: 1.35
@@ -299,7 +300,7 @@ MonoBehaviour:
   graphicPresets:
     DeadColor: {r: 0.3137255, g: 0.14901961, b: 0.14901961, a: 1}
   possibleDropOnDeath:
-  - {fileID: 11400000, guid: 90359567ffa15ca48bb17b55a3429ea4, type: 2}
+  - {fileID: 11400000, guid: 38e42373efbea6248bdb2357a9730f29, type: 2}
   - {fileID: 11400000, guid: 94c2e235cfcbcdb4c87d0965d091e9ca, type: 2}
 --- !u!114 &6929849909809333461
 MonoBehaviour:

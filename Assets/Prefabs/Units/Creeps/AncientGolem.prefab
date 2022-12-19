@@ -500,6 +500,8 @@ MonoBehaviour:
   possibleDropOnDeath:
   - {fileID: 11400000, guid: 90359567ffa15ca48bb17b55a3429ea4, type: 2}
   - {fileID: 11400000, guid: 94c2e235cfcbcdb4c87d0965d091e9ca, type: 2}
+  - {fileID: 11400000, guid: 83c6f411294fcd24f9a7da5cc4887c18, type: 2}
+  - {fileID: 11400000, guid: 0fe28f3caeb8a4f49890711d2f2ccf18, type: 2}
 --- !u!114 &9189604713790343172
 MonoBehaviour:
   m_ObjectHideFlags: 0

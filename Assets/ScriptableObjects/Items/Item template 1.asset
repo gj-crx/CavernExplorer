@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78d98a8af0da3844380859e0c22f24be, type: 3}
+  m_Name: Item template 1
+  m_EditorClassIdentifier: 
+  ItemName: Undefined item
+  ItemDescription: no description
+  Cost: 10
+  Icon: {fileID: 0}
+  ItemStats:
+    attackType: 2
+    MaxHP: 0
+    MaxMana: 0
+    Damage: 0
+    Regeneration: 0
+    ManaRegeneration: 0
+    MoveSpeed: 0
+    AttackDelay: 0
+    AttackRange: 0
+    VisionRadius: 0
+    CollisionRadius: 0
+    currentHP: 0
+    currentMana: 0
+  UsedSlot: 0
+  SpellCastOnApply: {fileID: 0}
+  Charges: -1

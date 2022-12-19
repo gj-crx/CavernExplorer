@@ -347,17 +347,17 @@ MonoBehaviour:
     CurrentDirection: {x: 0, y: 0, z: 0}
   Stats:
     attackType: 1
-    MaxHP: 100
+    MaxHP: 80
     MaxMana: 0
     Damage: 15
-    Regeneration: 1
+    Regeneration: 15
     ManaRegeneration: 0
-    MoveSpeed: 3
+    MoveSpeed: 5
     AttackDelay: 1
-    AttackRange: 8
-    VisionRadius: 15
+    AttackRange: 7
+    VisionRadius: 24
     CollisionRadius: 0
-    currentHP: 100
+    currentHP: 80
     currentMana: 0
   shooting: {fileID: 11400000, guid: 2cbab4db301e15145848e132a648aadb, type: 2}
   ItemsDroppedOnDeath:
@@ -369,7 +369,7 @@ MonoBehaviour:
   graphicPresets:
     DeadColor: {r: 0.3137255, g: 0.14901961, b: 0.14901961, a: 1}
   possibleDropOnDeath:
-  - {fileID: 11400000, guid: 90359567ffa15ca48bb17b55a3429ea4, type: 2}
+  - {fileID: 11400000, guid: 8cca5e9b289c8024ab51e420a3249320, type: 2}
   - {fileID: 11400000, guid: 94c2e235cfcbcdb4c87d0965d091e9ca, type: 2}
 --- !u!114 &7383932573283708971
 MonoBehaviour:
