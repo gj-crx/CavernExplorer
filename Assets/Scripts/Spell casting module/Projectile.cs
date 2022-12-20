@@ -12,10 +12,11 @@ public class Projectile : MonoBehaviour
 
     [SerializeField]
     private Rigidbody2D rigidbody;
-    private Spell.Effect effectOnImpact = null;
-    private bool collisionActive = true;
     [SerializeField]
     private UnityEngine.Animator animator;
+    private Spell.Effect effectOnImpact = null;
+    private bool collisionActive = true;
+    private string targetTag;
     void Start()
     {
         StartCoroutine(BulletLifeTimerCoroutine());
@@ -25,6 +26,7 @@ public class Projectile : MonoBehaviour
         ownerUnit = shootingUnit;
         this.stats = stats;
         this.effectOnImpact = effectOnImpact;
+        targetTag = ownerUnit.gameObject.tag;
     }
     public void RotateWithDirection(Vector3 direction)
     {
@@ -47,7 +49,7 @@ public class Projectile : MonoBehaviour
     }
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.isTrigger || collisionActive == false || (ownerUnit != null && collision.gameObject == ownerUnit.gameObject)) return;
+        if (collision.isTrigger || collisionActive == false || ownerUnit == null || collision.gameObject == ownerUnit.gameObject) return;
 
         Hit(collision);
         if (animator != null)
@@ -61,12 +63,12 @@ public class Projectile : MonoBehaviour
     }
     private void Hit(Collider2D collision)
     {
-        if (ownerUnit.gameObject.tag == "Player" && collision.gameObject.tag == "Creep")
+        if (targetTag == "Player" && collision.gameObject.tag == "Creep")
         {
             collision.GetComponent<Unit>().GetDamage(stats.Damage, ownerUnit);
             if (effectOnImpact != null) effectOnImpact.CastEffect(new Spell.CastingTarget(collision.GetComponent<Unit>()), ownerUnit);
         }
-        else if (ownerUnit.gameObject.tag == "Creep" && collision.gameObject.tag == "Player")
+        else if (targetTag == "Creep" && collision.gameObject.tag == "Player")
         {
             collision.gameObject.GetComponent<Unit>().GetDamage(stats.Damage, ownerUnit);
         }

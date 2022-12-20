@@ -256,7 +256,7 @@ namespace Generation
             GameManager.dataBase.AllUnits.Clear();
             foreach (var corpse in GameManager.dataBase.Corpses)
             {
-                GameObject.Destroy(corpse.gameObject);
+                if (corpse != null) GameObject.Destroy(corpse.gameObject);
             }
         }
         

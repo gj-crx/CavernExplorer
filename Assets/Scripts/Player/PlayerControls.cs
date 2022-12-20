@@ -46,7 +46,7 @@ namespace Player
             if (movement.magnitude > 0)
             {
                 transform.eulerAngles = new Vector3(0, 0, 0);
-                transform.Translate(movement.normalized * PlayerCharacterUnit.Stats.MoveSpeed * Time.fixedDeltaTime);
+                transform.Translate(movement * PlayerCharacterUnit.Stats.MoveSpeed * Time.fixedDeltaTime);
             }
             if (movement.x > 0) transform.eulerAngles = new Vector3(0, -180, 0);
         }
