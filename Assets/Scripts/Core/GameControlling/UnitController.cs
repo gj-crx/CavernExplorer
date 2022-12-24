@@ -10,6 +10,7 @@ namespace Controllers
     {
         private Thread UnitControllingThread;
         private Queue<Unit> unitsToControl;
+        private int controllingDelay = 100;
 
         public UnitController()
         {
@@ -22,13 +23,14 @@ namespace Controllers
             while (GameManager.GameIsRunning)
             {
                 GetUnitsQueue();
+                controllingDelay = 1000 / unitsToControl.Count;
                 while (unitsToControl.Count > 0)
                 {
                     Unit currentUnit = unitsToControl.Dequeue();
                     if (currentUnit.behavior != null) currentUnit.behavior.BehaviorInteraction();
-                    Thread.Sleep(100);
+                    Thread.Sleep(controllingDelay);
                 }
-                Thread.Sleep(100);
+                Thread.Sleep(controllingDelay);
             }
             UnitControllingThread = null;
         }
@@ -37,7 +39,7 @@ namespace Controllers
             unitsToControl = new Queue<Unit>();
             foreach (var unit in GameManager.dataBase.AllUnits)
             {
-                if (unit.behavior != null) unitsToControl.Enqueue(unit);
+                if (unit != null && unit.behavior != null) unitsToControl.Enqueue(unit);
             }
         }
     }
