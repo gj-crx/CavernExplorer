@@ -7,6 +7,7 @@ namespace Player
 {
     public class PlayerControls : MonoBehaviour
     {
+        public bool UsesDifferentAvatars = true;
         public Unit PlayerCharacterUnit = null;
         public AnimationAvatarType CurrentSelectedWeapon = AnimationAvatarType.SwordAttack;
         public Shooting shooting;
@@ -31,6 +32,7 @@ namespace Player
 
         private void Awake()
         {
+            Debug.Log(gameObject.name);
             GameManager.playerControls = this;
         }
         private void LateUpdate()
@@ -48,7 +50,7 @@ namespace Player
                 transform.eulerAngles = new Vector3(0, 0, 0);
                 transform.Translate(movement * PlayerCharacterUnit.Stats.MoveSpeed * Time.fixedDeltaTime);
             }
-            if (movement.x > 0) transform.eulerAngles = new Vector3(0, -180, 0);
+            if (movement.x < 0) transform.eulerAngles = new Vector3(0, -180, 0);
         }
 
         /// <summary>
@@ -58,18 +60,21 @@ namespace Player
         { 
             if (AttackAnimatinoBeingPlayed == false && PlayerCharacterUnit != null)
             {
+                if (animator.gameObject.activeInHierarchy == false) Debug.LogError("Attack input check button running on wrong object");
                 //checking for input to change facing direction of character, but not no actually move it
                 if (GameManager.playerControls.PlayerCharacterUnit.Stats.attackType == Unit.AttackType.Melee)
                 {
-                    animator.SetBool("Attack", true);
+                    Debug.Log(animator.gameObject.name);
+                    animator.SetBool("Attacked", true);
                     ChangeAvatar(CurrentSelectedWeapon);
                     hitBox.gameObject.SetActive(true);
                     AlreadyHittedTargets.Clear();
                 }
                 else if (GameManager.playerControls.PlayerCharacterUnit.Stats.attackType == Unit.AttackType.Ranged)
                 {
+                    Debug.Log("ranged attack");
                     shooting.Shoot(PlayerCharacterUnit, NormalizeDirection(LastDirection));
-                    animator.SetBool("Attack", true);
+                    animator.SetBool("Attacked", true);
                     ChangeAvatar(DirectionToGunAvatar(NormalizeDirection(LastDirection)));
                 }
             }
@@ -113,6 +118,7 @@ namespace Player
         }
         public void ChangeAvatar(AnimationAvatarType NewAvatar)
         {
+            if (UsesDifferentAvatars == false) return;
             foreach (var Avatar in animationAvatars) Avatar.SetActive(false);
             animationAvatars[(int)NewAvatar].SetActive(true);
         }
@@ -121,6 +127,7 @@ namespace Player
         {
             ChangeAvatar(AnimationAvatarType.NoWeapon);
             AttackAnimatinoBeingPlayed = false;
+            animator.SetBool("Attacked", false);
             hitBox.gameObject.SetActive(false);
         }
 

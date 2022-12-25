@@ -7,11 +7,11 @@ namespace Player
     public class PlayerAttackAnimationEnding : StateMachineBehaviour
     {
         // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-        override public void OnStateEnter(Animator _Animator, AnimatorStateInfo stateInfo, int layerIndex)
+        override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             GameManager.playerControls.AttackAnimatinoBeingPlayed = true;
-            _Animator.SetFloat("XSpeed", GameManager.playerControls.LastDirection.x);
-            _Animator.SetFloat("YSpeed", GameManager.playerControls.LastDirection.y);
+            animator.SetFloat("XSpeed", GameManager.playerControls.LastDirection.x);
+            animator.SetFloat("YSpeed", GameManager.playerControls.LastDirection.y);
         }
 
         // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

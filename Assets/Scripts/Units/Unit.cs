@@ -35,8 +35,6 @@ public class Unit : MonoBehaviour
     [SerializeField]
     public string behaviorName = "CaveDweller";
     [SerializeField]
-    private UnitGraphicPresets graphicPresets;
-    [SerializeField]
     private List<PossibleDrop> possibleDropOnDeath = new List<PossibleDrop>();
     private Unit currentTarget;
     private List<AppliedEffect> appliedEffects = new List<AppliedEffect>();
@@ -253,12 +251,6 @@ public class Unit : MonoBehaviour
             EffectStats = stats;
             TimeLeft = duration;
         }
-    }
-
-    [System.Serializable]
-    public struct UnitGraphicPresets
-    {
-        public Color DeadColor;
     }
     public enum AttackType : byte
     {
