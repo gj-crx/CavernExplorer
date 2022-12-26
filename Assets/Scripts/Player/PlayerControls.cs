@@ -12,6 +12,7 @@ namespace Player
         public AnimationAvatarType CurrentSelectedWeapon = AnimationAvatarType.SwordAttack;
         public Shooting shooting;
         public List<Unit> AlreadyHittedTargets = new List<Unit>();
+        public float percentageTimeOfAttackSwing = 0.25f;
 
 
         [HideInInspector]
@@ -67,7 +68,6 @@ namespace Player
                     Debug.Log(animator.gameObject.name);
                     animator.SetBool("Attacked", true);
                     ChangeAvatar(CurrentSelectedWeapon);
-                    hitBox.gameObject.SetActive(true);
                     AlreadyHittedTargets.Clear();
                 }
                 else if (GameManager.playerControls.PlayerCharacterUnit.Stats.attackType == Unit.AttackType.Ranged)
@@ -107,13 +107,18 @@ namespace Player
             {
                 animator.SetBool("Stopped", false);
                 LastDirection = movement.normalized;
-                //correcting hitbox
-                if (Mathf.Abs(LastDirection.x) > Mathf.Abs(LastDirection.y)) hitBox.transform.localPosition = hitBox.SidePosition;
-                else
-                {
-                    if (LastDirection.y > 0) hitBox.transform.localPosition = hitBox.UpperPosition;
-                    else if (LastDirection.y < 0) hitBox.transform.localPosition = hitBox.DownPosition;
-                }
+
+                CorrectHitBoxPosition();
+            }
+        }
+        private void CorrectHitBoxPosition()
+        {
+            if (UsesDifferentAvatars == false) return;
+            if (Mathf.Abs(LastDirection.x) > Mathf.Abs(LastDirection.y)) hitBox.transform.localPosition = hitBox.SidePosition;
+            else
+            {
+                if (LastDirection.y > 0) hitBox.transform.localPosition = hitBox.UpperPosition;
+                else if (LastDirection.y < 0) hitBox.transform.localPosition = hitBox.DownPosition;
             }
         }
         public void ChangeAvatar(AnimationAvatarType NewAvatar)
@@ -135,8 +140,12 @@ namespace Player
         {
             GameManager.playerControls.PlayerCharacterUnit.Stats.CurrentHP = GameManager.playerControls.PlayerCharacterUnit.Stats.MaxHP;
             GameManager.playerControls.gameObject.SetActive(true);
+            GameManager.playerControls.AttackAnimatinoBeingPlayed = false;
         }
-
+        public void EnableHitBox()
+        {
+            hitBox.gameObject.SetActive(true);
+        }
         private Vector3 NormalizeDirection(Vector3 normalizedDirection)
         {
             Vector3 newDirection = Vector3.zero;
