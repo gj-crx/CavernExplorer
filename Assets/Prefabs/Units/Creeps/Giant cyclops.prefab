@@ -390,7 +390,7 @@ MonoBehaviour:
     Regeneration: 3
     ManaRegeneration: 0
     MoveSpeed: 3
-    AttackDelay: 2
+    AttackSpeed: 1.5
     AttackRange: 8
     VisionRadius: 15
     CollisionRadius: 0
@@ -402,8 +402,6 @@ MonoBehaviour:
   animator: {fileID: 5710571458473090726}
   MovementHalted: 0
   behaviorName: ProvokedHunter
-  graphicPresets:
-    DeadColor: {r: 1, g: 1, b: 1, a: 0}
   possibleDropOnDeath:
   - {fileID: 11400000, guid: 94c2e235cfcbcdb4c87d0965d091e9ca, type: 2}
   - {fileID: 11400000, guid: 57728186cee95f749be0812b1485bf2b, type: 2}

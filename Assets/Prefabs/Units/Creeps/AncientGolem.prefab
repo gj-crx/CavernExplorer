@@ -482,7 +482,7 @@ MonoBehaviour:
     Regeneration: 5
     ManaRegeneration: 0
     MoveSpeed: 3
-    AttackDelay: 1
+    AttackSpeed: 2
     AttackRange: 8
     VisionRadius: 15
     CollisionRadius: 0
@@ -495,8 +495,6 @@ MonoBehaviour:
   animator: {fileID: 7512183551412590103}
   MovementHalted: 0
   behaviorName: BigCaveDweller
-  graphicPresets:
-    DeadColor: {r: 0.3137255, g: 0.14901961, b: 0.14901961, a: 1}
   possibleDropOnDeath:
   - {fileID: 11400000, guid: 90359567ffa15ca48bb17b55a3429ea4, type: 2}
   - {fileID: 11400000, guid: 94c2e235cfcbcdb4c87d0965d091e9ca, type: 2}

@@ -8,6 +8,7 @@ namespace Player
     public class PlayerControls : MonoBehaviour
     {
         public bool UsesDifferentAvatars = true;
+        public bool TwoSideAnimation = false;
         public Unit PlayerCharacterUnit = null;
         public AnimationAvatarType CurrentSelectedWeapon = AnimationAvatarType.SwordAttack;
         public Shooting shooting;
@@ -48,10 +49,10 @@ namespace Player
         { //moving and rotation object
             if (movement.magnitude > 0)
             {
-                transform.eulerAngles = new Vector3(0, 0, 0);
+                if (TwoSideAnimation == false) transform.eulerAngles = new Vector3(0, 0, 0);
                 transform.Translate(movement * PlayerCharacterUnit.Stats.MoveSpeed * Time.fixedDeltaTime);
             }
-            if (movement.x < 0) transform.eulerAngles = new Vector3(0, -180, 0);
+            if (TwoSideAnimation == false && movement.x < 0) transform.eulerAngles = new Vector3(0, -180, 0);
         }
 
         /// <summary>
@@ -62,6 +63,7 @@ namespace Player
             if (AttackAnimatinoBeingPlayed == false && PlayerCharacterUnit != null)
             {
                 if (animator.gameObject.activeInHierarchy == false) Debug.LogError("Attack input check button running on wrong object");
+                animator.SetFloat("AttackAnimationSpeed", PlayerCharacterUnit.Stats.AttackSpeed);
                 //checking for input to change facing direction of character, but not no actually move it
                 if (GameManager.playerControls.PlayerCharacterUnit.Stats.attackType == Unit.AttackType.Melee)
                 {
@@ -94,9 +96,15 @@ namespace Player
             }
             else movement = Vector3.zero;
 
+            
+            if (movement.y > 0.85f) animator.SetFloat("XSpeed", 0);
+            else animator.SetFloat("XSpeed", movement.x);
 
-            animator.SetFloat("XSpeed", movement.x);
-            animator.SetFloat("YSpeed", movement.y);
+            if (movement.x > 0.25f) animator.SetFloat("YSpeed", 0);
+            else animator.SetFloat("YSpeed", movement.y);
+
+            animator.SetFloat("MovementAnimationSpeed", PlayerCharacterUnit.Stats.MoveSpeed / 2);
+
             if (movement.magnitude == 0)
             { //movement stops
                 animator.SetBool("Stopped", true);

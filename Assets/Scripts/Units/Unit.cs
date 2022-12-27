@@ -197,7 +197,7 @@ public class Unit : MonoBehaviour
         public float Regeneration;
         public float ManaRegeneration;
         public float MoveSpeed;
-        public float AttackDelay;
+        public float AttackSpeed;
         public float AttackRange;
         public float VisionRadius;
 
@@ -220,7 +220,7 @@ public class Unit : MonoBehaviour
             Regeneration += AdditionalStats.Regeneration;
             ManaRegeneration += AdditionalStats.ManaRegeneration;
             MoveSpeed += AdditionalStats.MoveSpeed;
-            AttackDelay += AdditionalStats.AttackDelay;
+            AttackSpeed += AdditionalStats.AttackSpeed;
             AttackRange += AdditionalStats.AttackRange;
             VisionRadius += AdditionalStats.VisionRadius;
         }
@@ -236,7 +236,7 @@ public class Unit : MonoBehaviour
             Regeneration -= SubstractedStats.Regeneration;
             ManaRegeneration -= SubstractedStats.ManaRegeneration;
             MoveSpeed -= SubstractedStats.MoveSpeed;
-            AttackDelay -= SubstractedStats.AttackDelay;
+            AttackSpeed -= SubstractedStats.AttackSpeed;
             AttackRange -= SubstractedStats.AttackRange;
             VisionRadius -= SubstractedStats.VisionRadius;
         }

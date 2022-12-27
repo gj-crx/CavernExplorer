@@ -284,7 +284,7 @@ MonoBehaviour:
     Regeneration: 1
     ManaRegeneration: 0
     MoveSpeed: 2
-    AttackDelay: 1
+    AttackSpeed: 1.5
     AttackRange: 1.35
     VisionRadius: 13
     CollisionRadius: 0
@@ -297,8 +297,6 @@ MonoBehaviour:
   animator: {fileID: 256205197792072113}
   MovementHalted: 0
   behaviorName: Peaceful
-  graphicPresets:
-    DeadColor: {r: 0.3137255, g: 0.14901961, b: 0.14901961, a: 1}
   possibleDropOnDeath:
   - {fileID: 11400000, guid: 38e42373efbea6248bdb2357a9730f29, type: 2}
   - {fileID: 11400000, guid: 94c2e235cfcbcdb4c87d0965d091e9ca, type: 2}

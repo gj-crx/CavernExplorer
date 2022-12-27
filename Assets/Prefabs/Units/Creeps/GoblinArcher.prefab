@@ -353,7 +353,7 @@ MonoBehaviour:
     Regeneration: 15
     ManaRegeneration: 0
     MoveSpeed: 5
-    AttackDelay: 1
+    AttackSpeed: 0.8
     AttackRange: 7
     VisionRadius: 24
     CollisionRadius: 0
@@ -366,8 +366,6 @@ MonoBehaviour:
   animator: {fileID: 3835388422027100315}
   MovementHalted: 0
   behaviorName: CaveDweller
-  graphicPresets:
-    DeadColor: {r: 0.3137255, g: 0.14901961, b: 0.14901961, a: 1}
   possibleDropOnDeath:
   - {fileID: 11400000, guid: 8cca5e9b289c8024ab51e420a3249320, type: 2}
   - {fileID: 11400000, guid: 94c2e235cfcbcdb4c87d0965d091e9ca, type: 2}
