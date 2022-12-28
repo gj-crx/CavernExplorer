@@ -34,7 +34,6 @@ namespace Player
 
         private void Awake()
         {
-            Debug.Log(gameObject.name);
             GameManager.playerControls = this;
         }
         private void LateUpdate()
@@ -59,15 +58,32 @@ namespace Player
         /// Triggered by button script in Unity
         /// </summary>
         public void AttackInputCheck()
-        { 
+        {
+            Vector3 inputTargetDelta;
+            if (SystemInfo.deviceType == DeviceType.Handheld) inputTargetDelta = BasicFunctions.RemoveZCord(Camera.main.ScreenToWorldPoint(Input.touches[0].position) - PlayerCharacterUnit.transform.position);
+            else inputTargetDelta = BasicFunctions.RemoveZCord(Camera.main.ScreenToWorldPoint(Input.mousePosition) - PlayerCharacterUnit.transform.position);
+
+            //facing character towards attack target
+            if (Mathf.Abs(inputTargetDelta.x) > Mathf.Abs(inputTargetDelta.y))
+            {
+                animator.SetFloat("LastDirX", inputTargetDelta.x);
+                animator.SetFloat("LastDirY", 0);
+            }
+            else
+            {
+                animator.SetFloat("LastDirX", 0);
+                animator.SetFloat("LastDirY", inputTargetDelta.y);
+            }
+            LastDirection = inputTargetDelta;
+
             if (AttackAnimatinoBeingPlayed == false && PlayerCharacterUnit != null)
             {
                 if (animator.gameObject.activeInHierarchy == false) Debug.LogError("Attack input check button running on wrong object");
                 animator.SetFloat("AttackAnimationSpeed", PlayerCharacterUnit.Stats.AttackSpeed);
+                AttackAnimatinoBeingPlayed = true;
                 //checking for input to change facing direction of character, but not no actually move it
                 if (GameManager.playerControls.PlayerCharacterUnit.Stats.attackType == Unit.AttackType.Melee)
                 {
-                    Debug.Log(animator.gameObject.name);
                     animator.SetBool("Attacked", true);
                     ChangeAvatar(CurrentSelectedWeapon);
                     AlreadyHittedTargets.Clear();
@@ -93,42 +109,33 @@ namespace Player
                 {
                     movement = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
                 }
+
+                if (movement.y > 0.85f) animator.SetFloat("XSpeed", 0);
+                else animator.SetFloat("XSpeed", movement.x);
+
+                if (movement.x > 0.25f) animator.SetFloat("YSpeed", 0);
+                else animator.SetFloat("YSpeed", movement.y);
+
+                animator.SetFloat("MovementAnimationSpeed", PlayerCharacterUnit.Stats.MoveSpeed / 2);
+
+
+                if (movement == Vector3.zero)
+                { //movement stops
+                    animator.SetBool("Stopped", true);
+                    animator.SetFloat("LastDirX", LastDirection.x);
+                    animator.SetFloat("LastDirY", LastDirection.y);
+                }
+                else
+                {
+                    animator.SetBool("Stopped", false);
+                    LastDirection = movement.normalized;
+
+                    if (movement != Vector3.zero) hitBox.CorrectHitBoxPosition(new Vector3(animator.GetFloat("XSpeed"), animator.GetFloat("YSpeed")));
+                }
             }
             else movement = Vector3.zero;
-
-            
-            if (movement.y > 0.85f) animator.SetFloat("XSpeed", 0);
-            else animator.SetFloat("XSpeed", movement.x);
-
-            if (movement.x > 0.25f) animator.SetFloat("YSpeed", 0);
-            else animator.SetFloat("YSpeed", movement.y);
-
-            animator.SetFloat("MovementAnimationSpeed", PlayerCharacterUnit.Stats.MoveSpeed / 2);
-
-            if (movement.magnitude == 0)
-            { //movement stops
-                animator.SetBool("Stopped", true);
-                animator.SetFloat("LastDirX", LastDirection.x);
-                animator.SetFloat("LastDirY", LastDirection.y);
-            }
-            else
-            {
-                animator.SetBool("Stopped", false);
-                LastDirection = movement.normalized;
-
-                CorrectHitBoxPosition();
-            }
         }
-        private void CorrectHitBoxPosition()
-        {
-            if (UsesDifferentAvatars == false) return;
-            if (Mathf.Abs(LastDirection.x) > Mathf.Abs(LastDirection.y)) hitBox.transform.localPosition = hitBox.SidePosition;
-            else
-            {
-                if (LastDirection.y > 0) hitBox.transform.localPosition = hitBox.UpperPosition;
-                else if (LastDirection.y < 0) hitBox.transform.localPosition = hitBox.DownPosition;
-            }
-        }
+        
         public void ChangeAvatar(AnimationAvatarType NewAvatar)
         {
             if (UsesDifferentAvatars == false) return;

@@ -10,7 +10,7 @@ namespace Player
         // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
         override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            GameManager.playerControls.AttackAnimatinoBeingPlayed = true;
+          //  GameManager.playerControls.AttackAnimatinoBeingPlayed = true;
             animator.SetFloat("XSpeed", GameManager.playerControls.LastDirection.x);
             animator.SetFloat("YSpeed", GameManager.playerControls.LastDirection.y);
             swingEnded = false;

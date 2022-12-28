@@ -179,5 +179,9 @@ public static class BasicFunctions
         }
         return 0;
     }
+    public static Vector3 RemoveZCord(Vector3 referreceVector3, float zCord = 0)
+    {
+        return new Vector3(referreceVector3.x, referreceVector3.y, zCord);
+    }
 
 }

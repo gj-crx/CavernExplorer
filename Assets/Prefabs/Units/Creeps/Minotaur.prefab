@@ -132,6 +132,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LowHPColor: {r: 1, g: 0, b: 0, a: 0}
   HighHPColor: {r: 0.25727177, g: 1, b: 0, a: 0}
+  UpdateInterval: 0.25
   hitPointsBar: {fileID: 3083758207927191951}
 --- !u!1 &5000566942055694710
 GameObject:
