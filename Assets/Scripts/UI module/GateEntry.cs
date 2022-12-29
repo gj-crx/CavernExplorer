@@ -7,6 +7,8 @@ namespace UI
 {
     public class GateEntry : MonoBehaviour
     {
+        [SerializeField]
+        private float gateEntryDistance = 2.0f;
         private bool gateEntered = false;
         private LevelGate currentApproachedGate = null;
 
@@ -14,7 +16,7 @@ namespace UI
         {
             if (gateEntered)
             {
-                if (Vector3.Distance(currentApproachedGate.Position, GameManager.playerControls.PlayerCharacterUnit.LastNonTransformPosition) > 3.5f)
+                if (Vector3.Distance(currentApproachedGate.Position, GameManager.playerControls.PlayerCharacterUnit.LastNonTransformPosition) > gateEntryDistance)
                 {
                     UIScenario.Singleton.CloseAllDialogues();
                     gateEntered = false;

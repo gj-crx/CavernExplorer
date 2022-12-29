@@ -102,7 +102,8 @@ namespace UI.InventoryLogic
             if (itemToDisapply.RepresentedItem != null)
             {
                 GameManager.playerControls.PlayerCharacterUnit.Stats.SubstactStats(itemToDisapply.RepresentedItem.ItemStats);
-                if (itemToDisapply.RepresentedItem.UsedSlot != EquipmentSlot.None && itemToDisapply.RepresentedItem.UsedSlot != EquipmentSlot.RightHand)
+                if (itemToDisapply.RepresentedItem.UsedSlot != EquipmentSlot.None && itemToDisapply.RepresentedItem.UsedSlot != EquipmentSlot.RightHand 
+                    && EquipmentSlots[(byte)itemToDisapply.RepresentedItem.UsedSlot] == itemToDisapply)
                 {
                     itemToDisapply.transform.Find("Icon").GetComponent<Image>().sprite = EquipmentSlotsBasicIcons[(byte)itemToDisapply.RepresentedItem.UsedSlot];
                     itemToDisapply.transform.Find("Icon").GetComponent<Image>().color = new Color(1, 1, 1, 0.58f);

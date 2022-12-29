@@ -38,6 +38,9 @@ namespace UI.InventoryLogic
         }
         public static void SellItem(ToolbarItem itemToSell)
         {
+            Debug.Log(itemToSell.RepresentedItem);
+            Debug.Log(CurrentShop);
+            Debug.Log(UIManager.Singleton.playerInventory.Money);
             UIManager.Singleton.playerInventory.Money += (int)(itemToSell.RepresentedItem.Cost * UIShopOverlay.CurrentShop.SellingMarging);
             GameObject.Destroy(itemToSell.gameObject);
         }

@@ -71,6 +71,7 @@ namespace Generation
                 GenerationThread.Start();
             }
             ClearMap();
+            GenerationThread = null;
         }
         void ContiniousGeneration()
         {

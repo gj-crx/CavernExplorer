@@ -91,7 +91,7 @@ namespace UI
                     UIManager.Singleton.playerInventory.MoveItem(toolbarItem, UIManager.Singleton.externalInventory);
                 }
                 else if (nearestDrop == UIManager.Singleton.panel_ShopItemsGrid)
-                {
+                { //dropping to shop
                     if (toolbarItem.inventory == UIManager.Singleton.playerInventory)
                     { //selling item from players inventory to shop
                         UIManager.Singleton.playerInventory.DisapplyItem(toolbarItem);

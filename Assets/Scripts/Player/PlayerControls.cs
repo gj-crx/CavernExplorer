@@ -79,6 +79,8 @@ namespace Player
             if (AttackAnimatinoBeingPlayed == false && PlayerCharacterUnit != null)
             {
                 if (animator.gameObject.activeInHierarchy == false) Debug.LogError("Attack input check button running on wrong object");
+
+                hitBox.CorrectHitBoxPosition(new Vector3(animator.GetFloat("LastDirX"), animator.GetFloat("LastDirY")));
                 animator.SetFloat("AttackAnimationSpeed", PlayerCharacterUnit.Stats.AttackSpeed);
                 AttackAnimatinoBeingPlayed = true;
                 //checking for input to change facing direction of character, but not no actually move it
@@ -90,10 +92,8 @@ namespace Player
                 }
                 else if (GameManager.playerControls.PlayerCharacterUnit.Stats.attackType == Unit.AttackType.Ranged)
                 {
-                    Debug.Log("ranged attack");
-                    shooting.Shoot(PlayerCharacterUnit, NormalizeDirection(LastDirection));
-                    animator.SetBool("Attacked", true);
-                    ChangeAvatar(DirectionToGunAvatar(NormalizeDirection(LastDirection)));
+                    animator.SetBool("Shooted", true);
+                    ChangeAvatar(DirectionToGunAvatar(NormalizeAndRoundDirection(LastDirection)));
                 }
             }
         }
@@ -116,8 +116,7 @@ namespace Player
                 if (movement.x > 0.25f) animator.SetFloat("YSpeed", 0);
                 else animator.SetFloat("YSpeed", movement.y);
 
-                animator.SetFloat("MovementAnimationSpeed", PlayerCharacterUnit.Stats.MoveSpeed / 2);
-
+                animator.SetFloat("MovementAnimationSpeed", PlayerCharacterUnit.Stats.MoveSpeed / 2 * movement.magnitude);
 
                 if (movement == Vector3.zero)
                 { //movement stops
@@ -145,9 +144,13 @@ namespace Player
 
         public void EndAttackingState()
         {
+            //check for shooting (it fires after the animation)
+            if (animator.GetBool("Shooted") == true) shooting.Shoot(PlayerCharacterUnit, LastDirection.normalized);
+
             ChangeAvatar(AnimationAvatarType.NoWeapon);
             AttackAnimatinoBeingPlayed = false;
             animator.SetBool("Attacked", false);
+            animator.SetBool("Shooted", false);
             hitBox.gameObject.SetActive(false);
         }
 
@@ -161,7 +164,7 @@ namespace Player
         {
             hitBox.gameObject.SetActive(true);
         }
-        private Vector3 NormalizeDirection(Vector3 normalizedDirection)
+        private Vector3 NormalizeAndRoundDirection(Vector3 normalizedDirection)
         {
             Vector3 newDirection = Vector3.zero;
             if (Mathf.Abs(normalizedDirection.x) > Mathf.Abs(normalizedDirection.y))

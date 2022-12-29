@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: GoblinShooting
   m_EditorClassIdentifier: 
   projectileStats:
-    Damage: 50
+    Damage: 15
     Speed: 9
     LifeTime: 3.5
   projectilesMultishotCount: 1
   projectileMultishotOffsetY: 0.25
-  bulletPrefab: {fileID: 4067302554897938797, guid: c8d27bdde3cff0844b25096642ee23fc, type: 3}
+  bulletPrefab: {fileID: 2663543831317041879, guid: d5ec5a6b8496d6441b7040dcd6a0287c, type: 3}
   bulletSpawningOffset: {x: 0, y: 0, z: 0}
   bulletInitialDistance: 0.25

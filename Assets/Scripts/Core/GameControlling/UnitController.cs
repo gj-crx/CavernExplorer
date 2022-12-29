@@ -23,7 +23,7 @@ namespace Controllers
             while (GameManager.GameIsRunning)
             {
                 GetUnitsQueue();
-                controllingDelay = 1000 / Mathf.Max(1, unitsToControl.Count);
+                controllingDelay = 1750 / Mathf.Max(1, unitsToControl.Count);
                 while (unitsToControl.Count > 0)
                 {
                     Unit currentUnit = unitsToControl.Dequeue();

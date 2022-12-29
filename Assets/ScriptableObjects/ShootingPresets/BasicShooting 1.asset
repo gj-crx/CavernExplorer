@@ -16,6 +16,8 @@ MonoBehaviour:
     Damage: 25
     Speed: 8
     LifeTime: 3.5
-  bulletPrefab: {fileID: 2356535765661442275, guid: f135246b6e88316429ad29edd4de9682, type: 3}
+  projectilesMultishotCount: 1
+  projectileMultishotOffsetY: 0.25
+  bulletPrefab: {fileID: 4067302554897938797, guid: c8d27bdde3cff0844b25096642ee23fc, type: 3}
   bulletSpawningOffset: {x: 0, y: 0.33, z: 0}
   bulletInitialDistance: 0.25
