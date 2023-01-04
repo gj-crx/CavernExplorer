@@ -60,7 +60,7 @@ namespace Player
         public void AttackInputCheck()
         {
             Vector3 inputTargetDelta;
-            if (SystemInfo.deviceType == DeviceType.Handheld) inputTargetDelta = BasicFunctions.RemoveZCord(Camera.main.ScreenToWorldPoint(Input.touches[0].position) - PlayerCharacterUnit.transform.position);
+            if (SystemInfo.deviceType == DeviceType.Handheld) inputTargetDelta = BasicFunctions.RemoveZCord(Camera.main.ScreenToWorldPoint(Input.touches[Input.touchCount - 1].position) - PlayerCharacterUnit.transform.position);
             else inputTargetDelta = BasicFunctions.RemoveZCord(Camera.main.ScreenToWorldPoint(Input.mousePosition) - PlayerCharacterUnit.transform.position);
 
             //facing character towards attack target
@@ -110,10 +110,10 @@ namespace Player
                     movement = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
                 }
 
-                if (movement.y > 0.85f) animator.SetFloat("XSpeed", 0);
+                if (movement.y > 0.9f) animator.SetFloat("XSpeed", 0);
                 else animator.SetFloat("XSpeed", movement.x);
 
-                if (movement.x > 0.25f) animator.SetFloat("YSpeed", 0);
+                if (movement.x > 0.1f) animator.SetFloat("YSpeed", 0);
                 else animator.SetFloat("YSpeed", movement.y);
 
                 animator.SetFloat("MovementAnimationSpeed", PlayerCharacterUnit.Stats.MoveSpeed / 2 * movement.magnitude);

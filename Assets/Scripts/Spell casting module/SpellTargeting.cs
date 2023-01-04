@@ -9,6 +9,8 @@ namespace Spells
         public Spell PreparedSpell;
         public Unit SpellCaster;
 
+        private bool initialPositionSet = false;
+
         private void Awake()
         {
             SpellCastingSystem.targetingInput = this;
@@ -17,12 +19,23 @@ namespace Spells
         private void Update()
         {
             if (Application.isMobilePlatform)
-            {
-                if (Input.touchCount == 0)
-                {
-                    TryToCast(Camera.main.ScreenToWorldPoint(new Vector3(transform.position.x, transform.position.y, 0)));
+            { //1: users taps on spell icon 2: user taps on the screen to set initial position and it being dragged 3: user stops aiming spell at it being casted
+                if (initialPositionSet == false)
+                { //waiting for initial touch
+                    if (Input.touchCount > 0)
+                    {
+                        transform.position = Input.touches[0].position;
+                        initialPositionSet = true;
+                    }
                 }
-                else transform.position = Input.touches[0].position;
+                else
+                {
+                    if (Input.touchCount == 0)
+                    { //touch released and spell is being casted
+                        TryToCast(Camera.main.ScreenToWorldPoint(new Vector3(transform.position.x, transform.position.y, 0)));
+                    }
+                    else transform.position = Input.touches[0].position; //dragging target
+                }
             }
             else
             {
@@ -47,6 +60,10 @@ namespace Spells
                 if (possibleTargets.Count > 0) SpellCastingSystem.CastSpell(PreparedSpell, new Spell.CastingTarget(possibleTargets[0]), SpellCaster);
             }
             gameObject.SetActive(false);
+        }
+        private void OnEnable()
+        {
+            initialPositionSet = false;
         }
     }
 }
