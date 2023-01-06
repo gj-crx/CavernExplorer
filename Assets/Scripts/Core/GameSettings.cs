@@ -7,15 +7,8 @@ using Generation;
 public class GameSettings : MonoBehaviour
 {
     public GeneratorSettings[] GeneratorSettingsPerLevels;
-    public Tilemap UnpassableTilemap;
-    public Tilemap FloorsTilemap;
-    public Tilemap LevelGatesTilemap;
 
     public PlayerCharacterStartingAssets StartingCharacterAsset;
-    public RuleTile[] WallTiles;
-    public Tile[] FloorTiles;
-    public Tile[] UpLevelGateTiles;
-    public Tile[] DownLevelGateTiles;
 
     public float UnitMovementTileSkipTreshhold = 1;
     public short PathfindingMaxSearchDistance = 250;
@@ -38,16 +31,19 @@ public class GameSettings : MonoBehaviour
     {
         FPS = 1.0f / Time.deltaTime;
 
-        if (GameManager.MapGenerator.ToGenerateOrder)
-        {
-            GameManager.MapGenerator.SpawnAllTiles_MainThread(UnpassableTilemap, FloorsTilemap, LevelGatesTilemap);
-            GameManager.MapGenerator.ToGenerateOrder = false;
-        }
-        if (RegenerateMapOrder)
-        {
-            RegenerateMapOrder = false;
-            GameManager.MapGenerator.GenerateMap(0);
-        }
+        if (GameManager.MapGenerator.ToGenerateOrder) StartGenerationProcess();
+        if (RegenerateMapOrder) StartRegenerationProcess();
+    }
+
+    private void StartGenerationProcess()
+    {
+        GameManager.MapGenerator.SpawnAllTiles_MainThread(PrefabManager.Singleton.UnpassableTilemap, PrefabManager.Singleton.FloorsTilemap, PrefabManager.Singleton.LevelGatesTilemap);
+        GameManager.MapGenerator.ToGenerateOrder = false;
+    }
+    private void StartRegenerationProcess()
+    {
+        RegenerateMapOrder = false;
+        GameManager.MapGenerator.GenerateMap(0);
     }
 
     [System.Serializable]

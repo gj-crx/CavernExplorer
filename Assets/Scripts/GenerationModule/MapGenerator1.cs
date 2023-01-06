@@ -13,6 +13,7 @@ namespace Generation
         public Thread GenerationThread = null;
 
         public GameSettings.GeneratorSettings CurrentGenSettings;
+        public DungeonGenerator dungeonGenerator;
         public int CurrentLevelToGenerate = 1;
         /// <summary>
         /// Indicates current progress of generation in UI
@@ -39,6 +40,7 @@ namespace Generation
         public MapGenerator1(GameSettings.GeneratorSettings settings, Map map)
         {
             CurrentGenSettings = settings;
+            dungeonGenerator = new DungeonGenerator(GameManager.GenRandom, map);
             this.map = map;
             GameSettings.Singleton.StartCoroutine(GameManager.unitSpawner.IterateUnitSpawningQueue());
         }
@@ -48,9 +50,9 @@ namespace Generation
             CurrentLevelToGenerate += gameLevelAdvance;
             CurrentGenSettings = GameSettings.Singleton.GeneratorSettingsPerLevels[CurrentLevelToGenerate];
 
-            GameSettings.Singleton.UnpassableTilemap.color = CurrentGenSettings.unwalkableLayerColor;
-            GameSettings.Singleton.LevelGatesTilemap.color = CurrentGenSettings.unwalkableLayerColor;
-            GameSettings.Singleton.FloorsTilemap.color = CurrentGenSettings.floorLayerColor;
+            PrefabManager.Singleton.UnpassableTilemap.color = CurrentGenSettings.unwalkableLayerColor;
+            PrefabManager.Singleton.LevelGatesTilemap.color = CurrentGenSettings.unwalkableLayerColor;
+            PrefabManager.Singleton.FloorsTilemap.color = CurrentGenSettings.floorLayerColor;
 
             map.LandscapeMap = new LandscapeMapHolder();
             map.SectorMap = new SectorMapHolder();
@@ -170,11 +172,11 @@ namespace Generation
                     levelGatePositionsToSet[tilesCount] = gate.Position + offset;
                     if (gate.GoingUp)
                     {
-                        levelGateTilesArrayToSet[tilesCount] = GameSettings.Singleton.UpLevelGateTiles[currentTile];
+                        levelGateTilesArrayToSet[tilesCount] =  PrefabManager.Singleton.UpLevelGateTiles[currentTile];
                     }
                     else
                     {
-                        levelGateTilesArrayToSet[tilesCount] = GameSettings.Singleton.DownLevelGateTiles[currentTile];
+                        levelGateTilesArrayToSet[tilesCount] = PrefabManager.Singleton.DownLevelGateTiles[currentTile];
                     }
                     currentTile++;
                     tilesCount++;
@@ -211,12 +213,12 @@ namespace Generation
             unpassablePositionsToSet = UnpassableToSet.ToArray();
             UnpassableToSet = new List<Vector3Int>();
             unpassableTilesArrayToSet = new RuleTile[unpassablePositionsToSet.Length];
-            for (int i = 0; i < unpassableTilesArrayToSet.Length; i++) unpassableTilesArrayToSet[i] = GameSettings.Singleton.WallTiles[0];
+            for (int i = 0; i < unpassableTilesArrayToSet.Length; i++) unpassableTilesArrayToSet[i] = PrefabManager.Singleton.WallTiles[0];
 
             floorPositionsToSet = FloorsToSet.ToArray();
             FloorsToSet = new List<Vector3Int>();
             floorTilesArrayToSet = new Tile[floorPositionsToSet.Length];
-            for (int i = 0; i < floorTilesArrayToSet.Length; i++) floorTilesArrayToSet[i] = GameSettings.Singleton.FloorTiles[0];
+            for (int i = 0; i < floorTilesArrayToSet.Length; i++) floorTilesArrayToSet[i] = PrefabManager.Singleton.FloorTiles[0];
         }
         public void SpawnAllTiles_MainThread(Tilemap unpassableTilemap, Tilemap passableTilemap, Tilemap levelGateTilemap)
         {
@@ -247,8 +249,8 @@ namespace Generation
         }
         public void ClearMap()
         {
-            GameSettings.Singleton.UnpassableTilemap.ClearAllTiles();
-            GameSettings.Singleton.LevelGatesTilemap.ClearAllTiles();
+            PrefabManager.Singleton.UnpassableTilemap.ClearAllTiles();
+            PrefabManager.Singleton.LevelGatesTilemap.ClearAllTiles();
             map.LevelGates.Clear();
             foreach (var unit in GameManager.dataBase.AllUnits)
             {
