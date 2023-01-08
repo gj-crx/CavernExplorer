@@ -40,8 +40,8 @@ namespace Generation
         public MapGenerator1(GameSettings.GeneratorSettings settings, Map map)
         {
             CurrentGenSettings = settings;
-            dungeonGenerator = new DungeonGenerator(GameManager.GenRandom, map);
             this.map = map;
+            dungeonGenerator = new DungeonGenerator(GameManager.GenRandom, map);
             GameSettings.Singleton.StartCoroutine(GameManager.unitSpawner.IterateUnitSpawningQueue());
         }
 
@@ -131,6 +131,7 @@ namespace Generation
             }
             CheckForUselessTiles();
             CreateBorderWalls();
+            GenerateStructures();
             FiltrateWallsList();
             GenerateLevelGates();
             PrepareTilesToSet();
@@ -140,7 +141,7 @@ namespace Generation
         {
             int x = 0;
             int y = 0;
-            new LevelGate(map.SectorMap[0, 0], map, true);
+            new LevelGate(map.SectorMap[0, 0], map, true); //placing way up
 
             for (int i = 0; i < CurrentGenSettings.DownWayGatesCount; i++)
             {
@@ -208,6 +209,41 @@ namespace Generation
             }
             foreach (var tile in ToRemove) UnpassableToSet.Remove(tile);
         }
+        private void GenerateStructures()
+        {
+            for (int i = 0; i < CurrentGenSettings.dungeonsToGenerate.Count; i++)
+            {
+                //randomizing position of structure on the edge of the generated map
+                Sector borderSectorOfStructure;
+                Vector2Int structureEnterPoint;
+
+                int xSectorOffset = CurrentGenSettings.StartingSectorsCreationRadius;
+                int ySectorOffset = CurrentGenSettings.StartingSectorsCreationRadius;
+                if (GameManager.GenRandom.Next(0, 2) == 0) xSectorOffset *= -1;
+                if (GameManager.GenRandom.Next(0, 2) == 0) ySectorOffset *= -1;
+
+                bool xSide = GameManager.GenRandom.Next(0, 2) == 0;
+                if (xSide)
+                { 
+                    xSectorOffset = GameManager.GenRandom.Next(-CurrentGenSettings.StartingSectorsCreationRadius, CurrentGenSettings.StartingSectorsCreationRadius + 1);
+                    borderSectorOfStructure = map.SectorMap[xSectorOffset, ySectorOffset];
+
+                    if (ySectorOffset > 0) structureEnterPoint = borderSectorOfStructure.JointPoints[0]; //joint of border sector with dungeon is on top (relatively to sector)
+                    else structureEnterPoint = borderSectorOfStructure.JointPoints[2];
+                }
+                else
+                {
+                    ySectorOffset = GameManager.GenRandom.Next(-CurrentGenSettings.StartingSectorsCreationRadius, CurrentGenSettings.StartingSectorsCreationRadius + 1);
+                    borderSectorOfStructure = map.SectorMap[xSectorOffset, ySectorOffset];
+
+                    if (xSectorOffset > 0) structureEnterPoint = borderSectorOfStructure.JointPoints[1];
+                    else structureEnterPoint = borderSectorOfStructure.JointPoints[3];
+                }
+
+                dungeonGenerator.GenerateDungeon(structureEnterPoint + new Vector2Int(CurrentGenSettings.dungeonsToGenerate[i].XRadius, CurrentGenSettings.dungeonsToGenerate[i].YRadius), structureEnterPoint,
+                    CurrentGenSettings.dungeonsToGenerate[i]);
+            }
+        }
         private void PrepareTilesToSet()
         {//unity does require that
             unpassablePositionsToSet = UnpassableToSet.ToArray();
@@ -227,6 +263,7 @@ namespace Generation
             unpassableTilemap.SetTiles(unpassablePositionsToSet, unpassableTilesArrayToSet);
             passableTilemap.SetTiles(floorPositionsToSet, floorTilesArrayToSet);
             levelGateTilemap.SetTiles(levelGatePositionsToSet, levelGateTilesArrayToSet);
+            dungeonGenerator.PlaceDungeonWalls();
             GenerationCompleted = true;
             if (CurrentGenSettings.ContiniousGeneration == false) GameManager.playerControls.transform.position = BasicFunctions.ToVector3(map.SectorMap[0, 0].RandomPoint);
             //    stopwatch.Stop();

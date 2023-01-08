@@ -69,6 +69,7 @@ public class GameSettings : MonoBehaviour
     [System.Serializable]
     public struct GeneratorSettings
     {
+        [Header("~ Main settings")]
         public int Seed;
 
         public bool ContiniousGeneration;
@@ -78,15 +79,19 @@ public class GameSettings : MonoBehaviour
         public byte UpperWayGatesCount;
         public byte DownWayGatesCount;
 
+        [Header("~ Link parameters")]
         public byte StartingSectorsCreationRadius;
 
         public float LinkDirectionRandomizationChance;
         public byte LinkNormalWidth;
         public int LinkWidthRandomAdjustment;
 
+        [Header("~ Visual properties")]
         public Color unwalkableLayerColor;
         public Color floorLayerColor;
 
-        public UnitSpawningPattern unitSpawningPatterns;
+        [Header("~ Creep spawning and structures")]
+        public List<DungeonGenerationSettings> dungeonsToGenerate;
+        public UnitSpawningPattern unitSpawningPatterns; 
     }
 }

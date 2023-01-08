@@ -9,6 +9,9 @@ namespace Generation
         private Vector2Int center;
         private byte radius = 50;
         private Vector2Int[] SectorPoints;
+        /// <summary>
+        /// 0 = top, 1 = right, 2 = bottom, 3 = left
+        /// </summary>
         public Vector2Int[] JointPoints = new Vector2Int[4];
         public byte RadiusValue { get { return radius; } }
         public Vector2Int GetCentralPoint { get { return center; } }

@@ -30,20 +30,21 @@ public static class GameManager
     {
         Application.targetFrameRate = 60;
 
-        map = new Map();
-        unitSpawner = new UnitSpawner();
-        MapGenerator = new MapGenerator1(GameSettings.Singleton.GeneratorSettingsPerLevels[1], map);
-        tileFormPlacer = new TileFormPlacer(PrefabManager.Singleton.UnpassableTilemap, MapGenerator);
-        Pathfinding = new NormalPathfinding(map);
-
         for (int i = 0; i < GameSettings.Singleton.GeneratorSettingsPerLevels.Length; i++)
         {
             if (GameSettings.Singleton.GeneratorSettingsPerLevels[i].Seed == 0) GameSettings.Singleton.GeneratorSettingsPerLevels[i].Seed = UnityEngine.Random.Range(0, int.MaxValue);
             GenRandom = new System.Random(GameSettings.Singleton.GeneratorSettingsPerLevels[i].Seed);
         }
         Random = new System.Random();
-
         MainThread = System.Threading.Thread.CurrentThread;
+
+
+        map = new Map();
+        unitSpawner = new UnitSpawner();
+        MapGenerator = new MapGenerator1(GameSettings.Singleton.GeneratorSettingsPerLevels[1], map);
+        tileFormPlacer = new TileFormPlacer(PrefabManager.Singleton.UnpassableTilemap, MapGenerator);
+        Pathfinding = new NormalPathfinding(map);
+
 
         unitController = new UnitController();
 
