@@ -36,25 +36,29 @@ namespace Generation
 
             Vector2Int lastCorridorPosition = DungeonEntryPosition;
             Vector2Int lastDirection = Vector2Int.zero;
-            int corridorsNumber = genRandom.Next(3, settings.CorridorsNumberToGenerateMax);
+            int corridorsNumber = genRandom.Next(settings.CorridorsNumberToGenerateMax / 2, settings.CorridorsNumberToGenerateMax);
             DungeonCorridor[] currentGeneratedCorridors = new DungeonCorridor[corridorsNumber];
             for (int i = 0; i < corridorsNumber; i++)
             {
+                Vector2Int delta = dungeonCenter - lastCorridorPosition;
+
                 lastDirection = BasicFunctions.ReverseDirection(lastDirection);
-                if (genRandom.Next(0, 2) == 0) lastDirection.x *= -1;
-                if (genRandom.Next(0, 2) == 0) lastDirection.y *= -1;
+                if (delta.x < 0) lastDirection.x *= -1;
+                if (delta.y < 0) lastDirection.y *= -1;
 
                 currentGeneratedCorridors[i] = new DungeonCorridor(lastCorridorPosition, genRandom.Next(5, settings.CorridorMaxLength), genRandom.Next(1, settings.CorridorMaxWidth), this, lastDirection);
                 lastCorridorPosition = currentGeneratedCorridors[i].CorridorLastPosition;
                 lastDirection = currentGeneratedCorridors[i].direction;
             }
+
+            GenerateBorderWalls();
             //making corridors clean
             foreach (var corridor in currentGeneratedCorridors) corridor.ClearWallsInsideCorridor();
         }
         
-        public void PlaceDungeonWall(Vector2Int positionToPlace)
+        public void PlaceDungeonWall(Vector2Int positionToPlace, bool mustBeInBorders = true)
         {
-            if (PointInBorders(positionToPlace) == false) return;
+            if (mustBeInBorders && PointInBorders(positionToPlace) == false) return;
             for (int y = -1; y <= 1; y++)
             {
                 for (int x = -1; x <= 1; x++)
@@ -87,6 +91,19 @@ namespace Generation
             for (int i = 0; i < dungeonWallsPrefabs.Length; i++) dungeonWallsPrefabs[i] = PrefabManager.Singleton.DungeonWallPrefabs[0];
 
             PrefabManager.Singleton.UnpassableTilemap.SetTiles(DungeonWallsPositions.ToArray(), dungeonWallsPrefabs);
+        }
+        private void GenerateBorderWalls()
+        {
+            for (int distance = -dungeonRadiusY; distance <= dungeonRadiusY; distance++)
+            {
+                for (int borderWallWidth = 0; borderWallWidth < 3; borderWallWidth++)
+                {
+                    PlaceDungeonWall(dungeonCenter + new Vector2Int(distance, dungeonRadiusY), false);
+                    PlaceDungeonWall(dungeonCenter + new Vector2Int(distance, -dungeonRadiusY), false);
+                    PlaceDungeonWall(dungeonCenter + new Vector2Int(dungeonRadiusX, distance), false);
+                    PlaceDungeonWall(dungeonCenter + new Vector2Int(dungeonRadiusX, -distance), false);
+                }
+            }
         }
     }
 
