@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public static class BasicFunctions
@@ -183,5 +181,16 @@ public static class BasicFunctions
     {
         return new Vector3(referreceVector3.x, referreceVector3.y, zCord);
     }
-
+    public static Vector2Int ReverseDirection(Vector2Int direction)
+    {
+        if (direction.x != 0) return new Vector2Int(0, direction.x);
+        if (direction.y != 0) return new Vector2Int(direction.y, 0);
+        return Vector2Int.zero;
+    }
+    public static Vector3Int ReverseDirection(Vector2Int direction, bool vector3Output)
+    {
+        if (direction.x != 0) return new Vector3Int(0, direction.x);
+        if (direction.y != 0) return new Vector3Int(direction.y, 0);
+        return Vector3Int.zero;
+    }
 }

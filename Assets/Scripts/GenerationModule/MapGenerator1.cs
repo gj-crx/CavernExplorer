@@ -216,6 +216,7 @@ namespace Generation
                 //randomizing position of structure on the edge of the generated map
                 Sector borderSectorOfStructure;
                 Vector2Int structureEnterPoint;
+                Vector2Int dungeonCenterPoint;
 
                 int xSectorOffset = CurrentGenSettings.StartingSectorsCreationRadius;
                 int ySectorOffset = CurrentGenSettings.StartingSectorsCreationRadius;
@@ -224,24 +225,39 @@ namespace Generation
 
                 bool xSide = GameManager.GenRandom.Next(0, 2) == 0;
                 if (xSide)
-                { 
+                {
                     xSectorOffset = GameManager.GenRandom.Next(-CurrentGenSettings.StartingSectorsCreationRadius, CurrentGenSettings.StartingSectorsCreationRadius + 1);
                     borderSectorOfStructure = map.SectorMap[xSectorOffset, ySectorOffset];
 
-                    if (ySectorOffset > 0) structureEnterPoint = borderSectorOfStructure.JointPoints[0]; //joint of border sector with dungeon is on top (relatively to sector)
-                    else structureEnterPoint = borderSectorOfStructure.JointPoints[2];
+                    if (ySectorOffset > 0)
+                    {
+                        structureEnterPoint = borderSectorOfStructure.JointPoints[0]; //joint of border sector with dungeon is on top (relatively to sector)
+                        dungeonCenterPoint = structureEnterPoint + new Vector2Int(0, CurrentGenSettings.dungeonsToGenerate[i].YRadius - 1);
+                    }
+                    else
+                    {
+                        structureEnterPoint = borderSectorOfStructure.JointPoints[2];
+                        dungeonCenterPoint = structureEnterPoint + new Vector2Int(0, -CurrentGenSettings.dungeonsToGenerate[i].YRadius + 1);
+                    }
                 }
                 else
                 {
                     ySectorOffset = GameManager.GenRandom.Next(-CurrentGenSettings.StartingSectorsCreationRadius, CurrentGenSettings.StartingSectorsCreationRadius + 1);
                     borderSectorOfStructure = map.SectorMap[xSectorOffset, ySectorOffset];
 
-                    if (xSectorOffset > 0) structureEnterPoint = borderSectorOfStructure.JointPoints[1];
-                    else structureEnterPoint = borderSectorOfStructure.JointPoints[3];
+                    if (xSectorOffset > 0)
+                    {
+                        structureEnterPoint = borderSectorOfStructure.JointPoints[1];
+                        dungeonCenterPoint = structureEnterPoint + new Vector2Int(CurrentGenSettings.dungeonsToGenerate[i].XRadius - 1, 0);
+                    }
+                    else
+                    {
+                        structureEnterPoint = borderSectorOfStructure.JointPoints[3];
+                        dungeonCenterPoint = structureEnterPoint + new Vector2Int(-CurrentGenSettings.dungeonsToGenerate[i].XRadius + 1, 0);
+                    }
                 }
 
-                dungeonGenerator.GenerateDungeon(structureEnterPoint + new Vector2Int(CurrentGenSettings.dungeonsToGenerate[i].XRadius, CurrentGenSettings.dungeonsToGenerate[i].YRadius), structureEnterPoint,
-                    CurrentGenSettings.dungeonsToGenerate[i]);
+                dungeonGenerator.GenerateDungeon(dungeonCenterPoint, structureEnterPoint,CurrentGenSettings.dungeonsToGenerate[i]);
             }
         }
         private void PrepareTilesToSet()

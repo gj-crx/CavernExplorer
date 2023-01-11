@@ -13,7 +13,7 @@ public class PrefabManager : MonoBehaviour
     [Header("~Environmental prefabs")]
     public GameObject[] WallPrefabs = new GameObject[10];
     public List<GameObject> CreepPrefabs = new List<GameObject>();
-    public List<GameObject> DungeonWallPrefabs = new List<GameObject>();
+    public List<TileBase> DungeonWallPrefabs = new List<TileBase>();
 
     [Header("~Tile prefabs")]
     public RuleTile[] WallTiles;

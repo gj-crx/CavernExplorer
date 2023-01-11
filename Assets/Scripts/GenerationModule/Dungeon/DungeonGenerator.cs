@@ -1,22 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Tilemaps;
 
 namespace Generation
 {
     public class DungeonGenerator
     {
-        public Stack<Vector3Int> DungeonWallsPositions = new Stack<Vector3Int>();
+        public List<Vector3Int> DungeonWallsPositions = new List<Vector3Int>();
+        public Map referenceMap;
 
+        public Vector2Int dungeonCenter { get; private set; }
+        public System.Random genRandom { get; private set; }
+        public DungeonGenerationSettings settings { get; private set; }
 
-        Vector2Int dungeonCenter;
-        DungeonGenerationSettings settings;
         int dungeonRadiusX;
         int dungeonRadiusY;
 
-        private System.Random genRandom;
-        private Map referenceMap;
 
         public DungeonGenerator(System.Random genRandom, Map referenceMap)
         {
@@ -35,98 +35,39 @@ namespace Generation
             PrepareMapForDungeon();
 
             Vector2Int lastCorridorPosition = DungeonEntryPosition;
-            int corridorsNumber = genRandom.Next(3, 8);
+            Vector2Int lastDirection = Vector2Int.zero;
+            int corridorsNumber = genRandom.Next(3, settings.CorridorsNumberToGenerateMax);
+            DungeonCorridor[] currentGeneratedCorridors = new DungeonCorridor[corridorsNumber];
             for (int i = 0; i < corridorsNumber; i++)
             {
-                lastCorridorPosition = GenerateDungeonCorridor(genRandom.Next(1, 4), lastCorridorPosition, genRandom.Next(0, 2) == 0);
-            }
+                lastDirection = BasicFunctions.ReverseDirection(lastDirection);
+                if (genRandom.Next(0, 2) == 0) lastDirection.x *= -1;
+                if (genRandom.Next(0, 2) == 0) lastDirection.y *= -1;
 
+                currentGeneratedCorridors[i] = new DungeonCorridor(lastCorridorPosition, genRandom.Next(5, settings.CorridorMaxLength), genRandom.Next(1, settings.CorridorMaxWidth), this, lastDirection);
+                lastCorridorPosition = currentGeneratedCorridors[i].CorridorLastPosition;
+                lastDirection = currentGeneratedCorridors[i].direction;
+            }
+            //making corridors clean
+            foreach (var corridor in currentGeneratedCorridors) corridor.ClearWallsInsideCorridor();
         }
-        /// <summary>
-        /// returns random point in corridor
-        /// </summary>
-        private Vector2Int GenerateDungeonCorridor(int corridorWidth, Vector2Int corridorStartingPosition, bool directionCordX)
+        
+        public void PlaceDungeonWall(Vector2Int positionToPlace)
         {
-            int corridorLength;
-            bool directionPositive;
-            Vector2Int randomPointOfCorridor = Vector2Int.zero;
-            //direction depends on delta of corridor position and dungeon center
-            if (directionCordX) directionPositive = corridorStartingPosition.x < dungeonCenter.x;
-            else directionPositive = corridorStartingPosition.y < dungeonCenter.y;
-
-            if (directionCordX)
-            {
-                if (directionPositive)
-                {
-                    corridorLength = Mathf.Min(genRandom.Next(4, 10), dungeonCenter.x + dungeonRadiusX - corridorStartingPosition.x);
-                    int distanceOfRandomPoint = genRandom.Next(0, corridorLength);
-                    //placing walls across all X length
-                    for (int currentDistance = 0; currentDistance < corridorLength; currentDistance++)
-                    {
-                        PlaceDungeonWall(corridorStartingPosition + new Vector2Int(currentDistance * 3, corridorWidth * 3));
-                        PlaceDungeonWall(corridorStartingPosition + new Vector2Int(currentDistance * 3, -corridorWidth * 3));
-                        referenceMap.LandscapeMap[corridorStartingPosition.x + currentDistance * 3, corridorStartingPosition.y] = new LandscapePoint(LandType.Passable); //to detect already existing corridors
-                        if (currentDistance == distanceOfRandomPoint) randomPointOfCorridor = corridorStartingPosition + new Vector2Int(currentDistance, 0);
-                    }
-                }
-                else
-                {
-                    corridorLength = Mathf.Min(genRandom.Next(4, 10), corridorStartingPosition.x - (dungeonCenter.x - dungeonRadiusX));
-                    int distanceOfRandomPoint = genRandom.Next(0, corridorLength);
-                    //placing walls across all NEGATIVE X length
-                    for (int currentDistance = 0; currentDistance < corridorLength; currentDistance++)
-                    {
-                        PlaceDungeonWall(corridorStartingPosition + new Vector2Int(-currentDistance * 3, corridorWidth * 3));
-                        PlaceDungeonWall(corridorStartingPosition + new Vector2Int(-currentDistance * 3, -corridorWidth * 3));
-                        referenceMap.LandscapeMap[corridorStartingPosition.x - currentDistance * 3, corridorStartingPosition.y] = new LandscapePoint(LandType.Passable);
-                        if (currentDistance == distanceOfRandomPoint) randomPointOfCorridor = corridorStartingPosition + new Vector2Int(-currentDistance, 0);
-                    }
-                }
-            }
-
-            if (directionCordX == false) //all same but with Y cord
-            {
-                if (directionPositive)
-                {
-                    corridorLength = Mathf.Min(genRandom.Next(4, 10), dungeonCenter.y + dungeonRadiusY - corridorStartingPosition.y);
-                    int distanceOfRandomPoint = genRandom.Next(0, corridorLength);
-                    //placing walls across all Y length
-                    for (int currentDistance = 0; currentDistance < corridorLength; currentDistance++)
-                    {
-                        PlaceDungeonWall(corridorStartingPosition + new Vector2Int(corridorWidth * 3, currentDistance * 3));
-                        PlaceDungeonWall(corridorStartingPosition + new Vector2Int(-corridorWidth * 3, currentDistance * 3));
-                        referenceMap.LandscapeMap[corridorStartingPosition.x, corridorStartingPosition.y + currentDistance * 3] = new LandscapePoint(LandType.Passable);
-                        if (currentDistance == distanceOfRandomPoint) randomPointOfCorridor = corridorStartingPosition + new Vector2Int(0, currentDistance);
-                }
-                }
-                else
-                {
-                    corridorLength = Mathf.Min(genRandom.Next(4, 10), corridorStartingPosition.y - (dungeonCenter.y - dungeonRadiusY));
-                    int distanceOfRandomPoint = genRandom.Next(0, corridorLength);
-                    //placing walls across all NEGATIVE Y length
-                    for (int currentDistance = 0; currentDistance < corridorLength; currentDistance++)
-                    {
-                        PlaceDungeonWall(corridorStartingPosition + new Vector2Int(corridorWidth * 3, -currentDistance * 3));
-                        PlaceDungeonWall(corridorStartingPosition + new Vector2Int(-corridorWidth * 3, -currentDistance * 3));
-                        referenceMap.LandscapeMap[corridorStartingPosition.x, corridorStartingPosition.y - currentDistance * 3] = new LandscapePoint(LandType.Passable);
-                        if (currentDistance == distanceOfRandomPoint) randomPointOfCorridor = corridorStartingPosition + new Vector2Int(0, -currentDistance);
-                    }
-                }
-            }
-            //getting random position in corridor
-            return randomPointOfCorridor;
-        }
-
-        private void PlaceDungeonWall(Vector2Int positionToPlace)
-        {
-            DungeonWallsPositions.Push(new Vector3Int(positionToPlace.x, positionToPlace.y, 0));
+            if (PointInBorders(positionToPlace) == false) return;
             for (int y = -1; y <= 1; y++)
             {
                 for (int x = -1; x <= 1; x++)
                 {
                     referenceMap.LandscapeMap[positionToPlace.x + x, positionToPlace.y + y] = new LandscapePoint(LandType.Impassable);
+                    DungeonWallsPositions.Add(new Vector3Int(positionToPlace.x + x, positionToPlace.y + y, 0));
                 }
             }
+        }
+        public bool PointInBorders(Vector2Int point)
+        {
+            return point.x < dungeonCenter.x + dungeonRadiusX && point.x > dungeonCenter.x - dungeonRadiusX &&
+                point.y < dungeonCenter.y + dungeonRadiusY && point.y > dungeonCenter.y - dungeonRadiusY;
         }
         private void PrepareMapForDungeon()
         {
@@ -141,29 +82,85 @@ namespace Generation
         }
         public void PlaceDungeonWalls()
         {
-            foreach (var dungeonWallPosition in DungeonWallsPositions)
-            {
-                GameObject.Instantiate(PrefabManager.Singleton.DungeonWallPrefabs[0], dungeonWallPosition, Quaternion.identity);
-            }
+            Debug.Log("walls count " + DungeonWallsPositions.Count);
+            TileBase[] dungeonWallsPrefabs = new TileBase[DungeonWallsPositions.Count];
+            for (int i = 0; i < dungeonWallsPrefabs.Length; i++) dungeonWallsPrefabs[i] = PrefabManager.Singleton.DungeonWallPrefabs[0];
+
+            PrefabManager.Singleton.UnpassableTilemap.SetTiles(DungeonWallsPositions.ToArray(), dungeonWallsPrefabs);
         }
     }
 
     public class DungeonCorridor
     {
+        public Vector2Int CorridorLastPosition { get; private set; }
+        public Vector2Int direction;
 
-
+        private Vector2Int corridorStartingPoint;
         private int length = 3;
         private int width = 1;
+
+        private DungeonGenerator generator;
+
+        public DungeonCorridor(Vector2Int corridorStartingPoint, int length, int width, DungeonGenerator generator, Vector2Int direction)
+        {
+            this.corridorStartingPoint = corridorStartingPoint;
+            this.length = length;
+            this.width = width;
+            this.generator = generator;
+
+            if (direction == Vector2Int.zero) this.direction = GetDirection(generator.genRandom.Next(0, 2) == 0);
+            else this.direction = direction;
+
+            GenerateCorridor();
+            Debug.Log("corridor generated");
+        }
+
+
         public void ClearWallsInsideCorridor()
         {
-            for (int currentLength = 0; currentLength < length; currentLength++)
+            for (int currentLength = 0; currentLength < length * 3; currentLength++)
             {
+                for (int currentWidth = -width * 3 + 2; currentWidth < width * 3 - 1; currentWidth++)
+                {
+                    Vector3Int currentPosition = BasicFunctions.ToVector3Int(corridorStartingPoint + direction * currentLength) + (BasicFunctions.ReverseDirection(direction, true) * currentWidth);
+                    while (generator.DungeonWallsPositions.Contains(currentPosition)) generator.DungeonWallsPositions.Remove(currentPosition);
 
+                    //negative width check
+                    currentPosition = BasicFunctions.ToVector3Int(corridorStartingPoint + direction * currentLength) - (BasicFunctions.ReverseDirection(direction, true) * currentWidth);
+                    while (generator.DungeonWallsPositions.Contains(currentPosition)) generator.DungeonWallsPositions.Remove(currentPosition);
+                }
             }
         }
-        public GameObject GetWall(Vector2Int wallPosition)
+        private Vector2Int GenerateCorridor()
         {
+            CorridorLastPosition = corridorStartingPoint;
+            for (int currentLength = 0; currentLength < length; currentLength++)
+            {
+                Vector2Int currentPoint = corridorStartingPoint + direction * currentLength * 3;
+                if (generator.PointInBorders(currentPoint))
+                {
+                    generator.PlaceDungeonWall(currentPoint + BasicFunctions.ReverseDirection(direction) * width * 3);
+                    generator.PlaceDungeonWall(currentPoint + BasicFunctions.ReverseDirection(direction) * -width * 3);
+                    CorridorLastPosition = currentPoint;
+                }
+                else return CorridorLastPosition;
+            }
+            return CorridorLastPosition;
+        }
 
+        private Vector2Int GetDirection(bool directionCordX)
+        {
+            Vector2Int deltaWithCenter = generator.dungeonCenter - corridorStartingPoint;
+            if (directionCordX)
+            {
+                if (deltaWithCenter.x > 0) return new Vector2Int(1, 0);
+                else return new Vector2Int(-1, 0);
+            }
+            else
+            {
+                if (deltaWithCenter.y > 0) return new Vector2Int(0, 1);
+                else return new Vector2Int(0, -1);
+            }
         }
     }
 }
